@@ -1,5 +1,8 @@
+#!/usr/bin/env python2
+
 """Tools for generating pseudo-random rosters to test mustering."""
 
+import os.path
 import csv
 import random
 
@@ -15,8 +18,16 @@ class RosterGenerator():
 
     def __init__(self):
         """Initialize a RosterGenerator."""
-        with open('forenames.csv', newline='') as forename_file, \
-                open('surnames.csv', newline='') as surname_file:
+        # The name databases are resource files in this submodule,
+        # so some filename assembly is required.
+        forename_filename = os.path.join(
+            os.path.dirname(__file__),
+            'surnames.csv')
+        surname_filename = os.path.join(
+            os.path.dirname(__file__),
+            'forenames.csv')
+        with open(forename_filename) as forename_file, \
+                open(surname_filename) as surname_file:
                 # HACK: I really don't like using backslash line continuation.
             forename_reader = csv.reader(forename_file)
             surname_reader = csv.reader(surname_file)
