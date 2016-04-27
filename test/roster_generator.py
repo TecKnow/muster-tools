@@ -15,7 +15,6 @@ class RosterGenerator():
 
     def __init__(self):
         """Initialize a RosterGenerator."""
-
         with open('forenames.csv', newline='') as forename_file, \
                 open('surnames.csv', newline='') as surname_file:
                 # HACK: I really don't like using backslash line continuation.
