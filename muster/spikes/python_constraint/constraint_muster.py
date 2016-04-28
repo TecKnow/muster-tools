@@ -1,5 +1,9 @@
 #!/usr/bin/env python2
+"""Use a pure Python constraint solver to explore table assignments.
 
+The particular interest is in exploring the impact of allowing larger
+groups of players to sign up together.
+"""
 import collections
 import constraint
 import itertools
@@ -22,12 +26,20 @@ MAX_TABLE_SIZE = 7
 
 
 class ConstraintMuster():
+    """Generates sample sign-ups and constraints for table assignment."""
 
     def __init__(self,
                  num_players,
                  max_group_size,
                  min_table_size=None,
-                 max_table_size =None):
+                 max_table_size=None):
+        """Generate a sample sign up and configure table parameters.
+
+        num_players:  How many players to randomly generate
+        max_group_size: Players will alloted in groups of up to this size.
+        min_table_size:  Optional, default is 3
+        max_table_size:  Optional, default is 7
+    """
         self.min_table_size = (min_table_size if min_table_size is not None
                                else MIN_TABLE_SIZE)
         self.max_table_size = (max_table_size if max_table_size is not None
@@ -43,19 +55,19 @@ class ConstraintMuster():
                 for name in group))
         self.max_tables = int(
             math.floor(
-                float(num_players)/self.min_table_size))
+                float(num_players) / self.min_table_size))
 
         # Create the variable names and group them up.
         self.variable_field = tuple(
             itertools.product(
                 self.player_names,
-                range(1, self.max_tables+1)))
+                range(1, self.max_tables + 1)))
         self.variable_field = tuple(
             TableAssignment._make(x)
             for x in self.variable_field)
 
         self.players_by_table = dict()
-        for table_number in range(1, self.max_tables+1):
+        for table_number in range(1, self.max_tables + 1):
             self.players_by_table[table_number] = tuple(
                 current_assignment
                 for current_assignment in self.variable_field
@@ -91,20 +103,20 @@ class ConstraintMuster():
                 constraint.FunctionConstraint(
                     self.min_size_func),
                 self.players_by_table[table])
-        # Figure out the buddy system
+        # Consider buddy requests.
+        for group in self.player_groups:
+            for table in self.players_by_table:
+                self.problem.addConstraint(
+                    constraint.AllEqualConstraint(),
+                    [player for player in self.players_by_table[table]
+                        if player.player_name in group])
 
     def min_size_func(self, *vars):
+        """Function for minimum table size constrain
         return sum(vars) == 0 or sum(vars) >= self.min_table_size
 
 if __name__ == '__main__':
-    a = ConstraintMuster(10, 2)
-    s = a.problem.getSolution()
-    fs = tuple(x for x in s if s[x])
-    print "Solution:"
-    pprint(fs)
-    print
-
-    for table in a.players_by_table:
-        pprint(a.players_by_table[table])
-        print sum(s[x] for x in s if x.table == table)
-        print
+    a = ConstraintMuster(40, 2)
+    pprint(a.player_groups)
+    ss = a.problem.getSolutions()
+    print "Number of solutions found", len(ss)
