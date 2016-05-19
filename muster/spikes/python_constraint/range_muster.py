@@ -60,7 +60,7 @@ class ConstraintMuster():
         # Create the variable names and group them up.
         # Player variables
         self.problem.addVariables(
-            self.player_names, range(1, self.max_tables+1))
+            self.player_names, range(1, self.max_tables + 1))
 
         # Problem and variables
         self.problem = constraint.Problem()
@@ -94,7 +94,8 @@ class ConstraintMuster():
                         if player.player_name in group])
 
     def min_size_func(self, *vars):
-        """Function for minimum table size constrain
+        """Function for minimum table size constraint"""
+
         return sum(vars) == 0 or sum(vars) >= self.min_table_size
 
 if __name__ == '__main__':

@@ -112,7 +112,8 @@ class ConstraintMuster():
                         if player.player_name in group])
 
     def min_size_func(self, *vars):
-        """Function for minimum table size constrain
+        """Function for minimum table size constraint"""
+
         return sum(vars) == 0 or sum(vars) >= self.min_table_size
 
 if __name__ == '__main__':
