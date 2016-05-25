@@ -8,9 +8,13 @@ import collections
 import constraint
 import itertools
 import math
-from pprint import pprint
+import logging
+from pprint import pprint, pformat
 from muster.test.roster_generator import RosterGenerator
 
+logging.basicConfig(level=logging.DEBUG)
+
+_logger = logging.getLogger(__name__)
 
 PlayerName = collections.namedtuple(
     'PlayerName',
@@ -59,47 +63,29 @@ class ConstraintMuster():
 
         # Create the variable names and group them up.
         # Player variables
+        self.problem = constraint.Problem()
         self.problem.addVariables(
             self.player_names, range(1, self.max_tables + 1))
 
-        # Problem and variables
-        self.problem = constraint.Problem()
-        self.problem.addVariables(self.variable_field, (True, False))
-
         # Begin configuring constraints
-        # Each person can only be at 1 table
-        for person in self.player_names:
-            self.problem.addConstraint(
-                constraint.ExactSumConstraint(
-                    1), self.tables_by_player[person])
         # Each table has a max size
-        for table in self.players_by_table:
-            self.problem.addConstraint(
-                constraint.MaxSumConstraint(self.max_table_size),
-                self.players_by_table[table])
+        self.problem.addConstraint(self.max_size_func)
         # Min table size
         # This needs to be a custom constraint because it's not really a
         # minimum, it's zero or at least the minimum.
-        for table in self.players_by_table:
-            self.problem.addConstraint(
-                constraint.FunctionConstraint(
-                    self.min_size_func),
-                self.players_by_table[table])
         # Consider buddy requests.
-        for group in self.player_groups:
-            for table in self.players_by_table:
-                self.problem.addConstraint(
-                    constraint.AllEqualConstraint(),
-                    [player for player in self.players_by_table[table]
-                        if player.player_name in group])
 
     def min_size_func(self, *vars):
         """Function for minimum table size constraint"""
+        pass
 
-        return sum(vars) == 0 or sum(vars) >= self.min_table_size
+
+    def max_size_func(self, *vars):
+        """Function for enforcing table maximum sizes."""
+        _logger.debug(vars)
 
 if __name__ == '__main__':
     a = ConstraintMuster(40, 2)
-    pprint(a.player_groups)
+    _logger.info(pformat(a.player_groups))
     ss = a.problem.getSolutions()
     print "Number of solutions found", len(ss)
