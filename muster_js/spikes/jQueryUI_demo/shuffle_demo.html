@@ -3,44 +3,15 @@
 <head>
   <meta charset="utf-8">
   <title>jQuery UI Sortable - Default functionality</title>
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  <link rel="stylesheet" href="//jqueryui.com/resources/demos/style.css">
+  <link rel="stylesheet" href="/scripts/jquery-ui-1.11.4/jquery-ui.theme.css">
+  <script src="scripts/jquery-2.2.4.js"></script>
+  <script src="scripts/jquery-ui-1.11.4/jquery-ui.js"></script>
+  <script src="scripts/main.js"></script>
   <style>
   #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
   #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
   #sortable li span { position: absolute; margin-left: -1.3em; }
   </style>
-  <script>
-  $(function() {
-    $( "#sortable" ).sortable();
-    $( "#sortable" ).disableSelection();
-    $( "#shuffle" ).button().click(function( event ) {
-      var list = $( "#sortable" );
-      var items = $("#sortable li");
-      list.fadeToggle('fast', function(){
-        list.detach();
-        if(items.length){
-          console.log("Found some items");
-          for(let i = 0; i < items.length; ++i){
-            console.log(items.eq(i).text());
-          }
-          //The Durstenfeld shuffle, in JavaScript as explained here:
-          //http://stackoverflow.com/a/12646864
-          for(let current = items.length - 1; current > 0; current--){
-            let random = Math.floor(Math.random() * (current+1));
-            items.eq(random).insertAfter(items.eq(current));
-          }
-          list.prependTo($('body'));
-          list.fadeToggle('fast');
-        } else{
-          console.log("Selector did not find any list items");
-        }
-      });
-    });
-  });
-  </script>
 </head>
 <body>
  
@@ -48,6 +19,7 @@
   <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
   <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
   <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
+  <li class="ui-state-default">The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  </li>
   <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
   <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
   <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
