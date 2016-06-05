@@ -8,9 +8,7 @@
 		var items = $("#sortable li");
 		list.detach();
 		if(items.length){
-			console.log("Found some items");
 			for(let i = 0; i < items.length; ++i){
-				console.log(items.eq(i).text());
 			}
 			//The Durstenfeld shuffle, in JavaScript as explained here:
 			//http://stackoverflow.com/a/12646864
@@ -21,7 +19,6 @@
 			list.prependTo($('body'));
 			list.fadeToggle('fast');
 		} else {
-			console.log("Selector did not find any list items");
 		}
 	}
 
@@ -34,7 +31,8 @@
 	    $( "#sortable" ).sortable();
 	    $( "#sortable" ).disableSelection();
 
-	    $( "#shuffle" ).button().click(shuffle_button_callback);
+	    $( "#shuffle" ).button().click(suffle_button_setup);
 		
 	}
+	$(document).ready(muster_main)
 })();
