@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dice Dojo Adventurer's League Muster</title>
+  <link rel="stylesheet" href="/scripts/jquery-ui-1.11.4/jquery-ui.css">
+  <script src="scripts/jquery-2.2.4.js"></script>
+  <script src="scripts/jquery-ui-1.11.4/jquery-ui.js"></script>
+  <script src="scripts/main.js"></script>
+  <style>
+    #player_deck { list-style-type: none; margin: 0; padding: 0; width: 20%; }
+    #player_deck div { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; }
+    #player_deck div span { position: absolute; margin-left: -1.3em; }
+  </style>
+</head>
+<body>
+
+<div id="tabs">
+  <ul>
+    <li><a href="#join_tab">Participant sign-up</a></li>
+    <li><a href="#manage_tab">Manage Tables</a></li>
+  </ul>
+  <div id="join_tab">
+    <form>
+      <fieldset>
+        <h1>Player information</h1>
+        <label for="first_name">First&nbsp;Name</label>
+        <input type="text" name="first_name" id="first_name" placeholder="First name" required class="text ui-widget-content ui-corner-all">
+        <label for="last_name">Last&nbsp;Name</label>
+        <input type="text" name="last_name" id="last_name" placeholder="Last name" required class="text ui-widget-content ui-corner-all">
+        <label for="DCI_number">DCI&nbsp;Number</label>
+        <input type="number" name="DCI_number" id="DCI_number" placeholder="DCI Number" maxlength="10" min="0" max="9999999999" size="10" required class="text ui-widget-content ui-corner-all">
+        <input type="checkbox" name="DM_flag" id="DM_flag" value="DM"><label for="DM_flag">I am prepared to run a table today.</label>
+      </fieldset>
+      <fieldset>
+      <h1>Buddy selection</h1>
+        <label for="buddy_entry">Select&nbsp;a&nbsp;Buddy</label>
+        <input type="text" name="buddy_selected" id="buddy_selected" class="text ui-widget-content ui-corner-all">
+      </fieldset>
+    </form>
+  </div>
+  <div id="manage_tab">
+      <div id="player_deck_slot">
+        <div id="player_deck">
+          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</div>
+          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</div>
+          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</div>
+          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  </div>
+          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</div>
+          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</div>
+          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</div>
+          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 99</div>
+        </div>
+      </div>
+      <button id="shuffle">Shuffle</button>
+    </div>
+  </div>
+</div>
+ 
+</body>
+</html>
