@@ -3,6 +3,28 @@
 (function muster_sef() {
 	'use strict';
 	
+	function healer_flag_checkbox(event){
+		if($(this).prop('checked')){
+			$( "#healer-true" ).show();
+			$( "#healer-false" ).hide();
+		} else {
+			$( "#healer-true" ).hide();
+			$( "#healer-false" ).show();
+		}
+	}
+
+	function DM_flag_checkbox(event){
+		if($(this).prop('checked')){
+			$( "#DM-true" ).show();
+			$( "#DM-false" ).hide();
+			$( "#character-info-fieldset" ).hide();
+		} else {
+			$( "#DM-true" ).hide();
+			$( "#DM-false" ).show();
+			$( "#character-info-fieldset" ).show();
+		}
+	}
+
 	function shuffle(collection){
 		/** The Durstenfeld shuffle, in JavaScript as explained here:
 			http://stackoverflow.com/a/12646864	
@@ -28,12 +50,18 @@
 	}
 
 	function suffle_button_setup( event ){
+		let list = $( "#player_deck" );
 		list.fadeToggle('fast', shuffle_button_work);
 	}
 
 	function muster_main(){
 		$( "#tabs" ).tabs();
-    	$( "#DM_flag").button();
+    	$( "#DM_flag" ).button();
+    	$( "#DM_flag_label .ui-button-text").disableSelection()
+    	$( '#DM_flag').click(DM_flag_checkbox);
+    	$( "#healer_flag" ).button();
+    	$( "#healer_flag_label .ui-button-text").disableSelection()
+    	$( '#healer_flag').click(healer_flag_checkbox);
 	    
 	    $( "#player_deck" ).sortable();
 	    $( "#player_deck" ).disableSelection();

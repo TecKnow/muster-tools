@@ -22,21 +22,26 @@
   </ul>
   <div id="join_tab">
     <form>
-      <fieldset>
+      <fieldset id="player-info-fieldset">
         <h1>Player information</h1>
         <label for="first_name">First&nbsp;Name</label>
-        <input type="text" name="first_name" id="first_name" placeholder="First name" required class="text ui-widget-content ui-corner-all">
+        <input type="text" name="first_name" id="first_name" placeholder="First name" required class="text ui-widget-content ui-corner-all"><br>
         <label for="last_name">Last&nbsp;Name</label>
-        <input type="text" name="last_name" id="last_name" placeholder="Last name" required class="text ui-widget-content ui-corner-all">
+        <input type="text" name="last_name" id="last_name" placeholder="Last name" required class="text ui-widget-content ui-corner-all"><br>
         <label for="DCI_number">DCI&nbsp;Number</label>
-        <input type="number" name="DCI_number" id="DCI_number" placeholder="DCI Number" maxlength="10" min="0" max="9999999999" size="10" required class="text ui-widget-content ui-corner-all">
-        <input type="checkbox" name="DM_flag" id="DM_flag" value="DM"><label for="DM_flag">I am prepared to run a table today.</label>
+        <input type="number" name="DCI_number" id="DCI_number" placeholder="DCI Number" maxlength="10" min="0" max="9999999999" size="10" required class="text ui-widget-content ui-corner-all"><br>
+        <input type="checkbox" name="DM_flag" id="DM_flag" value="DM">
+        <label for="DM_flag" id="DM_flag_label"><span id="DM-true" style="display:none;">I am a DM</span><span id="DM-false">I am a player.</span></label>
       </fieldset>
-      <fieldset>
+      <fieldset id="character-info-fieldset">
+        <input type="checkbox" name="healer_flag" id="healer_flag" value="healer">
+        <label for="healer_flag" id="healer_flag_label"><span id="healer-true" style="display:none;">My character is a healer</span><span id="healer-false">My character is not a healer</span></label>
+      </fieldset>
+<!--       <fieldset id="buddy-selection-fieldset">
       <h1>Buddy selection</h1>
         <label for="buddy_entry">Select&nbsp;a&nbsp;Buddy</label>
         <input type="text" name="buddy_selected" id="buddy_selected" class="text ui-widget-content ui-corner-all">
-      </fieldset>
+      </fieldset> -->
     </form>
   </div>
   <div id="manage_tab">
