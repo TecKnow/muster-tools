@@ -3,6 +3,56 @@
 (function muster_sef() {
 	'use strict';
 	
+	function make_player(first_name, last_name, DCI_number, DM, healer){
+	
+		let player = $(
+			'<div class="player" style="display:none;">' +
+				'<div class="player-first-name">'+ first_name + '</div>' +
+				'<div class="player-last-name">' + last_name + '</div>' +
+				'<div class="player-DCI-number">' + DCI_number + '</div>' +
+				'<div class ="player-DM">' + DM + '</div>' +
+			'</div>'
+			);
+		if(!DM){
+			$(player).append(
+				'<div class="player-healer">'  + healer + '</div>');
+		}
+		console.log("Player:\n" + player.html())
+		return player;
+	}
+
+	function player_card(player){
+		let first_name = $(player).children( ".player-first-name" ).text();
+		let last_name = $(player).children( ".player-last-name" ).text();
+
+		let card_div = $(
+			'<div class="ui-state-default player-card">' + 
+				'<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' + first_name + ' ' + last_name + '</div>');
+		card_div.append(player);
+		return card_div;
+	}
+
+	function sign_up_submit_handler(event){
+		event.preventDefault();
+		console.log(
+			"Sign-up:", 
+			$('#first_name').val(), 
+			$('#last_name').val(), 
+			$('#DCI_number').val(),
+			$('#healer_flag').prop('checked'),
+			$('#DM_flag').prop('checked'));
+		
+		let new_player = make_player(
+			$('#first_name').val(),
+			$('#last_name').val(), 
+			$('#DCI_number').val(),
+			$('#DM_flag').prop('checked'),
+			$('#healer_flag').prop('checked'));
+		let new_player_card = player_card(new_player);
+		$('#player_deck').append(new_player_card);
+		$('#player-sign-up')[0].reset();
+}
+
 	function healer_flag_checkbox(event){
 		if($(this).prop('checked')){
 			$( "#healer-true" ).show();
@@ -41,7 +91,7 @@
 
 	function shuffle_button_work(){
 		let list = $( "#player_deck" );
-		let items = $("#player_deck div");
+		let items = $("#player_deck .player-card");
 		list.detach();
 		items = $(shuffle(items));
 		list.append(items);
@@ -62,6 +112,8 @@
     	$( "#healer_flag" ).button();
     	$( "#healer_flag_label .ui-button-text").disableSelection()
     	$( '#healer_flag').click(healer_flag_checkbox);
+    	$( '#sign-up-button').button();
+    	$( '#player-sign-up').submit(sign_up_submit_handler);
 	    
 	    $( "#player_deck" ).sortable();
 	    $( "#player_deck" ).disableSelection();

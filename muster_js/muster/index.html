@@ -21,7 +21,7 @@
     <li><a href="#manage_tab">Manage Tables</a></li>
   </ul>
   <div id="join_tab">
-    <form>
+    <form id='player-sign-up'>
       <fieldset id="player-info-fieldset">
         <h1>Player information</h1>
         <label for="first_name">First&nbsp;Name</label>
@@ -34,6 +34,7 @@
         <label for="DM_flag" id="DM_flag_label"><span id="DM-true" style="display:none;">I am a DM</span><span id="DM-false">I am a player.</span></label>
       </fieldset>
       <fieldset id="character-info-fieldset">
+        <h1>Character information</h1>
         <input type="checkbox" name="healer_flag" id="healer_flag" value="healer">
         <label for="healer_flag" id="healer_flag_label"><span id="healer-true" style="display:none;">My character is a healer</span><span id="healer-false">My character is not a healer</span></label>
       </fieldset>
@@ -42,20 +43,12 @@
         <label for="buddy_entry">Select&nbsp;a&nbsp;Buddy</label>
         <input type="text" name="buddy_selected" id="buddy_selected" class="text ui-widget-content ui-corner-all">
       </fieldset> -->
+      <input type="submit" id="sign-up-button" value="Sign-up">
     </form>
   </div>
   <div id="manage_tab">
       <div id="player_deck_slot">
-        <div id="player_deck">
-          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</div>
-          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</div>
-          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</div>
-          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  The quick brown fox jumped over the lazy brown dog.  </div>
-          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</div>
-          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</div>
-          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</div>
-          <div class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 99</div>
-        </div>
+        <div id="player_deck"></div>
       </div>
       <button id="shuffle">Shuffle</button>
     </div>
