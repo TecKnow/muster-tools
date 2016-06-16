@@ -17,7 +17,6 @@
 			$(player).append(
 				'<div class="player-healer">'  + healer + '</div>');
 		}
-		console.log("Player:\n" + player.html())
 		return player;
 	}
 
@@ -32,15 +31,17 @@
 		return card_div;
 	}
 
+	function player_sign_up_reset_handler(event){
+		setTimeout(player_sign_up_post_reset, 0);
+	}
+	
+	function player_sign_up_post_reset(){
+		$( '#DM_flag' ).trigger('change');
+		$( '#healer_flag' ).trigger('change');
+	}
+
 	function sign_up_submit_handler(event){
 		event.preventDefault();
-		console.log(
-			"Sign-up:", 
-			$('#first_name').val(), 
-			$('#last_name').val(), 
-			$('#DCI_number').val(),
-			$('#healer_flag').prop('checked'),
-			$('#DM_flag').prop('checked'));
 		
 		let new_player = make_player(
 			$('#first_name').val(),
@@ -50,7 +51,7 @@
 			$('#healer_flag').prop('checked'));
 		let new_player_card = player_card(new_player);
 		$('#player_deck').append(new_player_card);
-		$('#player-sign-up')[0].reset();
+		$('#player-sign-up').trigger('reset');
 }
 
 	function healer_flag_checkbox(event){
@@ -108,12 +109,15 @@
 		$( "#tabs" ).tabs();
     	$( "#DM_flag" ).button();
     	$( "#DM_flag_label .ui-button-text").disableSelection()
-    	$( '#DM_flag').click(DM_flag_checkbox);
+    	$( '#DM_flag').on('change', DM_flag_checkbox);
     	$( "#healer_flag" ).button();
     	$( "#healer_flag_label .ui-button-text").disableSelection()
-    	$( '#healer_flag').click(healer_flag_checkbox);
+    	$( '#healer_flag').on('change', healer_flag_checkbox);
     	$( '#sign-up-button').button();
     	$( '#player-sign-up').submit(sign_up_submit_handler);
+    	$( "#sign-up-reset-button").button();
+    	$( '#player-sign-up' ).on('reset', player_sign_up_reset_handler);
+
 	    
 	    $( "#player_deck" ).sortable();
 	    $( "#player_deck" ).disableSelection();
