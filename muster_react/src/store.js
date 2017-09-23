@@ -1,50 +1,85 @@
-import { createStore } from "redux";
-import { Map, Record, Set } from "immutable";
+import { Map, Record } from "immutable";
 import uuidv4 from "uuid/v4";
+import { isFSA, isError } from "flux-standard-action";
 
-export const ADD_PLAYER = "ADD_PLAYER";
-export const UPDATE_PLAYER = "UPDATE_PLAYER";
-export const REMOVE_PLAYER = "REMOVE_PLAYER";
+// Manage known players
 
-export const PlayerRecord = Record({
-	name: null,
-	DCI_Number: null,
-	uuid: null
-});
+// Known player action types
 
-function handleAddPlayer(
-	state,
+export const ADD_KNOWN_PLAYER = "ADD_KNOWN_PLAYER";
+export const UPDATE_KNOWN_PLAYER = "UPDATE_KNOWN_PLAYER";
+export const REMOVE_KNOWN_PLAYER = "REMOVE_KNOWN_PLAYER";
+
+// Known Player Record object
+
+export const PlayerRecord = Record(
+	{
+		name: null,
+		DCINumber: null,
+		UUID: null
+	},
+	"PlayerRecord"
+);
+
+// Known Player Action Generators
+
+export function createKnownPlayer(
+	knownPlayers,
 	name,
-	DCI_Number,
-	playerUUID = null
+	DCINumber,
+	UUID = undefined
 ) {
-	while (playerUUID == null || state.has(playerUUID)) {
-		playerUUID = uuidv4();
+	// DCI Numbers must be unique
+	if (knownPlayers.some(V => V.DCINumber === DCINumber)) {
+		return {
+			type: ADD_KNOWN_PLAYER,
+			error: true,
+			payload: new Error("A player with this DCI number already exists.")
+		};
 	}
-	state.set(playerUUID, PlayerRecord(name, DCI_Number, playerUUID));
+	// TODO: Do I really want to handle this within a single function call?
+	while (UUID === undefined || knownPlayers.has(UUID)) {
+		UUID = uuidv4();
+	}
+	return {
+		type: ADD_KNOWN_PLAYER,
+		payload: new PlayerRecord({ name: name, DCINumber: DCINumber, UUID: UUID })
+	};
 }
+export function updateKnownPlayer() {}
+export function removeKnownPlayer() {}
+
+// Known player action reducer functions
+
+export function reduceAddedPlayer(state, action) {
+	if (
+		isFSA(action) &&
+		!isError(action) &&
+		action.type === ADD_KNOWN_PLAYER &&
+		PlayerRecord.isRecord(action.payload) &&
+		!state.has(action.payload.UUID) &&
+		state.none(
+			V =>
+				V.DCINumber === action.payload.DCINumber ||
+				V.DCINumber === action.payload.UUID
+		)
+	) {
+		return state.set(action.payload.UUID, action.payload);
+	}
+	return state;
+}
+
+export function reduceUpdatedPlayer() {}
+export function reduceRemovedPlayer() {}
+
+// Known player central reducer
 
 const initialState = Map();
-
-function hanldePlayers(state = initialState, action) {
-	let ret = state;
+export function reduceKnownPlayers(state = initialState, action) {
 	switch (action.type) {
-		case ADD_PLAYER:
-			ret = handleAddPlayer(
-				state,
-				action.name,
-				action.DCI_Number,
-				action.uuid
-			);
-			break;
-		case UPDATE_PLAYER:
-			break;
-		case REMOVE_PLAYER:
-			break;
+		case ADD_KNOWN_PLAYER:
+			return reduceAddedPlayer(state, action);
 		default:
-			break;
+			return state;
 	}
-	return ret;
 }
-
-let store = createStore(hanldePlayers());

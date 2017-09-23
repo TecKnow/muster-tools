@@ -34,6 +34,7 @@
     "eslint": "^4.7.0",
     "eslint-config-prettier": "^2.5.0",
     "eslint-plugin-prettier": "^2.2.0",
+    "flux-standard-action": "^1.2.0",
     "husky": "^0.14.3",
     "lint-staged": "^4.2.1",
     "prettier": "^1.7.0",
