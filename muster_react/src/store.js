@@ -43,7 +43,11 @@ export function createKnownPlayer(
 	}
 	return {
 		type: ADD_KNOWN_PLAYER,
-		payload: new PlayerRecord({ name: name, DCINumber: DCINumber, UUID: UUID })
+		payload: new PlayerRecord({
+			name: name,
+			DCINumber: DCINumber,
+			UUID: UUID
+		})
 	};
 }
 export function updateKnownPlayer() {}
@@ -56,9 +60,8 @@ export function reduceAddedPlayer(state, action) {
 		isFSA(action) &&
 		!isError(action) &&
 		action.type === ADD_KNOWN_PLAYER &&
-		PlayerRecord.isRecord(action.payload) &&
 		!state.has(action.payload.UUID) &&
-		state.none(
+		!state.some(
 			V =>
 				V.DCINumber === action.payload.DCINumber ||
 				V.DCINumber === action.payload.UUID
