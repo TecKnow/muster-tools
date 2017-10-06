@@ -1,16 +1,6 @@
-import { Map, Record } from "immutable";
+import { createActions, handleActions } from "redux-actions";
+import { List, Map, Record } from "immutable";
 import uuidv4 from "uuid/v4";
-import { isFSA, isError } from "flux-standard-action";
-
-// Manage known players
-
-// Known player action types
-
-export const ADD_KNOWN_PLAYER = "ADD_KNOWN_PLAYER";
-export const UPDATE_KNOWN_PLAYER = "UPDATE_KNOWN_PLAYER";
-export const REMOVE_KNOWN_PLAYER = "REMOVE_KNOWN_PLAYER";
-
-// Known Player Record object
 
 export const PlayerRecord = Record(
 	{
@@ -21,68 +11,149 @@ export const PlayerRecord = Record(
 	"PlayerRecord"
 );
 
-// Known Player Action Generators
+export const DuplicateUUIDErrorRecord = Record({
+	type: "DuplicateUUIDErrorRecord",
+	action: null,
+	existingObject: null,
+	newObject: null,
+	// TODO:  Improve this message using string templates.
+	message: "An object with this UUID already exists."
+});
 
-export function createKnownPlayer(
-	knownPlayers,
-	name,
-	DCINumber,
-	UUID = undefined
+export function createDuplicateUUIDError(
+	action,
+	existingObject,
+	newObject = undefined,
+	message = undefined
 ) {
-	// DCI Numbers must be unique
-	if (knownPlayers.some(V => V.DCINumber === DCINumber)) {
-		return {
-			type: ADD_KNOWN_PLAYER,
-			error: true,
-			payload: new Error("A player with this DCI number already exists.")
-		};
+	if (newObject === undefined) {
+		newObject = action.payload;
 	}
-	// TODO: Do I really want to handle this within a single function call?
-	while (UUID === undefined || knownPlayers.has(UUID)) {
-		UUID = uuidv4();
-	}
-	return {
-		type: ADD_KNOWN_PLAYER,
-		payload: new PlayerRecord({
-			name: name,
-			DCINumber: DCINumber,
-			UUID: UUID
-		})
-	};
+	return new DuplicateUUIDErrorRecord({
+		action,
+		existingObject,
+		newObject,
+		message
+	});
 }
-export function updateKnownPlayer() {}
-export function removeKnownPlayer() {}
 
-// Known player action reducer functions
-
-export function reduceAddedPlayer(state, action) {
-	if (
-		isFSA(action) &&
-		!isError(action) &&
-		action.type === ADD_KNOWN_PLAYER &&
-		!state.has(action.payload.UUID) &&
-		!state.some(
-			V =>
-				V.DCINumber === action.payload.DCINumber ||
-				V.DCINumber === action.payload.UUID
-		)
-	) {
-		return state.set(action.payload.UUID, action.payload);
+export function reduceDuplicateUUIDError(state, action) {
+	if (state.hasIn(["KNOWN_PLAYER_INDEX", action.payload.UUID])) {
+		const existingObject = state.getIn([
+			"KNOWN_PLAYER_INDEX",
+			action.payload.UUID
+		]);
+		const newObject = action.payload;
+		const newErrorRecord = new DuplicateUUIDErrorRecord({
+			action: action,
+			existingObject: existingObject,
+			newObject: newObject
+		});
+		state = logErrorRecord(state, newErrorRecord);
 	}
 	return state;
 }
 
-export function reduceUpdatedPlayer() {}
-export function reduceRemovedPlayer() {}
+export const DuplicateDCIErrorRecord = Record({
+	type: "DuplicateDCIErrorRecord",
+	action: null,
+	existingObject: null,
+	newObject: null,
+	// TODO:  Improve this message using string templates.
+	message: "A player with this DCI number already exists."
+});
 
-// Known player central reducer
-
-const initialState = Map();
-export function reduceKnownPlayers(state = initialState, action) {
-	switch (action.type) {
-		case ADD_KNOWN_PLAYER:
-			return reduceAddedPlayer(state, action);
-		default:
-			return state;
+export function createDuplicateDCIError(
+	action,
+	existingObject,
+	newObject = undefined,
+	message = undefined
+) {
+	if (newObject === undefined) {
+		newObject = action.payload;
 	}
+	return new DuplicateUUIDErrorRecord({
+		action,
+		existingObject,
+		newObject,
+		message
+	});
 }
+
+export function reduceDuplicateDCIError(state, action) {
+	if (
+		state
+			.getIn(["KNOWN_PLAYER_INDEX"])
+			.some(V => V.DCINumber === action.payload.DCINumber)
+	) {
+		const filteredPlayers = state
+			.getIn(["KNOWN_PLAYER_INDEX"])
+			.filter(V => V.DCINumber === action.payload.DCINumber);
+		const existingObject = filteredPlayers.first();
+		const newObject = action.payload;
+		const newErrorRecord = new DuplicateDCIErrorRecord({
+			action: action,
+			existingObject: existingObject,
+			newObject: newObject
+		});
+		state = logErrorRecord(state, newErrorRecord);
+	}
+	return state;
+}
+
+export function logErrorRecord(state, errorRecord) {
+	return state.updateIn(
+		["KNOWN_PLAYER_ERRORS", errorRecord.type],
+		(list = List()) => list.push(errorRecord)
+	);
+}
+
+export const knownPlayersActionCreators = createActions({
+	KNOWN_PLAYERS: {
+		ADD(name, DCINumber, UUID = undefined) {
+			return new PlayerRecord({
+				name: name,
+				DCINumber: DCINumber,
+				UUID: UUID || uuidv4()
+			});
+		},
+		UPDATE(name, DCINumber, UUID) {
+			return new PlayerRecord({
+				name: name,
+				DCINumber: DCINumber,
+				UUID: UUID
+			});
+		},
+		REMOVE(UUID) {
+			return UUID;
+		}
+	}
+});
+
+export const knownPlayersIndexReducers = handleActions(
+	{
+		KNOWN_PLAYERS: {
+			ADD(state, action) {
+				const initialState = state;
+				state = reduceDuplicateDCIError(state, action);
+				if (!state.equals(initialState)) {
+					return state;
+				}
+				state = reduceDuplicateUUIDError(state, action);
+				if (!state.equals(initialState)) {
+					return state;
+				}
+				return state.setIn(
+					["KNOWN_PLAYER_INDEX", action.payload.UUID],
+					action.payload
+				);
+			},
+			UPDATE(state, action) {},
+			REMOVE(state, action) {}
+		}
+	},
+	Map({
+		KNOWN_PLAYER_INDEX: Map(),
+		KNOWN_PLAYER_ERRORS: Map()
+	})
+);

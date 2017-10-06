@@ -1,119 +1,144 @@
-import { Map } from "immutable";
 import { isFSA, isError } from "flux-standard-action";
+import { Map } from "immutable";
 import {
-	ADD_KNOWN_PLAYER,
 	PlayerRecord,
-	createKnownPlayer,
-	reduceKnownPlayers
-} from "./store";
+	knownPlayersActionCreators,
+	knownPlayersIndexReducers
+} from "./redux-action-store";
 
-const PlayerRecordAlice = PlayerRecord({
+const PlayerRecordAlice = new PlayerRecord({
 	name: "Alice",
 	DCINumber: "0000000000",
 	UUID: "00000000-0000-0000-0000-000000000000"
 });
-const PlayerRecordBob = PlayerRecord({
+const PlayerRecordBob = new PlayerRecord({
 	name: "Bob",
 	DCINumber: "0000000001",
 	UUID: "00000000-0000-0000-0000-000000000001"
 });
-const KnownPlayersEmpty = Map();
-const KnownPlayersOne = Map([[PlayerRecordAlice.UUID, PlayerRecordAlice]]);
-const KnownPlayersTwo = Map([
-	[PlayerRecordAlice.UUID, PlayerRecordAlice],
-	[PlayerRecordBob.UUID, PlayerRecordBob]
-]);
-const AddAliceAction = createKnownPlayer(
-	KnownPlayersEmpty,
-	PlayerRecordAlice.name,
-	PlayerRecordAlice.DCINumber,
-	PlayerRecordAlice.UUID
-);
-const AddBobAction = createKnownPlayer(
-	KnownPlayersEmpty,
-	PlayerRecordBob.name,
-	PlayerRecordBob.DCINumber,
-	PlayerRecordBob.UUID
-);
+const PlayerRecordBobDuplicateDCI = new PlayerRecord({
+	name: "Bob",
+	DCINumber: "0000000000",
+	UUID: "00000000-0000-0000-0000-000000000001"
+});
+const PlayerRecordBobDuplicateUUID = new PlayerRecord({
+	name: "Bob",
+	DCINumber: "0000000001",
+	UUID: "00000000-0000-0000-0000-000000000000"
+});
+const KnownPlayersEmpty = Map({
+	KNOWN_PLAYER_INDEX: Map(),
+	KNOWN_PLAYER_ERRORS: Map()
+});
+const KnownPlayersOne = Map({
+	KNOWN_PLAYER_INDEX: Map([[PlayerRecordAlice.UUID, PlayerRecordAlice]]),
+	KNOWN_PLAYER_ERRORS: Map()
+});
+const KnownPlayersTwo = Map({
+	KNOWN_PLAYER_INDEX: Map([
+		[PlayerRecordAlice.UUID, PlayerRecordAlice],
+		[PlayerRecordBob.UUID, PlayerRecordBob]
+	]),
+	KNOWN_PLAYER_ERRORS: Map()
+});
+const AddAliceAction = {
+	type: "KNOWN_PLAYERS/ADD",
+	payload: PlayerRecordAlice
+};
+const AddBobAction = {
+	type: "KNOWN_PLAYERS/ADD",
+	payload: PlayerRecordBob
+};
+const AddBobDuplicateDCIAction = {
+	type: "KNOWN_PLAYERS/ADD",
+	payload: PlayerRecordBobDuplicateDCI
+};
+const AddBobDuplicateUUIDAction = {
+	type: "KNOWN_PLAYERS/ADD",
+	payload: PlayerRecordBobDuplicateUUID
+};
 
-describe("Known Player List", () => {
+describe("Known Players", () => {
 	describe("Action creators", () => {
-		describe("createKnownPlayer", () => {
-			describe("Duplicate Entries", () => {
-				test("Doesn't allow duplicate DCI Numbers", () => {
-					const testValue = createKnownPlayer(
-						KnownPlayersOne,
-						PlayerRecordBob.name,
-						PlayerRecordAlice.DCINumber,
-						PlayerRecordBob.UUID
-					);
-					expect(isFSA(testValue)).toBe(true);
-					expect(isError(testValue)).toBe(true);
-				});
-				test("Handles duplicate UUIDs", () => {
-					const testValue = createKnownPlayer(
-						KnownPlayersOne,
-						PlayerRecordBob.name,
-						PlayerRecordBob.DCINumber,
-						PlayerRecordAlice.UUID
-					);
-					expect(isFSA(testValue)).toBe(true);
-					expect(isError(testValue)).toBeFalsy();
-					expect(testValue).toHaveProperty("type", ADD_KNOWN_PLAYER);
-					expect(testValue).toHaveProperty("payload");
-					expect(testValue.payload.name).toBe(PlayerRecordBob.name);
-					expect(testValue.payload.DCINumber).toBe(PlayerRecordBob.DCINumber);
-					expect(testValue.payload.UUID).toMatch(
-						// Copied from Jon Almeida:
-						// https://jonalmeida.com/posts/2014/05/20/testing-for-a-correct-uuid/
-						/^[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?4[0-9a-fA-F]{3}-?[89abAB][0-9a-fA-F]{3}-?[0-9a-fA-F]{12}$/
-					);
-					expect(testValue.payload.UUID).not.toEqual(PlayerRecordAlice.UUID);
-				});
+		describe("ADD", () => {
+			test("Creates expected event", () => {
+				const testValue = knownPlayersActionCreators.knownPlayers.add(
+					PlayerRecordAlice.name,
+					PlayerRecordAlice.DCINumber,
+					PlayerRecordAlice.UUID
+				);
+				expect(testValue).toEqual(AddAliceAction);
 			});
 		});
+		describe("UPDATE", () => {}); // TODO: Implement when useful
+		describe("REMOVE", () => {}); // TODO: Implement when useful
 	});
 	describe("Reducers", () => {
-		describe("reduceKnownPlayers", () => {
-			test("Returns initial state", () => {
-				const initialState = reduceKnownPlayers(undefined, {});
-				expect(initialState).toEqual(KnownPlayersEmpty);
-			});
-			describe("reduceAddedPlayer", () => {
-				test("Accepts first player", () => {
-					const testValue = reduceKnownPlayers(
+		describe("ADD", () => {
+			describe("Normal Operation", () => {
+				test("Adds first player", () => {
+					const testValue = knownPlayersIndexReducers(
 						KnownPlayersEmpty,
 						AddAliceAction
 					);
 					expect(testValue).toEqual(KnownPlayersOne);
 				});
-				test("Accepts second player", () => {
-					const testValue = reduceKnownPlayers(KnownPlayersOne, AddBobAction);
+				test("Adds second player", () => {
+					const testValue = knownPlayersIndexReducers(
+						KnownPlayersOne,
+						AddBobAction
+					);
 					expect(testValue).toEqual(KnownPlayersTwo);
 				});
-				test("Ignores duplicate DCI numbers", () => {
-					const badEvent = {
-						type: ADD_KNOWN_PLAYER,
-						payload: new PlayerRecord({
-							name: PlayerRecordBob.name,
-							DCINumber: PlayerRecordAlice.DCINumber,
-							UUID: PlayerRecordBob.UUID
-						})
-					};
-					const testValue = reduceKnownPlayers(KnownPlayersOne, badEvent);
-					expect(testValue).toBe(KnownPlayersOne);
+			});
+			describe("Exceptional Operation", () => {
+				test("Duplicate DCINumber", () => {
+					const testState = knownPlayersIndexReducers(
+						KnownPlayersOne,
+						AddBobDuplicateDCIAction
+					);
+					expect(testState.KNOWN_PLAYER_INDEX).toEqual(
+						KnownPlayersOne.KNOWN_PLAYER_INDEX
+					);
+					expect(
+						testState.hasIn(["KNOWN_PLAYER_ERRORS", "DuplicateDCIErrorRecord"])
+					).toBe(true);
+					expect(
+						testState.getIn(["KNOWN_PLAYER_ERRORS", "DuplicateDCIErrorRecord"])
+							.size
+					).toBe(1);
+					const testError = testState
+						.getIn(["KNOWN_PLAYER_ERRORS", "DuplicateDCIErrorRecord"])
+						.first();
+
+					expect(testError.type).toEqual("DuplicateDCIErrorRecord");
+					expect(testError.action).toEqual(AddBobDuplicateDCIAction);
+					expect(testError.existingObject).toEqual(PlayerRecordAlice);
+					expect(testError.newObject).toEqual(PlayerRecordBobDuplicateDCI);
 				});
-				test("Ignores duplicate UUIDs", () => {
-					const badEvent = {
-						type: ADD_KNOWN_PLAYER,
-						payload: new PlayerRecord({
-							name: PlayerRecordBob.name,
-							DCINumber: PlayerRecordBob.DCINumber,
-							UUID: PlayerRecordAlice.UUID
-						})
-					};
-					const testValue = reduceKnownPlayers(KnownPlayersOne, badEvent);
-					expect(testValue).toBe(KnownPlayersOne);
+				test("Duplicate UUID", () => {
+					const testState = knownPlayersIndexReducers(
+						KnownPlayersOne,
+						AddBobDuplicateUUIDAction
+					);
+					expect(testState.KNOWN_PLAYER_INDEX).toEqual(
+						KnownPlayersOne.KNOWN_PLAYER_INDEX
+					);
+					expect(
+						testState.hasIn(["KNOWN_PLAYER_ERRORS", "DuplicateUUIDErrorRecord"])
+					).toBe(true);
+					expect(
+						testState.getIn(["KNOWN_PLAYER_ERRORS", "DuplicateUUIDErrorRecord"])
+							.size
+					).toBe(1);
+					const testError = testState
+						.getIn(["KNOWN_PLAYER_ERRORS", "DuplicateUUIDErrorRecord"])
+						.first();
+
+					expect(testError.type).toEqual("DuplicateUUIDErrorRecord");
+					expect(testError.action).toEqual(AddBobDuplicateUUIDAction);
+					expect(testError.existingObject).toEqual(PlayerRecordAlice);
+					expect(testError.newObject).toEqual(PlayerRecordBobDuplicateUUID);
 				});
 			});
 		});
