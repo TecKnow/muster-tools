@@ -4,7 +4,7 @@ import {
 	PlayerRecord,
 	knownPlayersActionCreators,
 	knownPlayersIndexReducers
-} from "./redux-action-store";
+} from "./store";
 
 const PlayerRecordAlice = new PlayerRecord({
 	name: "Alice",
@@ -140,6 +140,9 @@ describe("Known Players", () => {
 					expect(testError.existingObject).toEqual(PlayerRecordAlice);
 					expect(testError.newObject).toEqual(PlayerRecordBobDuplicateUUID);
 				});
+				test("Handles multiple types of errors", () => {});
+				test("Handles multiple instances of errors", () => {});
+				test("Duplicate DCI errors take precedence", () => {});
 			});
 		});
 	});
