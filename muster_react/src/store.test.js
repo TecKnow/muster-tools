@@ -70,8 +70,13 @@ describe("Known Players", () => {
 				expect(testValue).toEqual(AddAliceAction);
 			});
 		});
-		describe("UPDATE", () => {}); // TODO: Implement when useful
-		describe("REMOVE", () => {}); // TODO: Implement when useful
+		describe.skip("UPDATE", () => {}); // TODO: Implement when useful
+		describe.skip("REMOVE", () => {}); // TODO: Implement when useful
+		describe("CLEAR_ERROR", () => {
+			test("Creates expected event", ()=> {
+				const testValue = knownPlayersActionCreators.knownPlayers.clearError()
+			});
+		}); // TODO: Implement
 	});
 	describe("Reducers", () => {
 		describe("ADD", () => {
@@ -111,8 +116,8 @@ describe("Known Players", () => {
 						.getIn(["KNOWN_PLAYER_ERRORS", "DuplicateDCIErrorRecord"])
 						.first();
 
-					expect(testError.type).toEqual("DuplicateDCIErrorRecord");
-					expect(testError.action).toEqual(AddBobDuplicateDCIAction);
+					expect(testError.errorType).toEqual("DuplicateDCIErrorRecord");
+					expect(testError.actionType).toEqual(AddBobDuplicateDCIAction.type);
 					expect(testError.existingObject).toEqual(PlayerRecordAlice);
 					expect(testError.newObject).toEqual(PlayerRecordBobDuplicateDCI);
 				});
@@ -135,14 +140,14 @@ describe("Known Players", () => {
 						.getIn(["KNOWN_PLAYER_ERRORS", "DuplicateUUIDErrorRecord"])
 						.first();
 
-					expect(testError.type).toEqual("DuplicateUUIDErrorRecord");
-					expect(testError.action).toEqual(AddBobDuplicateUUIDAction);
+					expect(testError.errorType).toEqual("DuplicateUUIDErrorRecord");
+					expect(testError.actionType).toEqual(AddBobDuplicateUUIDAction.type);
 					expect(testError.existingObject).toEqual(PlayerRecordAlice);
 					expect(testError.newObject).toEqual(PlayerRecordBobDuplicateUUID);
 				});
-				test("Handles multiple types of errors", () => {});
-				test("Handles multiple instances of errors", () => {});
-				test("Duplicate DCI errors take precedence", () => {});
+				test.skip("Handles multiple types of errors", () => {}); //TODO
+				test.skip("Handles multiple instances of errors", () => {}); //TODO
+				test.skip("Duplicate DCI errors take precedence", () => {}); //TODO
 			});
 		});
 	});
