@@ -1,8 +1,6 @@
-import { fromJS, Set } from "immutable";
 import chai, { AssertionError, expect } from "chai";
 import chaiImmutable from "chai-immutable";
-import { testIsFSARecord } from "./test-utils/test-FSA";
-import { testIsFSAError } from "./test-utils/test-FSA-error";
+import { testIsFSARecord, testIsFSAError } from "./test-utils/test-FSA";
 import { FSARecord } from "./fsa-record";
 
 chai.use(chaiImmutable);

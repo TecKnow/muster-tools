@@ -17,18 +17,12 @@
     "uuid": "^3.1.0"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "prettier"
-    ]
+    "extends": ["react-app", "prettier"]
   },
   "lint-staged": {
     "gitDir": "../",
     "linters": {
-      "src/**/*.{js,jsx,json,css}": [
-        "prettier --write",
-        "git add"
-      ]
+      "*.{js,jsx,json,css}": ["prettier --write", "git add"]
     }
   },
   "scripts": {

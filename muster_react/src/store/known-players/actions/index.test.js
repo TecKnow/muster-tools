@@ -27,7 +27,7 @@ import {
   AddBobDuplicateUUIDAction,
   AddBobDuplicateDCIUUIDAction
 } from "../test/test-actions";
-import { testIsFSAErrorRecord } from "../FSA/test-utils/test-FSA-error-record";
+import { testErrorRecordFSA } from "../FSA/test-utils/test-error-record";
 
 chai.use(chaiImmutable);
 
@@ -69,37 +69,16 @@ describe("Test known players action creators", () => {
           KnownPlayersOne,
           PlayerRecordBobDuplicateDCI
         );
-        testIsFSAErrorRecord(test_event, {
-          errorType: "Duplicate DCI Number",
-          data: Set([
-            PlayerRecordBobDuplicateDCI,
-            Map({ [PlayerRecordAlice.UUID]: PlayerRecordAlice })
-          ])
-        });
-        // expect(test_event).to.have.all.keys("type", "error", "payload", "meta");
-        // expect(test_event.payload).to.have.all.keys(
-        //   "UUID",
-        //   "time",
-        //   "errorType",
-        //   "message",
-        //   "data"
-        // );
-        expect(test_event).to.have.property(
-          "type",
-          actions.get("ADD_KNOWN_PLAYER")
-          // );
-          // expect(test_event).to.have.property("error", true);
-          // expect(test_event.payload).to.have.property(
-          //   "errorType",
-          //   "Duplicate DCI Number"
-          // );
-          // expect(test_event.payload)
-          //   .to.have.property("data")
-          //   .to.equal(
-          //     Set([
-          //       PlayerRecordBobDuplicateDCI,
-          //       Map({ [PlayerRecordAlice.UUID]: PlayerRecordAlice })
-          //     ])
+        testErrorRecordFSA(
+          test_event,
+          { type: actions.get("ADD_KNOWN_PLAYER", "ACTION_NOT_FOUND") },
+          {
+            errorType: "Duplicate DCI Number",
+            data: Set([
+              PlayerRecordBobDuplicateDCI,
+              Map({ [PlayerRecordAlice.UUID]: PlayerRecordAlice })
+            ])
+          }
         );
       });
       test("Create player with duplicate UUID", () => {});

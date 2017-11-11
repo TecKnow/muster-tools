@@ -59,7 +59,7 @@ export function AddKnownPlayer_pure(
     });
   }
   if (!is(getPlayerWithUUID(state, UUID), undefined)) {
-   return AddKnownPlayerError_pure(state, {
+    return AddKnownPlayerError_pure(state, {
       type: KNOWN_PLAYERS_ACTIONS.get("ADD_KNOWN_PLAYER"),
       UUID: uuidv4(),
       time: Date(),
