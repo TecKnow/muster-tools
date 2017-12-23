@@ -31,19 +31,19 @@ export function testErrorRecord(
 ) {
   const TEST_RECORD = fromJS(possibleErrorRecord);
   testIsErrorRecord(TEST_RECORD);
-  if (UUID !== undefined) {
+  if (UUID) {
     expect(TEST_RECORD.UUID).to.equal(UUID);
   }
-  if (time !== undefined) {
+  if (time) {
     expect(TEST_RECORD.time).to.equal(time);
   }
-  if (errorType !== undefined) {
+  if (errorType) {
     expect(TEST_RECORD.errorType).to.equal(errorType);
   }
-  if (message !== undefined) {
+  if (message) {
     expect(TEST_RECORD.message).to.equal(message);
   }
-  if (data !== undefined) {
+  if (data) {
     expect(TEST_RECORD.data).to.equal(data);
   }
 }

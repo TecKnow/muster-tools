@@ -25,7 +25,9 @@ import {
   AddBobAction,
   AddBobDuplicateDCIAction,
   AddBobDuplicateUUIDAction,
-  AddBobDuplicateDCIUUIDAction
+  AddBobDuplicateDCIUUIDAction,
+  RemoveAliceAction,
+  RemoveBobAction
 } from "../test/test-actions";
 import { testErrorRecordFSA } from "../FSA/test-utils/test-error-record";
 
@@ -71,23 +73,64 @@ describe("Test known players action creators", () => {
         );
         testErrorRecordFSA(
           test_event,
+          AddBobDuplicateDCIAction,
+          AddBobDuplicateDCIAction.payload
+        );
+      });
+      test("Create player with duplicate UUID", () => {
+        const test_event = AddKnownPlayer_pure(
+          KnownPlayersOne,
+          PlayerRecordBobDuplicateUUID
+        );
+        testErrorRecordFSA(
+          test_event,
+          { type: actions.get("ADD_KNOWN_PLAYER", "ACTION_NOT_FOUND") },
+          {
+            errorType: "Duplicate UUID",
+            data: Set([PlayerRecordBobDuplicateUUID, PlayerRecordAlice])
+          }
+        );
+      });
+      test("Create player with duplicate DCINumber and duplicate UUID", () => {
+        const test_event = AddKnownPlayer_pure(
+          KnownPlayersOne,
+          PlayerRecordBobDuplicateDCIUUID
+        );
+        testErrorRecordFSA(
+          test_event,
           { type: actions.get("ADD_KNOWN_PLAYER", "ACTION_NOT_FOUND") },
           {
             errorType: "Duplicate DCI Number",
             data: Set([
-              PlayerRecordBobDuplicateDCI,
+              PlayerRecordBobDuplicateDCIUUID,
               Map({ [PlayerRecordAlice.UUID]: PlayerRecordAlice })
             ])
           }
         );
       });
-      test("Create player with duplicate UUID", () => {});
-      test("Create player with duplicate DCINumber and duplicate UUID", () => {});
     });
     describe("RemoveKnownPlayer_pure", () => {
-      test("Remove existing player", () => {});
-      test("Remove last existing player", () => {});
-      test("Remove nonexistent player", () => {});
+      test("Remove existing player", () => {
+        const test_event = RemoveKnownPlayer_pure(
+          KnownPlayersTwo,
+          PlayerRecordBob.UUID
+        );
+        expect(test_event).to.be.equal(RemoveBobAction);
+      });
+      test("Remove last existing player", () => {
+        const test_event = RemoveKnownPlayer_pure(
+          KnownPlayersOne,
+          PlayerRecordAlice.UUID
+        );
+        expect(test_event).to.be.equal(RemoveAliceAction);
+      });
+      test("Remove nonexistent player", () => {
+        const test_event = RemoveKnownPlayer_pure(
+          KnownPlayersOne,
+          PlayerRecordBob.UUID
+        );
+        expect(test_event).to.be.equal(RemoveBobAction);
+      });
     });
     describe("UpdateKnownPlayer_pure", () => {
       test("Update existing player", () => {});

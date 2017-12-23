@@ -24,16 +24,16 @@ export function testFSARecord(
 ) {
   const TEST_RECORD = fromJS(possibleFSARecord);
   testIsFSARecord(TEST_RECORD);
-  if (type !== undefined) {
+  if (type) {
     expect(TEST_RECORD.type).to.be.equal(type);
   }
-  if (error !== undefined) {
+  if (error) {
     expect(TEST_RECORD.error).to.be.equal(error);
   }
-  if (meta !== undefined) {
+  if (meta) {
     expect(TEST_RECORD.meta).to.be.equal(meta);
   }
-  if (payload !== undefined) {
+  if (payload) {
     expect(TEST_RECORD.payload).to.be.equal(payload);
   }
 }

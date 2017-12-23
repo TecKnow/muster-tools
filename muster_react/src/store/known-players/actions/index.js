@@ -74,14 +74,16 @@ export function AddKnownPlayer_pure(
   });
   return new_player_event;
 }
-export function RemoveKnownPlayer_pure(UUID) {
+export function RemoveKnownPlayer_pure(state, UUID) {
   const remove_player_event = new FSARecord({
     type: KNOWN_PLAYERS_ACTIONS.get("REMOVE_KNOWN_PLAYER"),
     payload: UUID
   });
   return remove_player_event;
 }
-export function UpdateKnownPlayer_pure(state, name, DCINumber, UUID) {
+export function UpdateKnownPlayer_pure(state, { name, DCINumber, UUID }) {
+  // TODO:  What if a player is updated to an in-use DCINumber?
+
   if (is(getPlayerWithUUID(state, UUID), undefined)) {
     return AddKnownPlayerError_pure(state, {
       type: KNOWN_PLAYERS_ACTIONS.get("UPDATE_KNOWN_PLAYER"),
