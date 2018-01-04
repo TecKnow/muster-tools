@@ -7,7 +7,8 @@ import {
   PlayerRecordBob,
   PlayerRecordBobDuplicateDCI,
   PlayerRecordBobDuplicateUUID,
-  PlayerRecordBobDuplicateDCIUUID
+  PlayerRecordBobDuplicateDCIUUID,
+  PlayerRecordAliceUpdated
 } from "./test-players";
 
 export const AddAliceAction = new FSARecord({
@@ -38,6 +39,29 @@ export const RemoveAliceAction = new FSARecord({
 export const RemoveBobAction = new FSARecord({
   type: actions.get("REMOVE_KNOWN_PLAYER"),
   payload: PlayerRecordBob.UUID
+});
+
+export const UpdateAliceAction = new FSARecord({
+  type: actions.get("UPDATE_KNOWN_PLAYER"),
+  payload: PlayerRecordAliceUpdated
+});
+
+export const UpdateBobDuplicateDCINumberAction = new FSARecord({
+  type: actions.get("UPDATE_KNOWN_PLAYER"),
+  error: true,
+  payload: new ErrorRecord({
+    errorType: "Target DCINumber already in use",
+    data: PlayerRecordBobDuplicateDCI.DCINumber
+  })
+});
+
+export const UpdateAliceNoSuchPlayerAction = new FSARecord({
+  type: actions.get("UPDATE_KNOWN_PLAYER"),
+  error: true,
+  payload: new ErrorRecord({
+    errorType: "No Such Player",
+    data: PlayerRecordAliceUpdated.UUID
+  })
 });
 
 /*  The error generating actions below aren't actually valid.

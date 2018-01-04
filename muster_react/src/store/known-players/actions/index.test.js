@@ -11,24 +11,29 @@ import {
 import {
   KnownPlayersEmpty,
   KnownPlayersOne,
-  KnownPlayersTwo
+  KnownPlayersTwo,
+  ErrorsZero,
+  ErrorsOne
 } from "../test/test-stores";
 import {
   PlayerRecordAlice,
   PlayerRecordBob,
   PlayerRecordBobDuplicateDCI,
   PlayerRecordBobDuplicateUUID,
-  PlayerRecordBobDuplicateDCIUUID
+  PlayerRecordBobDuplicateDCIUUID,
+  PlayerRecordAliceUpdated
 } from "../test/test-players";
 import {
   AddAliceAction,
   AddBobAction,
   AddBobDuplicateDCIAction,
-  AddBobDuplicateUUIDAction,
-  AddBobDuplicateDCIUUIDAction,
   RemoveAliceAction,
-  RemoveBobAction
+  RemoveBobAction,
+  UpdateAliceAction,
+  UpdateBobDuplicateDCINumberAction,
+  UpdateAliceNoSuchPlayerAction
 } from "../test/test-actions";
+import { testFSARecord } from "../FSA/test-utils/test-FSA";
 import { testErrorRecordFSA } from "../FSA/test-utils/test-error-record";
 
 chai.use(chaiImmutable);
@@ -133,12 +138,67 @@ describe("Test known players action creators", () => {
       });
     });
     describe("UpdateKnownPlayer_pure", () => {
-      test("Update existing player", () => {});
-      test("Update nonexistent player", () => {});
+      test("Update existing player", () => {
+        const test_event = UpdateKnownPlayer_pure(KnownPlayersOne, {
+          name: PlayerRecordAliceUpdated.name,
+          DCINumber: PlayerRecordAliceUpdated.DCINumber,
+          UUID: PlayerRecordAliceUpdated.UUID
+        });
+        expect(test_event).to.be.equal(UpdateAliceAction);
+      });
+      test("Update existing player to duplicate DCINumber", () => {
+        const test_event = UpdateKnownPlayer_pure(KnownPlayersTwo, {
+          name: PlayerRecordBobDuplicateDCI.name,
+          DCINumber: PlayerRecordBobDuplicateDCI.DCINumber,
+          UUID: PlayerRecordBobDuplicateDCI.UUID
+        });
+        testErrorRecordFSA(
+          test_event,
+          { type: UpdateBobDuplicateDCINumberAction.type },
+          {
+            errorType: UpdateBobDuplicateDCINumberAction.payload.errorType,
+            data: UpdateBobDuplicateDCINumberAction.payload.data
+          }
+        );
+      });
+      test("Update nonexistent player", () => {
+        const test_event = UpdateKnownPlayer_pure(
+          KnownPlayersEmpty,
+          PlayerRecordAliceUpdated
+        );
+        testErrorRecordFSA(
+          test_event,
+          { type: UpdateAliceNoSuchPlayerAction.type },
+          {
+            errorType: UpdateAliceNoSuchPlayerAction.errorType,
+            data: UpdateAliceNoSuchPlayerAction.payload.data
+          }
+        );
+      });
     });
     describe("ClearKnownPlayersError_pure", () => {
-      test("Clear existing error", () => {});
-      test("Clear nonexistent error", () => {});
+      test("Clear existing error", () => {
+        const test_event = ClearKnownPlayersError_pure(
+          ErrorsOne,
+          "00000000-0000-0000-0000-000000000000"
+        );
+        testFSARecord(test_event, {
+          type: actions.get("CLEAR_KNOWN_PLAYERS_ERROR"),
+          error: false,
+          payload: "00000000-0000-0000-0000-000000000000"
+        });
+      });
+      test("Clear nonexistent error", () => {
+        const test_event = ClearKnownPlayersError_pure(
+          ErrorsZero,
+          "00000000-0000-0000-0000-000000000000"
+        );
+        testFSARecord(test_event, {
+          type: actions.get("CLEAR_KNOWN_PLAYERS_ERROR"),
+          error: false,
+          payload: "00000000-0000-0000-0000-000000000000"
+        });
+      });
     });
   });
 });

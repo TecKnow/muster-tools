@@ -82,8 +82,6 @@ export function RemoveKnownPlayer_pure(state, UUID) {
   return remove_player_event;
 }
 export function UpdateKnownPlayer_pure(state, { name, DCINumber, UUID }) {
-  // TODO:  What if a player is updated to an in-use DCINumber?
-
   if (is(getPlayerWithUUID(state, UUID), undefined)) {
     return AddKnownPlayerError_pure(state, {
       type: KNOWN_PLAYERS_ACTIONS.get("UPDATE_KNOWN_PLAYER"),
@@ -93,6 +91,20 @@ export function UpdateKnownPlayer_pure(state, { name, DCINumber, UUID }) {
       message: "No such player exists",
       data: UUID
     });
+  } else if (!is(getPlayersWithDCINumber(state, DCINumber), undefined)) {
+    if (
+      getPlayersWithDCINumber(state, DCINumber).some(v => !is(v.UUID, UUID))
+    ) {
+      // A player with the target DCINumber already exists.
+      return AddKnownPlayerError_pure(state, {
+        type: KNOWN_PLAYERS_ACTIONS.get("UPDATE_KNOWN_PLAYER"),
+        UUID: uuidv4(),
+        time: Date(),
+        errorType: "Target DCINumber already in use",
+        message: "Multiple players cannot share the same DCINumber.",
+        data: DCINumber
+      });
+    }
   }
   const updated_player_record = new PlayerRecord({
     name: name,
@@ -105,7 +117,7 @@ export function UpdateKnownPlayer_pure(state, { name, DCINumber, UUID }) {
   });
   return updated_player_event;
 }
-export function ClearKnownPlayersError_pure(UUID) {
+export function ClearKnownPlayersError_pure(state, UUID) {
   const clear_error_event = new FSARecord({
     type: KNOWN_PLAYERS_ACTIONS.get("CLEAR_KNOWN_PLAYERS_ERROR"),
     payload: UUID
