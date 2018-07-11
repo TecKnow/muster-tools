@@ -1,14 +1,15 @@
 import { is, Map } from "immutable";
-import {
-  ADD_KNOWN_PLAYER,
-  UPDATE_KNOWN_PLAYER,
-  REMOVE_KNOWN_PLAYER
-} from "../constants/known-players-index-actions";
+import { KNOWN_PLAYERS_ACTIONS } from "../constants/";
 
 const initialState = Map();
 
+const ADD_KNOWN_PLAYER = KNOWN_PLAYERS_ACTIONS.get("ADD_KNOWN_PLAYER");
+const UPDATE_KNOWN_PLAYER = KNOWN_PLAYERS_ACTIONS.get("UPDATE_KNOWN_PLAYER");
+const REMOVE_KNOWN_PLAYER = KNOWN_PLAYERS_ACTIONS.get("REMOVE_KNOWN_PLAYER");
+
 function reduceSetKnownPlayer(state, action) {
-  state.set(action.payload.UUID, action.payload);
+  state = state.set(action.payload.UUID, action.payload);
+  return state;
 }
 
 function reduceAddKnownPlayer(state, action) {
@@ -26,7 +27,7 @@ function reduceUpdateKnownPlayer(state, action) {
 }
 function reduceRemoveKnownPlayer(state, action) {
   if (is(action.type, REMOVE_KNOWN_PLAYER) && !action.error) {
-    state = state.delete(action.payload.UUID);
+    state = state.delete(action.payload);
   }
   return state;
 }

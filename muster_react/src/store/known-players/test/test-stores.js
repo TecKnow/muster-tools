@@ -1,5 +1,9 @@
 import { Map } from "immutable";
-import { PlayerRecordAlice, PlayerRecordBob } from "./test-players";
+import {
+  PlayerRecordAlice,
+  PlayerRecordBob,
+  PlayerRecordAliceUpdated
+} from "./test-players";
 import { ErrorRecord } from "../FSA/error-record";
 
 export const KnownPlayersEmpty = Map({
@@ -13,6 +17,13 @@ export const KnownPlayersOne = Map({
 export const KnownPlayersTwo = Map({
   KnownPlayersIndex: Map([
     [PlayerRecordAlice.UUID, PlayerRecordAlice],
+    [PlayerRecordBob.UUID, PlayerRecordBob]
+  ]),
+  KnownPlayersErrors: Map()
+});
+export const KnownPlayersTwoUpdated = Map({
+  KnownPlayersIndex: Map([
+    [PlayerRecordAlice.UUID, PlayerRecordAliceUpdated],
     [PlayerRecordBob.UUID, PlayerRecordBob]
   ]),
   KnownPlayersErrors: Map()
