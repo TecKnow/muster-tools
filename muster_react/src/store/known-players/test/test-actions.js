@@ -10,6 +10,11 @@ import {
   PlayerRecordBobDuplicateDCIUUID,
   PlayerRecordAliceUpdated
 } from "./test-players";
+import {
+  AddBobDuplicateDCIErrorRecord,
+  UpdateBobDuplicateDCINumberErrorRecord,
+  UpdateAliceNoSuchPlayerErrorRecord
+} from "./test-errors";
 
 export const AddAliceAction = new FSARecord({
   type: actions.get("ADD_KNOWN_PLAYER"),
@@ -22,13 +27,7 @@ export const AddBobAction = new FSARecord({
 export const AddBobDuplicateDCIAction = new FSARecord({
   type: actions.get("ADD_KNOWN_PLAYER"),
   error: true,
-  payload: new ErrorRecord({
-    errorType: "Duplicate DCI Number",
-    data: Set([
-      PlayerRecordBobDuplicateDCI,
-      Map({ [PlayerRecordAlice.UUID]: PlayerRecordAlice })
-    ])
-  })
+  payload: AddBobDuplicateDCIErrorRecord
 });
 
 export const RemoveAliceAction = new FSARecord({
@@ -49,19 +48,23 @@ export const UpdateAliceAction = new FSARecord({
 export const UpdateBobDuplicateDCINumberAction = new FSARecord({
   type: actions.get("UPDATE_KNOWN_PLAYER"),
   error: true,
-  payload: new ErrorRecord({
-    errorType: "Target DCINumber already in use",
-    data: PlayerRecordBobDuplicateDCI.DCINumber
-  })
+  payload: UpdateBobDuplicateDCINumberErrorRecord
 });
 
 export const UpdateAliceNoSuchPlayerAction = new FSARecord({
   type: actions.get("UPDATE_KNOWN_PLAYER"),
   error: true,
-  payload: new ErrorRecord({
-    errorType: "No Such Player",
-    data: PlayerRecordAliceUpdated.UUID
-  })
+  payload: UpdateAliceNoSuchPlayerErrorRecord
+});
+
+export const AddBobDuplicateDCIClear = new FSARecord({
+  type: actions.get("CLEAR_KNOWN_PLAYERS_ERROR"),
+  payload: AddBobDuplicateDCIErrorRecord.UUID
+});
+
+export const UpdateBobDuplicateDCINumberActionClear = new FSARecord({
+  type: actions.get("CLEAR_KNOWN_PLAYERS_ERROR"),
+  payload: UpdateBobDuplicateDCINumberErrorRecord.UUID
 });
 
 /*  The error generating actions below aren't actually valid.
@@ -74,14 +77,14 @@ export const UpdateAliceNoSuchPlayerAction = new FSARecord({
 */
 
 // export const AddBobDuplicateDCIAction = new FSARecord({
-// 	type: actions.get("ADD_KNOWN_PLAYER"),
-// 	payload: PlayerRecordBobDuplicateDCI
+//  type: actions.get("ADD_KNOWN_PLAYER"),
+//  payload: PlayerRecordBobDuplicateDCI
 // });
 // export const AddBobDuplicateUUIDAction = new FSARecord({
-// 	type: actions.get("ADD_KNOWN_PLAYER"),
-// 	payload: PlayerRecordBobDuplicateUUID
+//  type: actions.get("ADD_KNOWN_PLAYER"),
+//  payload: PlayerRecordBobDuplicateUUID
 // });
 // export const AddBobDuplicateDCIUUIDAction = new FSARecord({
-// 	type: actions.get("ADD_KNOWN_PLAYER"),
-// 	payload: PlayerRecordBobDuplicateDCIUUID
+//  type: actions.get("ADD_KNOWN_PLAYER"),
+//  payload: PlayerRecordBobDuplicateDCIUUID
 // });

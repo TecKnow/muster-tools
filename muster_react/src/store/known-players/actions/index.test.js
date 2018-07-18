@@ -79,7 +79,7 @@ describe("Test known players action creators", () => {
         testErrorRecordFSA(
           test_event,
           AddBobDuplicateDCIAction,
-          AddBobDuplicateDCIAction.payload
+          AddBobDuplicateDCIAction.payload.delete("UUID")
         );
       });
       test("Create player with duplicate UUID", () => {

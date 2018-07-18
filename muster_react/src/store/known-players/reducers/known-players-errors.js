@@ -1,21 +1,16 @@
 import { is, Map, Set } from "immutable";
-import {
-  ADD_KNOWN_PLAYER,
-  UPDATE_KNOWN_PLAYER,
-  REMOVE_KNOWN_PLAYER
-} from "../constants/known-players-index-actions";
-import { CLEAR_KNOWN_PLAYERS_ERROR } from "../constants/known-players-errors-actions";
+import KNOWN_PLAYERS_INDEX_ACTIONS from "../constants/known-players-index-actions";
+import KNOWN_PLAYERS_ERRORS_ACTIONS from "../constants/known-players-errors-actions";
 
 const initialState = Map();
 
-const actionSet = Set([
-  ADD_KNOWN_PLAYER,
-  UPDATE_KNOWN_PLAYER,
-  REMOVE_KNOWN_PLAYER
-]);
+const actionSet = KNOWN_PLAYERS_INDEX_ACTIONS;
+const CLEAR_KNOWN_PLAYERS_ERROR = KNOWN_PLAYERS_ERRORS_ACTIONS.get(
+  "CLEAR_KNOWN_PLAYERS_ERROR"
+);
 
 function reduceKnownPlayersEventError(state, action) {
-  if (actionSet.has(action.type) && action.error) {
+  if (action.error && actionSet.has(action.type)) {
     state = state.set(action.payload.UUID, action.payload);
   }
   return state;

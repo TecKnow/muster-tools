@@ -8,7 +8,8 @@ import {
   KnownPlayersTwo,
   KnownPlayersTwoUpdated,
   ErrorsZero,
-  ErrorsOne
+  ErrorsOne,
+  ErrorsTwo
 } from "../test/test-stores";
 import {
   AddAliceAction,
@@ -18,7 +19,9 @@ import {
   RemoveBobAction,
   UpdateAliceAction,
   UpdateBobDuplicateDCINumberAction,
-  UpdateAliceNoSuchPlayerAction
+  UpdateAliceNoSuchPlayerAction,
+  AddBobDuplicateDCIClear,
+  UpdateBobDuplicateDCINumberActionClear
 } from "../test/test-actions";
 
 chai.use(chaiImmutable);
@@ -62,9 +65,37 @@ describe("KnownPlayers", () => {
       const action = RemoveBobAction;
       const result = KnownPlayers(initial_state, action);
       const expected_state = KnownPlayersOne;
-      console.log("ERROR:", result);
       expect(result).to.be.deep.equal(expected_state);
     });
   });
-  describe("Known Players Errors", {});
+  describe("Known Players Errors", () => {
+    test("Add first error", () => {
+      const initial_state = ErrorsZero;
+      const action = AddBobDuplicateDCIAction;
+      const result = KnownPlayers(initial_state, action);
+      const expected_state = ErrorsOne;
+      expect(result).to.be.deep.equal(expected_state);
+    });
+    test("Add second error", () => {
+      const initial_state = ErrorsOne;
+      const action = UpdateBobDuplicateDCINumberAction;
+      const result = KnownPlayers(initial_state, action);
+      const expected_state = ErrorsTwo;
+      expect(result).to.be.deep.equal(expected_state);
+    });
+    test("Remove first error", () => {
+      const initial_state = ErrorsOne;
+      const action = AddBobDuplicateDCIClear;
+      const result = KnownPlayers(initial_state, action);
+      const expected_state = ErrorsZero;
+      expect(result).to.be.deep.equal(expected_state);
+    });
+    test("Remove second error", () => {
+      const initial_state = ErrorsTwo;
+      const action = UpdateBobDuplicateDCINumberActionClear;
+      const result = KnownPlayers(initial_state, action);
+      const expected_state = ErrorsOne;
+      expect(result).to.be.deep.equal(expected_state);
+    });
+  });
 });
