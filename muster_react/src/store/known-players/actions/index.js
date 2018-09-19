@@ -1,8 +1,8 @@
 import uuidv4 from "uuid/v4";
 import { is, Set } from "immutable";
-import FSARecord from "../FSA/fsa-record";
+import FSARecord from "../../FSA/fsa-record";
 import PlayerRecord from "../player-record";
-import ErrorRecord from "../FSA/error-record";
+import ErrorRecord from "../../FSA/error-record";
 import KNOWN_PLAYERS_ACTIONS from "../constants";
 import { getPlayerWithUUID, getPlayersWithDCINumber } from "../selectors";
 

@@ -33,8 +33,8 @@ import {
   UpdateBobDuplicateDCINumberAction,
   UpdateAliceNoSuchPlayerAction
 } from "../test/test-actions";
-import { testFSARecord } from "../FSA/test-utils/test-FSA";
-import { testErrorRecordFSA } from "../FSA/test-utils/test-error-record";
+import { testFSARecord } from "../../FSA/test-utils/test-FSA";
+import { testErrorRecordFSA } from "../../FSA/test-utils/test-error-record";
 
 chai.use(chaiImmutable);
 

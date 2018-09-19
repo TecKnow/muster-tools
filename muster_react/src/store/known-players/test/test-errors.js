@@ -1,5 +1,5 @@
 import { Map, Set } from "immutable";
-import ErrorRecord from "../FSA/error-record";
+import ErrorRecord from "../../FSA/error-record";
 import {
   PlayerRecordAlice,
   PlayerRecordAliceUpdated,

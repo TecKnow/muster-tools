@@ -1,6 +1,6 @@
 import { Map, Set } from "immutable";
-import FSARecord from "../FSA/fsa-record";
-import ErrorRecord from "../FSA/error-record";
+import FSARecord from "../../FSA/fsa-record";
+import ErrorRecord from "../../FSA/error-record";
 import actions from "../constants";
 import {
   PlayerRecordAlice,
