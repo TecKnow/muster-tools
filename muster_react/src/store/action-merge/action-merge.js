@@ -5,11 +5,6 @@ import chaiImmutable from "chai-immutable";
 chai.use(chaiImmutable);
 
 export function MergeActions(A, B) {
-  /* TODO:  Investigate using MergeDeepWith to handle this.
-     If ever a nested hierarchy of events is desired, more sophisticated
-     matching will be required.
-  */ 
-
   const A_MAP = Map(A);
   const B_MAP = Map(B);
 

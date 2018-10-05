@@ -15,15 +15,15 @@ test("Valid merge", () => {
 test("Key conflict", () => {
   const A = Map({ a: "one" });
   const B = Map({ a: "two" });
-  expect(()=>MergeActions(A,B)).to.throw(AssertionError);
+  expect(() => MergeActions(A, B)).to.throw(AssertionError);
 });
 test("Value conflict", () => {
-	const A = Map({ a: "one" });
+  const A = Map({ a: "one" });
   const B = Map({ b: "one" });
-  expect(()=>MergeActions(A,B)).to.throw(AssertionError);
+  expect(() => MergeActions(A, B)).to.throw(AssertionError);
 });
 test("Key and Value conflict", () => {
-  const A = Map({ a: "one", c: "three", });
+  const A = Map({ a: "one", c: "three" });
   const B = Map({ a: "one", d: "four" });
-  expect(()=>MergeActions(A,B)).to.throw(AssertionError);
+  expect(() => MergeActions(A, B)).to.throw(AssertionError);
 });

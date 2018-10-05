@@ -1,6 +1,17 @@
 import { createSelector } from "reselect";
 
-export const getPlayersByUUID = state => state;
+export const known_players_index_path = [];
+
+export function set_known_players_index_path(path) {
+  known_players_index_path.splice(0, known_players_index_path.length, ...path);
+}
+
+function state_selector(func) {
+  return (state, ...rest) =>
+    func(state.getIn(known_players_index_path), ...rest);
+}
+
+export const getPlayersByUUID = state_selector(state => state);
 
 export const getPlayers = createSelector([getPlayersByUUID], players =>
   players.toSet()

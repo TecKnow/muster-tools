@@ -2,42 +2,9 @@ import uuidv4 from "uuid/v4";
 import { is, Set } from "immutable";
 import FSARecord from "../../FSA/fsa-record";
 import PlayerRecord from "../player-record";
-import ErrorRecord from "../../FSA/error-record";
+import { CreateErrorEvent } from "../../FSA/create-error-record";
 import KNOWN_PLAYERS_ACTIONS from "../constants";
 import { getPlayerWithUUID, getPlayersWithDCINumber } from "../selectors";
-
-function CreateKnownPlayerError_pure(
-  state,
-  { errorType, message, data, UUID = undefined, time = undefined }
-) {
-  // TODO:  Add handling for duplicate UUIDs.
-  const new_error_record = new ErrorRecord({
-    UUID: UUID || uuidv4(),
-    time: time || Date(),
-    errorType,
-    message,
-    data
-  });
-  return new_error_record;
-}
-
-function AddKnownPlayerError_pure(
-  state,
-  { type, errorType, message, data, UUID = undefined, time = undefined }
-) {
-  const new_error_event = new FSARecord({
-    type,
-    error: true,
-    payload: CreateKnownPlayerError_pure(state, {
-      errorType,
-      message,
-      data,
-      UUID,
-      time
-    })
-  });
-  return new_error_event;
-}
 
 export function AddKnownPlayer_pure(
   state,
@@ -49,7 +16,7 @@ export function AddKnownPlayer_pure(
     UUID: UUID || uuidv4()
   });
   if (!is(getPlayersWithDCINumber(state, DCINumber), undefined)) {
-    return AddKnownPlayerError_pure(state, {
+    return CreateErrorEvent({
       type: KNOWN_PLAYERS_ACTIONS.get("ADD_KNOWN_PLAYER"),
       UUID: uuidv4(),
       time: Date(),
@@ -59,7 +26,7 @@ export function AddKnownPlayer_pure(
     });
   }
   if (!is(getPlayerWithUUID(state, UUID), undefined)) {
-    return AddKnownPlayerError_pure(state, {
+    return CreateErrorEvent({
       type: KNOWN_PLAYERS_ACTIONS.get("ADD_KNOWN_PLAYER"),
       UUID: uuidv4(),
       time: Date(),
@@ -83,7 +50,7 @@ export function RemoveKnownPlayer_pure(state, UUID) {
 }
 export function UpdateKnownPlayer_pure(state, { name, DCINumber, UUID }) {
   if (is(getPlayerWithUUID(state, UUID), undefined)) {
-    return AddKnownPlayerError_pure(state, {
+    return CreateErrorEvent({
       type: KNOWN_PLAYERS_ACTIONS.get("UPDATE_KNOWN_PLAYER"),
       UUID: uuidv4(),
       time: Date(),
@@ -96,7 +63,7 @@ export function UpdateKnownPlayer_pure(state, { name, DCINumber, UUID }) {
       getPlayersWithDCINumber(state, DCINumber).some(v => !is(v.UUID, UUID))
     ) {
       // A player with the target DCINumber already exists.
-      return AddKnownPlayerError_pure(state, {
+      return CreateErrorEvent({
         type: KNOWN_PLAYERS_ACTIONS.get("UPDATE_KNOWN_PLAYER"),
         UUID: uuidv4(),
         time: Date(),

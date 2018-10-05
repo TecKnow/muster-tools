@@ -1,5 +1,7 @@
-import {Map} from 'immutable';
+import { Map } from "immutable";
 
-export const KNOWN_PLAYERS_ERRORS_ACTIONS = Map({CLEAR_KNOWN_PLAYERS_ERROR: "CLEAR_KNOWN_PLAYERS_ERROR"});
+export const KNOWN_PLAYERS_ERRORS_ACTIONS = Map({
+  CLEAR_KNOWN_PLAYERS_ERROR: "CLEAR_KNOWN_PLAYERS_ERROR"
+});
 
 export default KNOWN_PLAYERS_ERRORS_ACTIONS;

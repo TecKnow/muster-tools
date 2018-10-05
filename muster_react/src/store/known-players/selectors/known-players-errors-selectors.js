@@ -1,6 +1,21 @@
 import { createSelector } from "reselect";
 
-export const getPlayersErrorsByUUID = state => state;
+export const known_players_errors_path = [];
+
+export function set_known_players_errors_path(path) {
+  known_players_errors_path.splice(
+    0,
+    known_players_errors_path.length,
+    ...path
+  );
+}
+
+function state_selector(func) {
+  return (state, ...rest) =>
+    func(state.getIn(known_players_errors_path), ...rest);
+}
+
+export const getPlayersErrorsByUUID = state_selector(state => state);
 
 export const getPlayersErrors = createSelector(
   [getPlayersErrorsByUUID],
@@ -12,10 +27,10 @@ export const getPlayersErrorsByType = createSelector(
   errorsByUUID => errorsByUUID.groupBy(V => V.errorType)
 );
 
-export function getPlayersErrorsWithType(state, type) {
+export const getPlayersErrorsWithType = (state, type) => {
   return getPlayersErrorsByType.get(type);
-}
+};
 
-export function getErrorWithUUID(state, UUID) {
+export const getErrorWithUUID = (state, UUID) => {
   return getPlayersErrorsByUUID.get(UUID);
-}
+};

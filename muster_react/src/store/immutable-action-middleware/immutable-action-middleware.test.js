@@ -2,7 +2,7 @@ import chai, { expect } from "chai";
 import chaiImmutable from "chai-immutable";
 import immutableActionMiddleware from "./immutable-action-middleware";
 
-import { AddAliceAction } from "./known-players/test/test-actions";
+import { AddAliceAction } from "../known-players/test/test-actions";
 
 chai.use(chaiImmutable);
 

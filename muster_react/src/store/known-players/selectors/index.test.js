@@ -19,7 +19,6 @@ const TEST_STORE_TWO = KnownPlayersTwo;
 const TEST_STORE_EMPTY = KnownPlayersEmpty;
 
 //TODO: Deduplicate this code.
-describe("KnownPlayer selectors", () => {});
 describe("known players index selectors", () => {
   describe("getPlayers", () => {
     test("Two known players", () => {
