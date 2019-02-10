@@ -1,13 +1,26 @@
 import React, { Component } from "react";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import AppBar from "material-ui/AppBar";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import blue from "@material-ui/core/colors/blue";
+import orange from "@material-ui/core/colors/orange";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import "typeface-roboto";
 import "./App.css";
+
+const theme = createMuiTheme({
+  palette: {
+    primary: orange,
+    secondary: blue
+  },
+  typography: {
+    useNextVariants: true
+  }
+});
 
 class App extends Component {
   render() {
     return (
-      <MuiThemeProvider>
-        <AppBar title="D&D 5E Adventurer's League Sign-In" />
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
       </MuiThemeProvider>
     );
   }
