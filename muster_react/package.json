@@ -8,6 +8,7 @@
     "ajv": "^6.8.1",
     "immutable": "^3.8.2",
     "react": "^16.8.1",
+    "react-beautiful-dnd": "^10.0.4",
     "react-dom": "^16.8.1",
     "react-redux": "^6.0.0",
     "react-scripts": "^2.1.3",
