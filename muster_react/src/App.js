@@ -1,19 +1,24 @@
 import React, { Component } from "react";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import "typeface-roboto";
-import { Button } from "@material-ui/core";
 import ApplicationDragDropContext from "./components/ApplicationDragDropContext";
 import ApplicationMuiTheme from "./components/ApplicationMuiTheme";
-import "./App.css";
+import SignIn from "./components/sign-in";
 
 class App extends Component {
   render() {
     return (
       <ApplicationMuiTheme>
-        <ApplicationDragDropContext>
-          <Button variant="contained" color="primary">
-            Hello World
-          </Button>
-        </ApplicationDragDropContext>
+        <BrowserRouter>
+          <ApplicationDragDropContext>
+            <Switch>
+              <Route exact path="/">
+                <Redirect to="/signin" />
+              </Route>
+              <Route path="/signin" component={SignIn} />
+            </Switch>
+          </ApplicationDragDropContext>
+        </BrowserRouter>
       </ApplicationMuiTheme>
     );
   }
