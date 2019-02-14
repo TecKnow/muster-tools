@@ -1,4 +1,4 @@
-import { is, Map, Set } from "immutable";
+import { is, Map } from "immutable";
 import CURRENT_PLAYERS_ACTIONS from "../constants";
 
 const initialState = Map();

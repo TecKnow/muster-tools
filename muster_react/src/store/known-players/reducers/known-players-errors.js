@@ -1,4 +1,4 @@
-import { is, Map, Set } from "immutable";
+import { is, Map } from "immutable";
 import KNOWN_PLAYERS_INDEX_ACTIONS from "../constants/known-players-index-actions";
 import KNOWN_PLAYERS_ERRORS_ACTIONS from "../constants/known-players-errors-actions";
 

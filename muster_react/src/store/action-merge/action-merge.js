@@ -16,12 +16,8 @@ export function MergeActions(A, B) {
   const B_VALUES = Set(B_MAP.values());
   const VALUES_INTERSECTION = A_VALUES.intersect(B_VALUES);
 
-  /* eslint-disable no-unused-expressions
-	   These are idiomatic chai BDD assertions
-	*/
-  expect(KEYS_INTERSECTION).to.be.empty;
-  expect(VALUES_INTERSECTION).to.be.empty;
-  /* eslint-enable no-unusued-expressions */
+  expect(KEYS_INTERSECTION).to.be.empty; // eslint-disable-line no-unused-expressions
+  expect(VALUES_INTERSECTION).to.be.empty; // eslint-disable-line no-unused-expressions
 
   return A_MAP.mergeDeep(B_MAP);
 }
