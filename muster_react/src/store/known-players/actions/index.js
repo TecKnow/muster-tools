@@ -3,7 +3,7 @@ import { is, Set } from "immutable";
 import FSARecord from "../../FSA/fsa-record";
 import PlayerRecord from "../player-record";
 import { CreateErrorEvent } from "../../FSA/create-error-record";
-import KNOWN_PLAYERS_ACTIONS from "../constants";
+import * as KNOWN_PLAYERS_ACTIONS from "../constants";
 import { getPlayerWithUUID, getPlayersWithDCINumber } from "../selectors";
 
 export function AddKnownPlayer_pure(
@@ -17,7 +17,7 @@ export function AddKnownPlayer_pure(
   });
   if (!is(getPlayersWithDCINumber(state, DCINumber), undefined)) {
     return CreateErrorEvent({
-      type: KNOWN_PLAYERS_ACTIONS.get("ADD_KNOWN_PLAYER"),
+      type: KNOWN_PLAYERS_ACTIONS.ADD_KNOWN_PLAYER,
       UUID: uuidv4(),
       time: Date(),
       errorType: "Duplicate DCI Number",
@@ -27,7 +27,7 @@ export function AddKnownPlayer_pure(
   }
   if (!is(getPlayerWithUUID(state, UUID), undefined)) {
     return CreateErrorEvent({
-      type: KNOWN_PLAYERS_ACTIONS.get("ADD_KNOWN_PLAYER"),
+      type: KNOWN_PLAYERS_ACTIONS.ADD_KNOWN_PLAYER,
       UUID: uuidv4(),
       time: Date(),
       errorType: "Duplicate UUID",
@@ -36,14 +36,14 @@ export function AddKnownPlayer_pure(
     });
   }
   const new_player_event = new FSARecord({
-    type: KNOWN_PLAYERS_ACTIONS.get("ADD_KNOWN_PLAYER"),
+    type: KNOWN_PLAYERS_ACTIONS.ADD_KNOWN_PLAYER,
     payload: new_player_record
   });
   return new_player_event;
 }
 export function RemoveKnownPlayer_pure(state, UUID) {
   const remove_player_event = new FSARecord({
-    type: KNOWN_PLAYERS_ACTIONS.get("REMOVE_KNOWN_PLAYER"),
+    type: KNOWN_PLAYERS_ACTIONS.REMOVE_KNOWN_PLAYER,
     payload: UUID
   });
   return remove_player_event;
@@ -51,7 +51,7 @@ export function RemoveKnownPlayer_pure(state, UUID) {
 export function UpdateKnownPlayer_pure(state, { name, DCINumber, UUID }) {
   if (is(getPlayerWithUUID(state, UUID), undefined)) {
     return CreateErrorEvent({
-      type: KNOWN_PLAYERS_ACTIONS.get("UPDATE_KNOWN_PLAYER"),
+      type: KNOWN_PLAYERS_ACTIONS.UPDATE_KNOWN_PLAYER,
       UUID: uuidv4(),
       time: Date(),
       errorType: "No Such Player",
@@ -64,7 +64,7 @@ export function UpdateKnownPlayer_pure(state, { name, DCINumber, UUID }) {
     ) {
       // A player with the target DCINumber already exists.
       return CreateErrorEvent({
-        type: KNOWN_PLAYERS_ACTIONS.get("UPDATE_KNOWN_PLAYER"),
+        type: KNOWN_PLAYERS_ACTIONS.UPDATE_KNOWN_PLAYER,
         UUID: uuidv4(),
         time: Date(),
         errorType: "Target DCINumber already in use",
@@ -79,14 +79,14 @@ export function UpdateKnownPlayer_pure(state, { name, DCINumber, UUID }) {
     UUID: UUID
   });
   const updated_player_event = new FSARecord({
-    type: KNOWN_PLAYERS_ACTIONS.get("UPDATE_KNOWN_PLAYER"),
+    type: KNOWN_PLAYERS_ACTIONS.UPDATE_KNOWN_PLAYER,
     payload: updated_player_record
   });
   return updated_player_event;
 }
 export function ClearKnownPlayersError_pure(state, UUID) {
   const clear_error_event = new FSARecord({
-    type: KNOWN_PLAYERS_ACTIONS.get("CLEAR_KNOWN_PLAYERS_ERROR"),
+    type: KNOWN_PLAYERS_ACTIONS.CLEAR_KNOWN_PLAYERS_ERROR,
     payload: UUID
   });
   return clear_error_event;

@@ -1,7 +1,7 @@
 import chai, { expect } from "chai";
 import chaiImmutable from "chai-immutable";
 import { Map, Set } from "immutable";
-import actions from "../constants";
+import * as actions from "../constants";
 import {
   AddKnownPlayer_pure,
   RemoveKnownPlayer_pure,
@@ -43,14 +43,12 @@ describe("Imported actions", () => {
      I wanted to be sure that importing a package folder imports index.js
   */
   test("Contains merged events.", () => {
-    expect(actions).to.equal(
-      Map({
-        ADD_KNOWN_PLAYER: "ADD_KNOWN_PLAYER",
-        REMOVE_KNOWN_PLAYER: "REMOVE_KNOWN_PLAYER",
-        UPDATE_KNOWN_PLAYER: "UPDATE_KNOWN_PLAYER",
-        CLEAR_KNOWN_PLAYERS_ERROR: "CLEAR_KNOWN_PLAYERS_ERROR"
-      })
-    );
+    expect(actions).to.deep.equal({
+      ADD_KNOWN_PLAYER: "ADD_KNOWN_PLAYER",
+      REMOVE_KNOWN_PLAYER: "REMOVE_KNOWN_PLAYER",
+      UPDATE_KNOWN_PLAYER: "UPDATE_KNOWN_PLAYER",
+      CLEAR_KNOWN_PLAYERS_ERROR: "CLEAR_KNOWN_PLAYERS_ERROR"
+    });
   });
 });
 
@@ -89,7 +87,7 @@ describe("Test known players action creators", () => {
         );
         testErrorRecordFSA(
           test_event,
-          { type: actions.get("ADD_KNOWN_PLAYER", "ACTION_NOT_FOUND") },
+          { type: actions.ADD_KNOWN_PLAYER },
           {
             errorType: "Duplicate UUID",
             data: Set([PlayerRecordBobDuplicateUUID, PlayerRecordAlice])
@@ -103,7 +101,7 @@ describe("Test known players action creators", () => {
         );
         testErrorRecordFSA(
           test_event,
-          { type: actions.get("ADD_KNOWN_PLAYER", "ACTION_NOT_FOUND") },
+          { type: actions.ADD_KNOWN_PLAYER },
           {
             errorType: "Duplicate DCI Number",
             data: Set([
@@ -183,7 +181,7 @@ describe("Test known players action creators", () => {
           "00000000-0000-0000-0000-000000000000"
         );
         testFSARecord(test_event, {
-          type: actions.get("CLEAR_KNOWN_PLAYERS_ERROR"),
+          type: actions.CLEAR_KNOWN_PLAYERS_ERROR,
           error: false,
           payload: "00000000-0000-0000-0000-000000000000"
         });
@@ -194,7 +192,7 @@ describe("Test known players action creators", () => {
           "00000000-0000-0000-0000-000000000000"
         );
         testFSARecord(test_event, {
-          type: actions.get("CLEAR_KNOWN_PLAYERS_ERROR"),
+          type: actions.CLEAR_KNOWN_PLAYERS_ERROR,
           error: false,
           payload: "00000000-0000-0000-0000-000000000000"
         });

@@ -1,11 +1,11 @@
 import { is, Map } from "immutable";
-import { KNOWN_PLAYERS_ACTIONS } from "../constants/";
+import * as KNOWN_PLAYERS_ACTIONS from "../constants/";
 
 const initialState = Map();
 
-const ADD_KNOWN_PLAYER = KNOWN_PLAYERS_ACTIONS.get("ADD_KNOWN_PLAYER");
-const UPDATE_KNOWN_PLAYER = KNOWN_PLAYERS_ACTIONS.get("UPDATE_KNOWN_PLAYER");
-const REMOVE_KNOWN_PLAYER = KNOWN_PLAYERS_ACTIONS.get("REMOVE_KNOWN_PLAYER");
+const ADD_KNOWN_PLAYER = KNOWN_PLAYERS_ACTIONS.ADD_KNOWN_PLAYER;
+const UPDATE_KNOWN_PLAYER = KNOWN_PLAYERS_ACTIONS.UPDATE_KNOWN_PLAYER;
+const REMOVE_KNOWN_PLAYER = KNOWN_PLAYERS_ACTIONS.REMOVE_KNOWN_PLAYER;
 
 function reduceSetKnownPlayer(state, action) {
   state = state.set(action.payload.UUID, action.payload);

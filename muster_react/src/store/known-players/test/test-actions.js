@@ -1,7 +1,7 @@
 import { Map, Set } from "immutable";
 import FSARecord from "../../FSA/fsa-record";
 import ErrorRecord from "../../FSA/error-record";
-import actions from "../constants";
+import * as actions from "../constants";
 import {
   PlayerRecordAlice,
   PlayerRecordBob,
@@ -17,53 +17,53 @@ import {
 } from "./test-errors";
 
 export const AddAliceAction = new FSARecord({
-  type: actions.get("ADD_KNOWN_PLAYER"),
+  type: actions.ADD_KNOWN_PLAYER,
   payload: PlayerRecordAlice
 });
 export const AddBobAction = new FSARecord({
-  type: actions.get("ADD_KNOWN_PLAYER"),
+  type: actions.ADD_KNOWN_PLAYER,
   payload: PlayerRecordBob
 });
 export const AddBobDuplicateDCIAction = new FSARecord({
-  type: actions.get("ADD_KNOWN_PLAYER"),
+  type: actions.ADD_KNOWN_PLAYER,
   error: true,
   payload: AddBobDuplicateDCIErrorRecord
 });
 
 export const RemoveAliceAction = new FSARecord({
-  type: actions.get("REMOVE_KNOWN_PLAYER"),
+  type: actions.REMOVE_KNOWN_PLAYER,
   payload: PlayerRecordAlice.UUID
 });
 
 export const RemoveBobAction = new FSARecord({
-  type: actions.get("REMOVE_KNOWN_PLAYER"),
+  type: actions.REMOVE_KNOWN_PLAYER,
   payload: PlayerRecordBob.UUID
 });
 
 export const UpdateAliceAction = new FSARecord({
-  type: actions.get("UPDATE_KNOWN_PLAYER"),
+  type: actions.UPDATE_KNOWN_PLAYER,
   payload: PlayerRecordAliceUpdated
 });
 
 export const UpdateBobDuplicateDCINumberAction = new FSARecord({
-  type: actions.get("UPDATE_KNOWN_PLAYER"),
+  type: actions.UPDATE_KNOWN_PLAYER,
   error: true,
   payload: UpdateBobDuplicateDCINumberErrorRecord
 });
 
 export const UpdateAliceNoSuchPlayerAction = new FSARecord({
-  type: actions.get("UPDATE_KNOWN_PLAYER"),
+  type: actions.UPDATE_KNOWN_PLAYER,
   error: true,
   payload: UpdateAliceNoSuchPlayerErrorRecord
 });
 
 export const AddBobDuplicateDCIClear = new FSARecord({
-  type: actions.get("CLEAR_KNOWN_PLAYERS_ERROR"),
+  type: actions.CLEAR_KNOWN_PLAYERS_ERROR,
   payload: AddBobDuplicateDCIErrorRecord.UUID
 });
 
 export const UpdateBobDuplicateDCINumberActionClear = new FSARecord({
-  type: actions.get("CLEAR_KNOWN_PLAYERS_ERROR"),
+  type: actions.CLEAR_KNOWN_PLAYERS_ERROR,
   payload: UpdateBobDuplicateDCINumberErrorRecord.UUID
 });
 

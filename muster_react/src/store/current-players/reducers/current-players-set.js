@@ -1,12 +1,10 @@
 import { is, Set } from "immutable";
-import { CURRENT_PLAYERS_ACTIONS } from "../constants";
+import * as CURRENT_PLAYERS_ACTIONS from "../constants";
 
 const initialState = Set();
 
-const ADD_CURRENT_PLAYER = CURRENT_PLAYERS_ACTIONS.get("ADD_CURRENT_PLAYER");
-const REMOVE_CURRENT_PLAYER = CURRENT_PLAYERS_ACTIONS.get(
-  "REMOVE_CURRENT_PLAYER"
-);
+const ADD_CURRENT_PLAYER = CURRENT_PLAYERS_ACTIONS.ADD_CURRENT_PLAYER;
+const REMOVE_CURRENT_PLAYER = CURRENT_PLAYERS_ACTIONS.REMOVE_CURRENT_PLAYER;
 
 function reduceAddCurrentPlayer(state, action) {
   if (is(action.type, ADD_CURRENT_PLAYER) && !action.error) {
