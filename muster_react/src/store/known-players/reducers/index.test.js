@@ -15,11 +15,11 @@ import {
   AddAliceAction,
   AddBobAction,
   AddBobDuplicateDCIAction,
-  RemoveAliceAction,
+  // RemoveAliceAction,
   RemoveBobAction,
   UpdateAliceAction,
   UpdateBobDuplicateDCINumberAction,
-  UpdateAliceNoSuchPlayerAction,
+  // UpdateAliceNoSuchPlayerAction,
   AddBobDuplicateDCIClear,
   UpdateBobDuplicateDCINumberActionClear
 } from "../test/test-actions";

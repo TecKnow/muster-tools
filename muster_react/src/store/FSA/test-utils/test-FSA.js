@@ -7,9 +7,7 @@ chai.use(chaiImmutable);
 export function testIsFSARecord(possibleFSARecord) {
   const TEST_RECORD = fromJS(possibleFSARecord);
   expect(TEST_RECORD).to.have.property("type");
-  /* eslint-disable no-unused-expressions
-	   These are idiomatic chai BDD assertions
-	*/
+  /* eslint-disable no-unused-expressions */
   expect(
     Set(["type", "error", "meta", "payload"]).isSuperset(
       Map(TEST_RECORD).keys()

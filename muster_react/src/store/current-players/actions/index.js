@@ -3,7 +3,7 @@ import uuidv4 from "uuid/v4";
 import FSARecord from "../../FSA/fsa-record";
 import { CreateErrorEvent } from "../../FSA/create-error-record";
 import { getPlayersByUUID } from "../../known-players/selectors";
-import CURRENT_PLAYERS_ACTIONS from "../constants";
+import * as CURRENT_PLAYERS_ACTIONS from "../constants";
 import { hasCurrentPlayer } from "../selectors";
 
 export function AddCurrentPlayer_Pure(state, { UUID }) {
@@ -19,7 +19,7 @@ export function AddCurrentPlayer_Pure(state, { UUID }) {
   }
   if (hasCurrentPlayer(state, { UUID })) {
     return CreateErrorEvent({
-      type: CURRENT_PLAYERS_ACTIONS.get("ADD_CURRENT_PLAYER"),
+      type: CURRENT_PLAYERS_ACTIONS.ADD_CURRENT_PLAYER,
       UUID: uuidv4(),
       time: Date(),
       errorType: "Player already current",
@@ -28,7 +28,7 @@ export function AddCurrentPlayer_Pure(state, { UUID }) {
     });
   }
   const add_known_player_event = new FSARecord({
-    type: CURRENT_PLAYERS_ACTIONS.get("ADD_CURRENT_PLAYER"),
+    type: CURRENT_PLAYERS_ACTIONS.ADD_CURRENT_PLAYER,
     payload: UUID
   });
   return add_known_player_event;
@@ -37,7 +37,7 @@ export function AddCurrentPlayer_Pure(state, { UUID }) {
 export function RemoveCurrentPlayer(state, { UUID }) {
   if (is(getPlayersByUUID(state, UUID), undefined)) {
     return CreateErrorEvent({
-      type: CURRENT_PLAYERS_ACTIONS.get("REMOVE_CURRENT_PLAYER"),
+      type: CURRENT_PLAYERS_ACTIONS.REMOVE_CURRENT_PLAYER,
       UUID: uuidv4(),
       time: Date(),
       errorType: "No such player",
@@ -47,7 +47,7 @@ export function RemoveCurrentPlayer(state, { UUID }) {
   }
   if (!hasCurrentPlayer(state, { UUID })) {
     return CreateErrorEvent({
-      type: CURRENT_PLAYERS_ACTIONS.get("REMOVE_CURRENT_PLAYER"),
+      type: CURRENT_PLAYERS_ACTIONS.REMOVE_CURRENT_PLAYER,
       UUID: uuidv4(),
       time: Date(),
       errorType: "Player not current",
@@ -56,7 +56,7 @@ export function RemoveCurrentPlayer(state, { UUID }) {
     });
   }
   const remove_current_player_event = new FSARecord({
-    type: CURRENT_PLAYERS_ACTIONS.get("REMOVE_CURRENT_PLAYER"),
+    type: CURRENT_PLAYERS_ACTIONS.REMOVE_CURRENT_PLAYER,
     payload: UUID
   });
   return remove_current_player_event;

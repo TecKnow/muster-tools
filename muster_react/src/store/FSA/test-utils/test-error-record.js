@@ -8,9 +8,7 @@ chai.use(chaiImmutable);
 export function testIsErrorRecord(possibleErrorRecord) {
   const TEST_RECORD = fromJS(possibleErrorRecord);
   expect(TEST_RECORD).to.contain.all.keys("UUID", "time", "errorType");
-  /* eslint-disable no-unused-expressions
-     These are idiomatic chai BDD assertions
-  */
+  /* eslint-disable no-unused-expressions */
   expect(
     Set(["UUID", "time", "errorType", "message", "data"]).isSuperset(
       Map(TEST_RECORD).keys()
