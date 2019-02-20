@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Field, reduxForm } from "redux-form/immutable";
 import {
   Avatar,
   Button,
@@ -55,6 +56,66 @@ const styles = theme => ({
   }
 });
 
+const validate = values => {
+  const errors = {};
+  const requiredFields = ["DCINumber", "name"];
+  requiredFields.forEach(field => {
+    if (!values[field]) {
+      errors[field] = "Required";
+    }
+  });
+  return errors;
+};
+
+const MUINameField = ({
+  label,
+  input,
+  meta: { touched, invalid, error },
+  ...custom
+}) => {
+  return (
+    <FormControl margin="normal" required fullWidth>
+      <InputLabel htmlFor="name">Name</InputLabel>
+      <Input autoComplete="name" autoFocus {...input} {...custom} />
+    </FormControl>
+  );
+};
+
+const MUIDCIField = props => (
+  <FormControl margin="normal" required fullWidth>
+    <InputLabel htmlFor="DCINumber">DCI Number</InputLabel>
+    <Input
+      name="DCINumber"
+      id="DCINumber"
+      autoComplete="DCINumber"
+      type="number"
+    />
+  </FormControl>
+);
+
+const MUICharacterInfo = props => {
+  const classes = props.classes;
+  return (
+    <FormControl component="fieldset" className={classes.formControl}>
+      <FormLabel component="legend">Character Info</FormLabel>
+      <FormGroup>
+        <FormControlLabel
+          control={<Checkbox value="DM" />}
+          label="Dungeon Master"
+        />
+        <FormControlLabel
+          control={<Checkbox value="HalfHealer" />}
+          label="Secondary Healing (Bard, Paladin, ...)"
+        />
+        <FormControlLabel
+          control={<Checkbox value="PrimaryHealer" />}
+          label="Primary Healing (Cleric, Druid, ...)"
+        />
+      </FormGroup>
+    </FormControl>
+  );
+};
+
 function SignIn(props) {
   const { classes } = props;
 
@@ -68,31 +129,10 @@ function SignIn(props) {
           Muster sign-in
         </Typography>
         <form className={classes.form}>
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="name">Name</InputLabel>
-            <Input id="name" name="name" autoComplete="name" autoFocus />
-          </FormControl>
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="DCINumber">DCI Number</InputLabel>
-            <Input name="DCINumber" id="DCINumber" autoComplete="DCINumber" />
-          </FormControl>
-          <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend">Character Info</FormLabel>
-            <FormGroup>
-              <FormControlLabel
-                control={<Checkbox value="DM" />}
-                label="Dungeon Master"
-              />
-              <FormControlLabel
-                control={<Checkbox value="HalfHealer" />}
-                label="Secondary Healing (Bard, Paladin, ...)"
-              />
-              <FormControlLabel
-                control={<Checkbox value="PrimaryHealer" />}
-                label="Primary Healing (Cleric, Druid, ...)"
-              />
-            </FormGroup>
-          </FormControl>
+          <Field name="name" label="name" component={MUINameField} />
+          <MUIDCIField />
+          <MUICharacterInfo classes={classes} />
+
           <Button
             type="submit"
             fullWidth
@@ -111,5 +151,6 @@ function SignIn(props) {
 SignIn.propTypes = {
   classes: PropTypes.object.isRequired
 };
-
-export default withStyles(styles)(SignIn);
+const SignInReduxForm = reduxForm({ form: "signIn", validate })(SignIn);
+const SignInWithStyles = withStyles(styles)(SignInReduxForm);
+export default SignInWithStyles;
