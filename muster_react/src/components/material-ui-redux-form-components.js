@@ -5,8 +5,10 @@ import {
   InputLabel,
   Input
 } from "@material-ui/core";
-
-export const renderTextField = ({
+/* This component renders what would have been called a TextField, but this component isn't in the Material UI spec anymore.
+   It's a combination of a FormControl with an input label and possibly form helper text.
+*/
+export const RenderTextField = ({
   label,
   input,
   meta: { touched, invalid, error },
@@ -16,7 +18,7 @@ export const renderTextField = ({
   disabled,
   fullWidth,
   required,
-  controlName,
+  name,
   autoComplete,
   autoFocus,
   disableUnderline,
@@ -37,11 +39,12 @@ export const renderTextField = ({
       required={required}
       variant={variant}
       disabled={disabled}
-      error={error}
+      error={touched && invalid}
       fullWidth={fullWidth}
+      {...custom}
     >
       <InputLabel
-        htmlFor={controlName}
+        htmlFor={name}
         disableAnimation={disableLabelAnimation}
         shrink={shrinkLabel}
       >
@@ -52,16 +55,15 @@ export const renderTextField = ({
         autoFocus={autoFocus}
         disableUnderline={disableUnderline}
         multiline={multiline}
-        name={controlName}
+        name={name}
         placeholder={placeholder}
         readOnly={readOnly}
         rows={rows}
         rowsMax={rowsMax}
         type={type}
         {...input}
-        {...custom}
       />
-      <FormHelperText>{formHelperText}</FormHelperText>
+      <FormHelperText>{touched && error}</FormHelperText>
     </FormControl>
   );
 };

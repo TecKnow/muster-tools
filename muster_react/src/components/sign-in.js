@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Field, reduxForm } from "redux-form/immutable";
+
 import {
   Avatar,
   Button,
@@ -8,14 +8,14 @@ import {
   FormControlLabel,
   FormLabel,
   FormGroup,
-  Input,
-  InputLabel,
   Paper,
   Typography,
   Checkbox
 } from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import withStyles from "@material-ui/core/styles/withStyles";
+import { Field, reduxForm } from "redux-form/immutable";
+import { RenderTextField } from "./material-ui-redux-form-components";
 
 // Based on the sample layout at the following URL:
 // https://github.com/mui-org/material-ui/blob/master/docs/src/pages/getting-started/page-layout-examples/sign-in/SignIn.js
@@ -56,43 +56,6 @@ const styles = theme => ({
   }
 });
 
-const validate = values => {
-  const errors = {};
-  const requiredFields = ["DCINumber", "name"];
-  requiredFields.forEach(field => {
-    if (!values[field]) {
-      errors[field] = "Required";
-    }
-  });
-  return errors;
-};
-
-const MUINameField = ({
-  label,
-  input,
-  meta: { touched, invalid, error },
-  ...custom
-}) => {
-  return (
-    <FormControl margin="normal" required fullWidth>
-      <InputLabel htmlFor="name">Name</InputLabel>
-      <Input autoComplete="name" autoFocus {...input} {...custom} />
-    </FormControl>
-  );
-};
-
-const MUIDCIField = props => (
-  <FormControl margin="normal" required fullWidth>
-    <InputLabel htmlFor="DCINumber">DCI Number</InputLabel>
-    <Input
-      name="DCINumber"
-      id="DCINumber"
-      autoComplete="DCINumber"
-      type="number"
-    />
-  </FormControl>
-);
-
 const MUICharacterInfo = props => {
   const classes = props.classes;
   return (
@@ -129,8 +92,26 @@ function SignIn(props) {
           Muster sign-in
         </Typography>
         <form className={classes.form}>
-          <Field name="name" label="name" component={MUINameField} />
-          <MUIDCIField />
+          <Field
+            name="name"
+            label="Name"
+            margin="normal"
+            required
+            fullWidth
+            autoFocus
+            autoComplete="name"
+            component={RenderTextField}
+          />
+          <Field
+            name="DCINumber"
+            label="DCI Number"
+            margin="normal"
+            autoComplete="DCINumber"
+            type="number"
+            required
+            fullWidth
+            component={RenderTextField}
+          />
           <MUICharacterInfo classes={classes} />
 
           <Button
@@ -151,6 +132,6 @@ function SignIn(props) {
 SignIn.propTypes = {
   classes: PropTypes.object.isRequired
 };
-const SignInReduxForm = reduxForm({ form: "signIn", validate })(SignIn);
+const SignInReduxForm = reduxForm({ form: "signIn" })(SignIn);
 const SignInWithStyles = withStyles(styles)(SignInReduxForm);
 export default SignInWithStyles;
