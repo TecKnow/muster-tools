@@ -108,6 +108,7 @@ function SignIn(props) {
             margin="normal"
             autoComplete="DCINumber"
             type="number"
+            min={0}
             required
             fullWidth
             component={RenderTextField}
