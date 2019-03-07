@@ -5,7 +5,7 @@ import { createLogger } from "redux-logger";
 import promiseMiddleware from "redux-promise";
 import { reducer as form } from "redux-form/immutable";
 import immutableActionMiddleware from "./immutable-action-middleware";
-import { Players } from "./players/reducers";
+import KnownPlayers from "./ducks/known-players";
 
 export const middlewareList = [
   /*ReduxThunk,*/ promiseMiddleware,
@@ -16,7 +16,7 @@ if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {
 }
 
 export const rootReducer = combineReducers({
-  Players,
+  KnownPlayers,
   form
 });
 

@@ -2,7 +2,7 @@ import chai, { expect } from "chai";
 import chaiImmutable from "chai-immutable";
 import immutableActionMiddleware from "./immutable-action-middleware";
 
-import { AddAliceAction } from "../known-players/test/test-actions";
+import { AddAliceAction } from "../ducks/known-players-test-data";
 
 chai.use(chaiImmutable);
 
@@ -53,8 +53,8 @@ describe("Immutable action middleware", () => {
     expect(next.mock.calls[0][0]).to.equal(thunkAction);
   });
   test("Promise action", () => {
-    /* A thunk action should not trigger the middleware.
-  	   The actions hould be passed to next.
+    /* A promise action should not trigger the middleware.
+  	   The actions should be passed to next.
   	   Dispatch should not be called.
   	*/
     const promiseAction = Promise.resolve(true);
