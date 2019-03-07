@@ -5,17 +5,18 @@ import {
   Avatar,
   Button,
   FormControl,
-  FormControlLabel,
   FormLabel,
   FormGroup,
   Paper,
-  Typography,
-  Checkbox
+  Typography
 } from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Field, reduxForm } from "redux-form/immutable";
-import { RenderTextField } from "./material-ui-redux-form-components";
+import {
+  RenderTextField,
+  RenderCheckboxField
+} from "./material-ui-redux-form-components";
 
 // Based on the sample layout at the following URL:
 // https://github.com/mui-org/material-ui/blob/master/docs/src/pages/getting-started/page-layout-examples/sign-in/SignIn.js
@@ -62,17 +63,20 @@ const MUICharacterInfo = props => {
     <FormControl component="fieldset" className={classes.formControl}>
       <FormLabel component="legend">Character Info</FormLabel>
       <FormGroup>
-        <FormControlLabel
-          control={<Checkbox value="DM" />}
+        <Field
+          name="DM"
           label="Dungeon Master"
+          component={RenderCheckboxField}
         />
-        <FormControlLabel
-          control={<Checkbox value="HalfHealer" />}
+        <Field
+          name="HalfHealer"
           label="Secondary Healing (Bard, Paladin, ...)"
+          component={RenderCheckboxField}
         />
-        <FormControlLabel
-          control={<Checkbox value="PrimaryHealer" />}
+        <Field
+          name="PrimaryHealer"
           label="Primary Healing (Cleric, Druid, ...)"
+          component={RenderCheckboxField}
         />
       </FormGroup>
     </FormControl>

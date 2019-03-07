@@ -78,15 +78,14 @@ export const RenderCheckboxField = ({
   classes,
   disabled,
   inputRef,
+  checked,
   label,
   labelPlacement,
   name,
-  value,
   checkedIcon,
   color,
   disableRipple,
   icon,
-  id,
   indeterminate,
   indeterminateIcon,
   inputProps,
@@ -95,26 +94,23 @@ export const RenderCheckboxField = ({
 }) => {
   return (
     <FormControlLabel
-      checked={input.value ? true : false}
+      checked={checked ? checked : input.value ? true : false}
       classes={classes}
       disabled={disabled}
       inputRef={inputRef}
       label={label}
       labelPlacement={labelPlacement}
-      name={name}
       onChange={input.onChange}
-      value={value}
+      value={name}
       control={
         <Checkbox
           checkedIcon={checkedIcon}
           color={color}
           disableRipple={disableRipple}
           icon={icon}
-          id={id}
           indeterminate={indeterminate}
           indeterminateIcon={indeterminateIcon}
           inputProps={inputProps}
-          type={type}
         />
       }
     />
