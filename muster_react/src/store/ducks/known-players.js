@@ -176,12 +176,6 @@ export const getErrorWithUUID = (state, UUID) => {
   return getPlayersErrorsByUUID.get(UUID);
 };
 
-// Reducers
-export const reducer = combineReducers({
-  KnownPlayersIndex,
-  KnownPlayersErrors
-});
-
 // Record types
 
 export const PlayerRecord = Record(
@@ -192,6 +186,13 @@ export const PlayerRecord = Record(
   },
   "PlayerRecord"
 );
+
+// Reducers
+
+export const reducer = combineReducers({
+  KnownPlayersIndex,
+  KnownPlayersErrors
+});
 
 // Reduce known players index
 const initialKnownPlayersState = Map();

@@ -6,6 +6,7 @@ import promiseMiddleware from "redux-promise";
 import { reducer as form } from "redux-form/immutable";
 import immutableActionMiddleware from "./immutable-action-middleware";
 import KnownPlayers from "./ducks/known-players";
+import CurrentPlayers from "./ducks/current-players";
 
 export const middlewareList = [
   /*ReduxThunk,*/ promiseMiddleware,
@@ -17,6 +18,7 @@ if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {
 
 export const rootReducer = combineReducers({
   KnownPlayers,
+  CurrentPlayers,
   form
 });
 
