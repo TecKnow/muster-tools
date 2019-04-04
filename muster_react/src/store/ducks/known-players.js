@@ -6,6 +6,8 @@ import { Record } from "immutable";
 import FSARecord from "../FSA/fsa-record";
 import { CreateErrorEvent } from "../FSA/create-error-record";
 
+// This file is a duck, as described here:  https://github.com/erikras/ducks-modular-redux
+
 const KNOWN_PLAYERS_REDUCER_NAME = "KnownPlayers";
 const KNOWN_PLAYERS_INDEX_REDUCER_NAME = "KnownPlayersIndex";
 const KNOWN_PLAYERS_ERROR_REDUCER_NAME = "KnownPlayersErrors";

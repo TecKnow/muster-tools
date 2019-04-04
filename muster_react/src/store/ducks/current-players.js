@@ -8,6 +8,8 @@ import {
   getPlayersByUUID
 } from "./known-players";
 
+// This file is a duck, as described here:  https://github.com/erikras/ducks-modular-redux
+
 const CURRENT_PLAYERS_REDUCER_NAME = "CurrentPlayers";
 const CURRENT_PLAYERS_SET_REDUCER_NAME = "CurrentPlayersSet";
 const CURRENT_PLAYERS_ERROR_REDUCER_NAME = "CurrentPlayersErrors";

@@ -134,9 +134,24 @@ function SignIn(props) {
   );
 }
 
+const validate = values => {
+  // Remember that this is an immutable map!
+  console.log("provided values: ", values);
+  const errors = {};
+  if (!values.has("name")) {
+    errors.name = "Required";
+  }
+  if (!values.has("DCINumber")) {
+    errors.DCINumber = "Required";
+  } else if (!/^\d{10}$/.test(values.get("DCINumber"))) {
+    errors.DCINumber = "Must be a 10 digit positive integer";
+  }
+  return errors;
+};
+
 SignIn.propTypes = {
   classes: PropTypes.object.isRequired
 };
-const SignInReduxForm = reduxForm({ form: "signIn" })(SignIn);
+const SignInReduxForm = reduxForm({ form: "signIn", validate })(SignIn);
 const SignInWithStyles = withStyles(styles)(SignInReduxForm);
 export default SignInWithStyles;
