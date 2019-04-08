@@ -135,8 +135,6 @@ function SignIn(props) {
 }
 
 const validate = values => {
-  // Remember that this is an immutable map!
-  console.log("provided values: ", values);
   const errors = {};
   if (!values.has("name")) {
     errors.name = "Required";

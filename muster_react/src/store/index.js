@@ -7,6 +7,8 @@ import { reducer as form } from "redux-form/immutable";
 import immutableActionMiddleware from "./immutable-action-middleware";
 import KnownPlayers from "./ducks/known-players";
 import CurrentPlayers from "./ducks/current-players";
+import { loadState, saveState } from "./localStorage";
+import { throttle } from "lodash";
 
 export const middlewareList = [
   /*ReduxThunk,*/ promiseMiddleware,
@@ -22,8 +24,25 @@ export const rootReducer = combineReducers({
   form
 });
 
-export function createMiddlwareStore(rootReducer, ...rest) {
-  return createStore(rootReducer, applyMiddleware(...middlewareList), ...rest);
+export function createMiddlwareStore(
+  rootReducer,
+  initialState = undefined,
+  ...rest
+) {
+  return createStore(
+    rootReducer,
+    initialState,
+    applyMiddleware(...middlewareList),
+    ...rest
+  );
 }
 
-export const store = createMiddlwareStore(rootReducer);
+const persistedState = loadState();
+console.log("Persisted state", persistedState);
+export const store = createMiddlwareStore(rootReducer, persistedState);
+
+store.subscribe(
+  throttle(() => {
+    saveState(store.getState());
+  }, 1000)
+);
