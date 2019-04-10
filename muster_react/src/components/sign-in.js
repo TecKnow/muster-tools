@@ -147,9 +147,17 @@ const validate = values => {
   return errors;
 };
 
+const onChange = (values, dispatch, props, previousValues) => {
+  console.log("values\n", values);
+  console.log("previous values\n", previousValues);
+  console.log("Props\n", props);
+};
+
 SignIn.propTypes = {
   classes: PropTypes.object.isRequired
 };
-const SignInReduxForm = reduxForm({ form: "signIn", validate })(SignIn);
+const SignInReduxForm = reduxForm({ form: "signIn", validate, onChange })(
+  SignIn
+);
 const SignInWithStyles = withStyles(styles)(SignInReduxForm);
 export default SignInWithStyles;
