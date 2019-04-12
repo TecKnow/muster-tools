@@ -38,11 +38,10 @@ export function createMiddlwareStore(
 }
 
 const persistedState = loadState();
-console.log("Persisted state", persistedState);
 export const store = createMiddlwareStore(rootReducer, persistedState);
 
 store.subscribe(
   throttle(() => {
-    saveState(store.getState());
+    saveState(store.getState().remove("form"));
   }, 1000)
 );
