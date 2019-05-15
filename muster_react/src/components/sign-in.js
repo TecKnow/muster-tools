@@ -181,7 +181,6 @@ const onChange = (values, dispatch, props, previousValues) => {
 };
 
 const onSubmit = (values, dispatch, props) => {
-  console.log("Props inside onSubmit are:", props);
   props.SignInPlayer(values.get("name"), values.get("DCINumber"));
   // TODO: This isn't the axiomatic way of clearing forms, although it works.  Improve it.
   props.reset();
