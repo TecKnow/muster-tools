@@ -123,7 +123,6 @@ const INDEX_PATH = List.of(
 );
 
 export const getPlayersByUUID = state => {
-  console.log("State inside getPlayersByID", state);
   return state.getIn(INDEX_PATH);
 };
 

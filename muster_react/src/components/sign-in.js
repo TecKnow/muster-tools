@@ -85,9 +85,8 @@ const MUICharacterInfo = props => {
   );
 };
 
-function SignIn(props) {
+const SignIn = props => {
   const { classes, handleSubmit } = props;
-
   return (
     <main className={classes.main}>
       <Paper className={classes.paper}>
@@ -134,7 +133,7 @@ function SignIn(props) {
       </Paper>
     </main>
   );
-}
+};
 
 const validate = values => {
   const errors = {};
@@ -158,7 +157,7 @@ const onChange = (values, dispatch, props, previousValues) => {
 
 const onSubmit = (values, dispatch, props) => {
   console.log("Props inside onSubmit are:", props);
-  dispatch(SignInPlayer(values.get("name"), values.get("DCINumber")));
+  props.SignInPlayer(values.get("name"), values.get("DCINumber"));
   // TODO: This isn't the axiomatic way of clearing forms, although it works.  Improve it.
   props.reset();
 };
@@ -171,16 +170,18 @@ const mapDispatchToProps = {
   SignInPlayer
 };
 
-const SignInConnected = connect(
-  undefined,
-  mapDispatchToProps
-)(SignIn);
+const SignInWithStyles = withStyles(styles)(SignIn);
 
 const SignInReduxForm = reduxForm({
   form: "signIn",
   validate,
   onChange,
   onSubmit
-})(SignInConnected);
-const SignInWithStyles = withStyles(styles)(SignInReduxForm);
-export default SignInWithStyles;
+})(SignInWithStyles);
+
+const SignInConnected = connect(
+  undefined,
+  mapDispatchToProps
+)(SignInReduxForm);
+
+export default SignInConnected;

@@ -141,7 +141,6 @@ const currentPlayersInitialState = Set();
 
 function reduceAddCurrentPlayer(state, action) {
   if (is(action.type, ADD_CURRENT_PLAYER) && !action.error) {
-    console.log("State inside of add current player reducer:  ", state);
     state = state.add(action.payload);
   }
   return state;
