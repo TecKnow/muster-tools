@@ -6,6 +6,7 @@ import ApplicationDragDropContext from "./components/ApplicationDragDropContext"
 import ApplicationMuiTheme from "./components/ApplicationMuiTheme";
 import { store } from "./store";
 import SignIn from "./components/sign-in";
+import Chips from "./components/chips.js";
 
 class App extends Component {
   render() {
@@ -19,6 +20,7 @@ class App extends Component {
                   <Redirect to="/signin" />
                 </Route>
                 <Route path="/signin" component={SignIn} />
+                <Route path="/chips" component={Chips} />
               </Switch>
             </ApplicationDragDropContext>
           </BrowserRouter>
