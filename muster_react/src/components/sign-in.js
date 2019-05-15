@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
+import { is } from "immutable";
 import {
   Avatar,
   Button,
@@ -18,10 +18,16 @@ import {
   RenderTextField,
   RenderCheckboxField
 } from "./material-ui-redux-form-components";
+import {
+  getPlayersWithName,
+  getPlayersWithDCINumber
+} from "../store/ducks/known-players";
 import { SignInPlayer } from "../store/ducks/current-players";
 
 // Based on the sample layout at the following URL:
 // https://github.com/mui-org/material-ui/blob/master/docs/src/pages/getting-started/page-layout-examples/sign-in/SignIn.js
+
+//TODO: Implement auto-completion for name and DCI fields.
 
 const styles = theme => ({
   main: {
@@ -152,7 +158,26 @@ const onChange = (values, dispatch, props, previousValues) => {
   // The most relevant props you want here are as follows:
   // previousValues  -  Note that it only contains the changed values
   // props.synchErrors - This seems to be based on the previous values, not the new ones.
-  // TODO: Implement auto-population of name or DCI based on user entries.
+
+  const { autofill, getPlayersWithName, getPlayersWithDCINumber } = props;
+  //Match names to DCI numbers
+  if (!is(previousValues.get("name"), values.get("name"))) {
+    const potentialNameMatch = getPlayersWithName(values.get("name"));
+    if (
+      !is(potentialNameMatch, undefined) &&
+      is(potentialNameMatch.size, 1) &&
+      !/^\d{10}$/.test(values.get("DCINumber"))
+    ) {
+      autofill("DCINumber", potentialNameMatch.first().DCINumber);
+    }
+  }
+  // Match DCI numbers to names
+  if (!is(previousValues.get("DCINumber"), values.get("DCINumber"))) {
+    const potentialDCIMatch = getPlayersWithDCINumber(values.get("DCINumber"));
+    if (!is(potentialDCIMatch, undefined) && is(potentialDCIMatch.size, 1)) {
+      autofill("name", potentialDCIMatch.first().name);
+    }
+  }
 };
 
 const onSubmit = (values, dispatch, props) => {
@@ -165,6 +190,12 @@ const onSubmit = (values, dispatch, props) => {
 SignIn.propTypes = {
   classes: PropTypes.object.isRequired
 };
+
+const mapStateToProps = state => ({
+  getPlayersWithName: name => getPlayersWithName(state, name),
+  getPlayersWithDCINumber: DCINumber =>
+    getPlayersWithDCINumber(state, DCINumber)
+});
 
 const mapDispatchToProps = {
   SignInPlayer
@@ -180,7 +211,7 @@ const SignInReduxForm = reduxForm({
 })(SignInWithStyles);
 
 const SignInConnected = connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps
 )(SignInReduxForm);
 
