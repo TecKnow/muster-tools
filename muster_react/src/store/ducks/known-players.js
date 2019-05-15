@@ -122,7 +122,10 @@ const INDEX_PATH = List.of(
   KNOWN_PLAYERS_INDEX_REDUCER_NAME
 );
 
-export const getPlayersByUUID = state => state.getIn(INDEX_PATH);
+export const getPlayersByUUID = state => {
+  console.log("State inside getPlayersByID", state);
+  return state.getIn(INDEX_PATH);
+};
 
 export const getPlayers = createSelector(
   [getPlayersByUUID],

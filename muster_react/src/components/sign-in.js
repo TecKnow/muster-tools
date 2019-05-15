@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import {
   Avatar,
@@ -17,6 +18,7 @@ import {
   RenderTextField,
   RenderCheckboxField
 } from "./material-ui-redux-form-components";
+import { SignInPlayer } from "../store/ducks/current-players";
 
 // Based on the sample layout at the following URL:
 // https://github.com/mui-org/material-ui/blob/master/docs/src/pages/getting-started/page-layout-examples/sign-in/SignIn.js
@@ -84,7 +86,7 @@ const MUICharacterInfo = props => {
 };
 
 function SignIn(props) {
-  const { classes } = props;
+  const { classes, handleSubmit } = props;
 
   return (
     <main className={classes.main}>
@@ -95,7 +97,7 @@ function SignIn(props) {
         <Typography component="h1" variant="h5">
           Muster sign-in
         </Typography>
-        <form className={classes.form}>
+        <form onSubmit={handleSubmit} className={classes.form}>
           <Field
             name="name"
             label="Name"
@@ -148,16 +150,37 @@ const validate = values => {
 };
 
 const onChange = (values, dispatch, props, previousValues) => {
-  console.log("values\n", values);
-  console.log("previous values\n", previousValues);
-  console.log("Props\n", props);
+  // The most relevant props you want here are as follows:
+  // previousValues  -  Note that it only contains the changed values
+  // props.synchErrors - This seems to be based on the previous values, not the new ones.
+  // TODO: Implement auto-population of name or DCI based on user entries.
+};
+
+const onSubmit = (values, dispatch, props) => {
+  console.log("Props inside onSubmit are:", props);
+  dispatch(SignInPlayer(values.get("name"), values.get("DCINumber")));
+  // TODO: This isn't the axiomatic way of clearing forms, although it works.  Improve it.
+  props.reset();
 };
 
 SignIn.propTypes = {
   classes: PropTypes.object.isRequired
 };
-const SignInReduxForm = reduxForm({ form: "signIn", validate, onChange })(
-  SignIn
-);
+
+const mapDispatchToProps = {
+  SignInPlayer
+};
+
+const SignInConnected = connect(
+  undefined,
+  mapDispatchToProps
+)(SignIn);
+
+const SignInReduxForm = reduxForm({
+  form: "signIn",
+  validate,
+  onChange,
+  onSubmit
+})(SignInConnected);
 const SignInWithStyles = withStyles(styles)(SignInReduxForm);
 export default SignInWithStyles;

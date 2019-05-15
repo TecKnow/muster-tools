@@ -4,8 +4,9 @@ import uuidv4 from "uuid/v4";
 import FSARecord from "../FSA/fsa-record";
 import { CreateErrorEvent } from "../FSA/create-error-record";
 import {
-  ACTION_TYPES as CURRENT_PLAYERS_ACTIONS,
-  getPlayersByUUID
+  getPlayersByUUID,
+  getPlayersWithDCINumber,
+  AddKnownPlayer_pure
 } from "./known-players";
 
 // This file is a duck, as described here:  https://github.com/erikras/ducks-modular-redux
@@ -30,7 +31,7 @@ export const ACTION_TYPES = {
 export function AddCurrentPlayer_Pure(state, { UUID }) {
   if (is(getPlayersByUUID(state, UUID), undefined)) {
     return CreateErrorEvent({
-      type: CURRENT_PLAYERS_ACTIONS.get("ADD_CURRENT_PLAYER"),
+      type: ADD_CURRENT_PLAYER,
       UUID: uuidv4(),
       time: Date(),
       errorType: "No such player",
@@ -40,7 +41,7 @@ export function AddCurrentPlayer_Pure(state, { UUID }) {
   }
   if (hasCurrentPlayer(state, { UUID })) {
     return CreateErrorEvent({
-      type: CURRENT_PLAYERS_ACTIONS.ADD_CURRENT_PLAYER,
+      type: ADD_CURRENT_PLAYER,
       UUID: uuidv4(),
       time: Date(),
       errorType: "Player already current",
@@ -49,7 +50,7 @@ export function AddCurrentPlayer_Pure(state, { UUID }) {
     });
   }
   const add_known_player_event = new FSARecord({
-    type: CURRENT_PLAYERS_ACTIONS.ADD_CURRENT_PLAYER,
+    type: ADD_CURRENT_PLAYER,
     payload: UUID
   });
   return add_known_player_event;
@@ -58,7 +59,7 @@ export function AddCurrentPlayer_Pure(state, { UUID }) {
 export function RemoveCurrentPlayer(state, { UUID }) {
   if (is(getPlayersByUUID(state, UUID), undefined)) {
     return CreateErrorEvent({
-      type: CURRENT_PLAYERS_ACTIONS.REMOVE_CURRENT_PLAYER,
+      type: REMOVE_CURRENT_PLAYER,
       UUID: uuidv4(),
       time: Date(),
       errorType: "No such player",
@@ -68,7 +69,7 @@ export function RemoveCurrentPlayer(state, { UUID }) {
   }
   if (!hasCurrentPlayer(state, { UUID })) {
     return CreateErrorEvent({
-      type: CURRENT_PLAYERS_ACTIONS.REMOVE_CURRENT_PLAYER,
+      type: REMOVE_CURRENT_PLAYER,
       UUID: uuidv4(),
       time: Date(),
       errorType: "Player not current",
@@ -77,11 +78,34 @@ export function RemoveCurrentPlayer(state, { UUID }) {
     });
   }
   const remove_current_player_event = new FSARecord({
-    type: CURRENT_PLAYERS_ACTIONS.REMOVE_CURRENT_PLAYER,
+    type: REMOVE_CURRENT_PLAYER,
     payload: UUID
   });
   return remove_current_player_event;
 }
+
+// Thunks
+export const SignInPlayer = (playerName, DCINumber) => (dispatch, getState) => {
+  const potentialPlayerMap = getPlayersWithDCINumber(getState(), DCINumber);
+  let playerUUID;
+  if (is(potentialPlayerMap, undefined) || potentialPlayerMap.isEmpty()) {
+    // A new player, add them to the list of known players.
+    const new_player_action = AddKnownPlayer_pure(getState(), {
+      name: playerName,
+      DCINumber
+    });
+    // TODO: What if this is an error?
+    playerUUID = new_player_action.payload.UUID;
+    dispatch(new_player_action);
+  } else if (potentialPlayerMap.size > 1) {
+    // Well this shouldn't happen!
+    throw new Error("Multiple players found with the same DCI Number!");
+  } else if (potentialPlayerMap.size === 1) {
+    // A known player, just add them to the list of current players
+    playerUUID = potentialPlayerMap.first().UUID;
+  }
+  return dispatch(AddCurrentPlayer_Pure(getState(), { UUID: playerUUID }));
+};
 
 // Selectors
 
@@ -117,6 +141,7 @@ const currentPlayersInitialState = Set();
 
 function reduceAddCurrentPlayer(state, action) {
   if (is(action.type, ADD_CURRENT_PLAYER) && !action.error) {
+    console.log("State inside of add current player reducer:  ", state);
     state = state.add(action.payload);
   }
   return state;

@@ -1,17 +1,17 @@
 import { createStore, applyMiddleware } from "redux";
 import { combineReducers } from "redux-immutable";
 import { createLogger } from "redux-logger";
-//import ReduxThunk from "redux-thunk";
+import ReduxThunk from "redux-thunk";
 import promiseMiddleware from "redux-promise";
 import { reducer as form } from "redux-form/immutable";
 import immutableActionMiddleware from "./immutable-action-middleware";
 import KnownPlayers from "./ducks/known-players";
 import CurrentPlayers from "./ducks/current-players";
-import { loadState, saveState } from "./localStorage";
-import { throttle } from "lodash";
+import { loadState, UseLocalStorage } from "./localStorage";
 
 export const middlewareList = [
-  /*ReduxThunk,*/ promiseMiddleware,
+  ReduxThunk,
+  promiseMiddleware,
   immutableActionMiddleware
 ];
 if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {
@@ -38,10 +38,6 @@ export function createMiddlwareStore(
 }
 
 const persistedState = loadState();
-export const store = createMiddlwareStore(rootReducer, persistedState);
+export const store = createMiddlwareStore(rootReducer, persistedState); //persistedState
 
-store.subscribe(
-  throttle(() => {
-    saveState(store.getState().remove("form"));
-  }, 1000)
-);
+UseLocalStorage(store);
