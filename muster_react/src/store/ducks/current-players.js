@@ -1,4 +1,4 @@
-import { is, List, Map, Set } from "immutable";
+import { is, List, OrderedMap, Set } from "immutable";
 import { combineReducers } from "redux-immutable";
 import uuidv4 from "uuid/v4";
 import FSARecord from "../FSA/fsa-record";
@@ -11,9 +11,16 @@ import {
 
 // This file is a duck, as described here:  https://github.com/erikras/ducks-modular-redux
 
+// Reducer Names
 const CURRENT_PLAYERS_REDUCER_NAME = "CurrentPlayers";
 const CURRENT_PLAYERS_SET_REDUCER_NAME = "CurrentPlayersSet";
 const CURRENT_PLAYERS_ERROR_REDUCER_NAME = "CurrentPlayersErrors";
+
+export const REDUCER_NAMES = {
+  CURRENT_PLAYERS_REDUCER_NAME,
+  CURRENT_PLAYERS_SET_REDUCER_NAME,
+  CURRENT_PLAYERS_ERROR_REDUCER_NAME
+};
 
 // Action Constants
 const ADD_CURRENT_PLAYER = "muster/current_players/ADD_CURRENT_PLAYER";
@@ -160,7 +167,7 @@ export function CurrentPlayersSet(state = currentPlayersInitialState, action) {
 }
 
 // Current Players Errors Reducer
-const currentPlayersErrorsinitialState = Map();
+const currentPlayersErrorsinitialState = OrderedMap();
 
 const CLEAR_CURRENT_PLAYERS_ERROR = ACTION_TYPES.CLEAR_CURRENT_PLAYER_ERROR;
 

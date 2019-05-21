@@ -7,6 +7,7 @@ import ApplicationMuiTheme from "./components/ApplicationMuiTheme";
 import { store } from "./store";
 import SignIn from "./components/sign-in";
 import Chips from "./components/chips.js";
+import Tables from "./components/tables.js";
 
 class App extends Component {
   render() {
@@ -21,6 +22,7 @@ class App extends Component {
                 </Route>
                 <Route path="/signin" component={SignIn} />
                 <Route path="/chips" component={Chips} />
+                <Route path="/tables" component={Tables} />
               </Switch>
             </ApplicationDragDropContext>
           </BrowserRouter>
