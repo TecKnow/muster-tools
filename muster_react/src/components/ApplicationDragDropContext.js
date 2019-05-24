@@ -14,7 +14,6 @@ class ApplicationDragDropContext extends Component {
   };
   onDragEnd = result => {
     // the only one that is required
-    console.log(result);
     if (!result.destination) {
       return;
     }

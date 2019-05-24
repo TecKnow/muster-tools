@@ -165,11 +165,8 @@ const reduceMovePlayerToPosition = (state, action) => {
       }
       // Put the player in their new position
       const old_list = state.get(table);
-      console.log("old list:", old_list);
       const new_list = old_list.insert(position, player);
-      console.log("new list", new_list);
       state = state.set(table, new_list);
-      console.log("Final state", state);
     }
   }
   return state;

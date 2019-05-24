@@ -34,7 +34,7 @@ const makeMapStateToProps = () => {
   return mapStateToProps;
 };
 
-const mapDispatchToProps = {};
+// const mapDispatchToProps = {};
 
 Tables.propTypes = {
   classes: PropTypes.object.isRequired
@@ -44,7 +44,7 @@ const TablesWithStyles = withStyles(styles)(Tables);
 
 const TablesConnected = connect(
   makeMapStateToProps,
-  mapDispatchToProps
+  undefined
 )(TablesWithStyles);
 
 export default TablesConnected;

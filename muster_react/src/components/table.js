@@ -1,20 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import DragIndicator from "@material-ui/icons/DragIndicator";
-import { Paper, Chip, Grid, Typography, RootRef } from "@material-ui/core/";
-import { Droppable, Draggable } from "react-beautiful-dnd";
-import {
-  makeGetTablePlayerRecords,
-  MovePlayerToPosition
-} from "../store/ducks/tables";
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // change background colour if isDragging
-  background: isDragging ? "lightgreen" : "",
-
-  // styles we need to apply on draggables
-  ...draggableStyle
-});
+import { Paper, Grid, Typography, RootRef } from "@material-ui/core/";
+import { Droppable } from "react-beautiful-dnd";
+import PlayerList from "./player-list";
+import { makeGetTablePlayerRecords } from "../store/ducks/tables";
 
 const Table = props => {
   const { tableUUID, TablePlayerRecords, classes } = props;
@@ -23,36 +12,24 @@ const Table = props => {
       {(provided, snapshot) => {
         return (
           <RootRef rootRef={provided.innerRef}>
-            <div {...provided.droppableProps}>
-              <p>Table: UUID: {tableUUID}</p>
-              <ol>
-                {TablePlayerRecords.map((record, index) => {
-                  return (
-                    <Draggable
-                      key={record.UUID}
-                      draggableId={record.UUID}
-                      index={index}
-                    >
-                      {(provided, snapshot) => (
-                        <RootRef rootRef={provided.innerRef}>
-                          <li
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={getItemStyle(
-                              snapshot.isDragging,
-                              provided.draggableProps.style
-                            )}
-                          >
-                            {record.name}
-                          </li>
-                        </RootRef>
-                      )}
-                    </Draggable>
-                  );
-                })}
-              </ol>
+            <Paper className={classes.Paper} {...provided.droppableProps}>
+              <Typography variant="h5">Table: UUID: {tableUUID}</Typography>
+              <Grid
+                container
+                direction="column"
+                alignContent="flex-start"
+                alignItems="flex-start"
+                justify="flex-start"
+                wrap="nowrap"
+                className={classes.grid}
+              >
+                <PlayerList
+                  playerRecords={TablePlayerRecords}
+                  classes={classes}
+                />
+              </Grid>
               {provided.placeholder}
-            </div>
+            </Paper>
           </RootRef>
         );
       }}
