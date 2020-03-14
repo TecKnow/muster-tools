@@ -8,12 +8,12 @@ import { makeGetTablePlayerRecords } from "../store/ducks/tables";
 const Table = props => {
   const { tableUUID, TablePlayerRecords, classes } = props;
   return (
-    <Droppable droppableId={tableUUID} type="TABLE">
-      {(provided, snapshot) => {
-        return (
-          <RootRef rootRef={provided.innerRef}>
-            <Paper className={classes.Paper} {...provided.droppableProps}>
-              <Typography variant="h5">Table: UUID: {tableUUID}</Typography>
+    <Paper className={classes.Paper}>
+      <Typography variant="h5">Table: UUID: {tableUUID}</Typography>
+      <Droppable droppableId={tableUUID} type="TABLE">
+        {(provided, snapshot) => {
+          return (
+            <RootRef rootRef={provided.innerRef}>
               <Grid
                 container
                 direction="column"
@@ -22,18 +22,19 @@ const Table = props => {
                 justify="flex-start"
                 wrap="nowrap"
                 className={classes.grid}
+                {...provided.droppableProps}
               >
                 <PlayerList
                   playerRecords={TablePlayerRecords}
                   classes={classes}
                 />
+                {provided.placeholder}
               </Grid>
-              {provided.placeholder}
-            </Paper>
-          </RootRef>
-        );
-      }}
-    </Droppable>
+            </RootRef>
+          );
+        }}
+      </Droppable>
+    </Paper>
   );
 };
 
@@ -48,9 +49,6 @@ const makeMapStateToProps = () => {
   return mapStateToProps;
 };
 
-const TableConnected = connect(
-  makeMapStateToProps,
-  undefined
-)(Table);
+const TableConnected = connect(makeMapStateToProps, undefined)(Table);
 
 export default TableConnected;

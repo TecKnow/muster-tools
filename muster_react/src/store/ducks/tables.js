@@ -1,4 +1,4 @@
-import { is, List, Map, Record } from "immutable";
+import { is, List, Map, OrderedSet, Record } from "immutable";
 import { createSelector } from "reselect";
 import uuidv4 from "uuid/v4";
 import FSARecord from "../FSA/fsa-record";
@@ -30,11 +30,7 @@ export const ACTION_TYPES = {
 
 // Action creators
 export const CreateTable_Pure = (state, { UUID }) => {
-  const add_table_event = new FSARecord({
-    type: CREATE_TABLE,
-    payload: UUID !== undefined ? UUID : uuidv4()
-  });
-  return add_table_event;
+  return CreateTable_Stateless({ UUID });
 };
 
 export const DeleteTable_Pure = (state, { UUID }) => {
@@ -51,6 +47,14 @@ export const MovePlayerToPosition_Stateless = ({ player, table, position }) => {
     payload: PlayerTableMoveRecord({ player, table, position })
   });
   return move_player_to_position_event;
+};
+
+export const CreateTable_Stateless = ({ UUID }) => {
+  const add_table_event = new FSARecord({
+    type: CREATE_TABLE,
+    payload: UUID !== undefined ? UUID : uuidv4()
+  });
+  return add_table_event;
 };
 
 export const MovePlayerToPosition_Pure = (
@@ -75,7 +79,8 @@ export const MovePlayerToPosition = (player, table, position) => (
 
 const TABLES_PATH = List.of(TABLES_REDUCER_NAME);
 
-export const getAllTablesUUIDs = state => state.getIn(TABLES_PATH);
+export const getAllTablesUUIDs = state =>
+  OrderedSet.fromKeys(state.getIn(TABLES_PATH));
 export const getTableUUIDs = (state, props) =>
   state.getIn(TABLES_PATH.push(props.tableUUID));
 
@@ -114,7 +119,7 @@ const reduceAddCurrentPlayer = (state, action) => {
 
 const reduceCreateTable = (state, action) => {
   if (is(action.type, CREATE_TABLE) && !action.error) {
-    const new_state = state.set(action.payload.UUID, List());
+    const new_state = state.set(action.payload, List());
     state = new_state;
   }
   return state;
