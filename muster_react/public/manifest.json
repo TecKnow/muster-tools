@@ -1,6 +1,0 @@
-{
-  "short_name": "Muster App",
-  "name": "Adventurer's League Muster App",
-  "start_url": "./index.html",
-  "display": "standalone"
-}
