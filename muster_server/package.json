@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src -d lib",
-    "start": "nodemon --exec babel-node src/index.js",
+    "start": "nodemon --exec babel-node --require dotenv/config src/index.js",
     "serve": "node lib/index.js",
     "test": "jest"
   },
@@ -30,6 +30,7 @@
     "@babel/node": "^7.12.1",
     "@babel/preset-env": "^7.12.1",
     "babel-jest": "^26.5.2",
+    "dotenv": "^8.2.0",
     "jest": "^26.5.3",
     "nodemon": "^2.0.5",
     "prettier": "2.1.2",
@@ -38,6 +39,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.4.0",
     "body-parser": "^1.19.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "redux-logger": "^3.0.6"
   }
 }
