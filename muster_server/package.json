@@ -4,10 +4,15 @@
   "description": "A node.js server for assigning players to tables in multi-table gaming events.",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src -d dist",
+    "build": "babel src -d lib",
     "start": "nodemon --exec babel-node src/index.js",
-    "serve": "node dist/index.js",
+    "serve": "node lib/index.js",
     "test": "jest"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
   },
   "repository": {
     "type": "git",
