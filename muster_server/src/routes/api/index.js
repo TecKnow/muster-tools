@@ -3,7 +3,7 @@ import playersRouter from "./players";
 const router = Router();
 
 router.use("/players", playersRouter);
-router.get("/", (req, res) =>{
+router.get("/", (req, res) => {
   res.send("API route");
 });
 

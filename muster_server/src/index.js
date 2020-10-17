@@ -1,5 +1,5 @@
 import express from "express";
-import {app, server, io, application_static_path} from "./express-app";
+import { app, server, io, application_static_path } from "./express-app";
 import apiRoutes from "./routes/api";
 
 app.use("/api", apiRoutes);

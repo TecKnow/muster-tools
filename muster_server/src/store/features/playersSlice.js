@@ -9,7 +9,7 @@ export const playersSlice = createSlice({
     },
     removePlayer: (state, action) => {
       const removal_index = state.indexOf(action.payload);
-      if(removal_index >= 0 ){
+      if (removal_index >= 0) {
         state.splice(removal_index, 1);
       }
     },

@@ -1,26 +1,33 @@
 import { configureStore } from "@reduxjs/toolkit";
-import createSocketIoMiddleware from 'redux-socket.io'
+import createSocketIoMiddleware from "redux-socket.io";
 import logger from "redux-logger";
-import {io} from "../express-app";
-import store_writer from "./write_store";
+import { io } from "../express-app";
+import { store_writer, store_reader } from "./serialize_store";
+import playersReducer from "./features/playersSlice";
 
 const socketIoMiddleware = createSocketIoMiddleware(io, "");
 
-import playersReducer from "./features/playersSlice";
-export const store = configureStore({
-  reducer: {
-    players: playersReducer,
-  },
-  middleware: (getDefaultMiddleware) => {
-    let res = getDefaultMiddleware()
-    res = res.concat(socketIoMiddleware);
-    if(process.env.NODE_ENV === "development"){
-      res = res.concat(logger);
-    }
-    return res;
-  },
-});
+const makeStore = async () => {
+  const preloadedState = await store_reader();
+  return configureStore({
+    reducer: {
+      players: playersReducer,
+    },
+    middleware: (getDefaultMiddleware) => {
+      let res = getDefaultMiddleware();
+      res = res.concat(socketIoMiddleware);
+      if (process.env.NODE_ENV === "development") {
+        res = res.concat(logger);
+      }
+      return res;
+    },
+    preloadedState,
+  });
+};
 
-export const writer = (process.env.NODE_ENV != "test" ? store_writer()(store) : null);
-
-export default store;
+export const storePromise = makeStore();
+export const writer = (async (store) => {
+  const writer = store_writer()(await store);
+  return writer;
+})(storePromise);
+export default storePromise;
