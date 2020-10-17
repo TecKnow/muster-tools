@@ -1,14 +1,9 @@
 import path from "path";
-import http from "http";
 import express from "express";
-import parser from "body-parser";
-import socket_io from "socket.io";
+import {app, server, io} from "./express-app";
 import apiRoutes from "./routes/api";
 
-const app = new express();
-const server = http.createServer(app);
-const io = socket_io(server);
-app.use(parser.urlencoded({ extended: true }));
+
 app.use("/api", apiRoutes);
 
 const application_root_path = path.join(__dirname, "/../")
