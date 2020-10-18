@@ -1,11 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 export const playersSlice = createSlice({
   name: "players",
   initialState: [],
   reducers: {
-    addPlayer: (state, action) => {
-      state.push(action.payload);
+    addPlayer: {
+      reducer: (state, action) => {
+        state.push(action.payload);
+      },
+      prepare: (name) => {
+        return {
+          payload: {
+            id: nanoid(),
+            name,
+          },
+        };
+      },
     },
     removePlayer: (state, action) => {
       const removal_index = state.indexOf(action.payload);

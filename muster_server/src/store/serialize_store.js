@@ -22,7 +22,6 @@ export const store_writer = (
       save_file_location,
       JSON.stringify(store.getState())
     );
-    console.log("Wrote store to disk");
   };
 
   const throttled_store_watcher = throttle(store_watcher, wait, {
