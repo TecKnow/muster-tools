@@ -1,0 +1,5 @@
+# This file contains the evnironment variable names
+# that the application expects.  This is useful for
+# setting up new .env files since they should not be
+# added to version control.
+NODE_ENV

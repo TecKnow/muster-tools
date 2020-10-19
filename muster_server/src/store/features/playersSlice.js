@@ -1,33 +1,29 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+
+const playersAdapter = createEntityAdapter({
+  sortComparer: (a, b) => a.id.localeCompare(b.id),
+});
 
 export const playersSlice = createSlice({
   name: "players",
-  initialState: [],
+  initialState: playersAdapter.getInitialState(),
   reducers: {
     addPlayer: {
-      reducer: (state, action) => {
-        state.push(action.payload);
-      },
-      prepare: (name) => {
-        return {
-          payload: {
-            id: nanoid(),
-            name,
-          },
-        };
-      },
+      reducer: playersAdapter.addOne,
+      prepare: (name) => ({
+        payload: { id: name },
+      }),
     },
-    removePlayer: (state, action) => {
-      const removal_index = state.indexOf(action.payload);
-      if (removal_index >= 0) {
-        state.splice(removal_index, 1);
-      }
-    },
+    removePlayer: playersAdapter.removeOne,
   },
 });
 
 export const { addPlayer, removePlayer } = playersSlice.actions;
 
-export const selectAllPlayers = (state) => state.players;
+export const {
+  selectAll: selectAllPlayers,
+  selectById: selectPlayerById,
+  selectIds: selectPlayerIds,
+} = playersAdapter.getSelectors((state) => state.players);
 
 export default playersSlice.reducer;
