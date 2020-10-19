@@ -4,6 +4,7 @@ import logger from "redux-logger";
 import { io } from "../express-app";
 import { store_writer, store_reader } from "./serialize_store";
 import playersReducer from "./features/playersSlice";
+import tablesReducer from "./features/tablesSlice";
 
 const socketIoMiddleware = createSocketIoMiddleware(io, "");
 
@@ -12,6 +13,7 @@ const makeStore = async () => {
   return configureStore({
     reducer: {
       players: playersReducer,
+      tables: tablesReducer
     },
     middleware: (getDefaultMiddleware) => {
       let res = getDefaultMiddleware();

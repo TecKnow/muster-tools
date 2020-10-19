@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const { name } = req.body;
   if (!name) {
-    return res.status(400).send("Name is required.");
+    return res.status(400).json({error: "Name is required."});
   }
   const store = await storePromise;
   const selectorResult = selectPlayerById(store.getState(), name);
@@ -37,8 +37,13 @@ router.post("/", async (req, res) => {
 
 router.delete("/:name", async (req, res) => {
   const { name } = req.params;
-  const action = removePlayer(name);
   const store = await storePromise;
+  const state = store.getState();
+  const selector_result = selectPlayerById(state, name)
+  if(!selector_result){
+    return res.status(404).json({id: name, error: "Player not found."});
+  }
+  const action = removePlayer(name);
   store.dispatch(action);
   res.json(await getPlayers());
 });
