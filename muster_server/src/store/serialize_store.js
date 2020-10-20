@@ -38,7 +38,7 @@ export const store_reader = async (
 ) => {
   let data;
   try {
-    data = await fs.promises.readFile(default_save_location, {
+    data = await fs.promises.readFile(read_file_location, {
       encoding: "utf-8",
     });
     data = JSON.parse(data);
