@@ -1,6 +1,6 @@
 import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
-import { addPlayer, removePlayer } from "playersSlice";
-import {removeTable } from "tableSlice";
+import { addPlayer, removePlayer } from "./playersSlice";
+import { removeTable } from "./tablesSlice";
 
 const seatsAdapter = createEntityAdapter();
 
@@ -32,15 +32,13 @@ export const seatsSlice = createSlice({
         const {
           table: source_table,
           position: source_position,
-        } = state.entities.values().filter((item) => item.id == player)[0];
+        } = Object.values(state.entities).filter((item) => item.id == player)[0];
         // Select all assignments at the source table into a sorted array
-        const source_table_list = state.entities
-          .values()
+        const source_table_list = Object.values(state.entities)
           .filter((item) => item.table == source_table)
           .sort(seat_sort_comparer);
         // Select all assignments at the destination table into a sorted array
-        const destination_table_list = state.entities
-          .values()
+        const destination_table_list = Object.values(state.entities)
           .filter((item) => item.table == destination_table)
           .sort(seat_sort_comparer);
         // Manipulate the ordered lists using slice mechanisms as normal
@@ -59,31 +57,29 @@ export const seatsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase([addPlayer], (state, action) => {
-      const id = action.id;
+    builder.addCase(addPlayer, (state, action) => {
+      const id = action.payload.id;
       const table = 0;
       const position = state.ids.length;
-      seatsAdapter.addOne({ id, table, position });
+      seatsAdapter.addOne(state, { id, table, position });
     });
-    builder.addCase([removePlayer], (state, action) => {
+    builder.addCase(removePlayer, (state, action) => {
       const id = action.payload;
-      seatsAdapter.removeOne(id);
+      seatsAdapter.removeOne(state, id);
     });
     // This seems to be the one case where no action is required.
     // builder.addCase([createTable], (state, action) => {});
-    builder.addCase([removeTable], (state, action) => {
+    builder.addCase(removeTable, (state, action) => {
       const table_id = action.payload;
       //Filter and sort the assignments at the removed table.
-      const table_members = state.entities
-        .values()
+      const table_members = Object.values(state.entities)
         .filter((item) => {
           item.table == table_id;
         })
         .sort(seat_sort_comparer);
       // find how many people are already seated at the deck of
       // unassigned players, table 0.
-      const starting_position = state.entities
-        .values()
+      const starting_position = Object.values(state.entities)
         .reducer(
           (accumulator, currentItem) =>
             accumulator + (currentItem.table == 0 ? 1 : 0)
@@ -91,7 +87,7 @@ export const seatsSlice = createSlice({
       // update the players from the removed table as though
       // they were being appended to table 0.
       const updated_players = table_updater(table_members, starting_position);
-      seatsAdapter.updateMany(updated_players);
+      seatsAdapter.updateMany(state, updated_players);
     });
   },
 });
@@ -103,5 +99,11 @@ export const {
   selectById: selectSeatById,
   selectIds: selectSeatIds,
 } = seatsAdapter.getSelectors((state) => state.seats);
+
+export const selectTableSeats = (state, tableId) =>
+  Object.values(state.seats.entities).filter((seat) => seat.table == tableId);
+
+export const selectPlayerSeat = (state, playerName) =>
+  Object.values(state.seats.entities).filter((seat) => seat.id == playerName);
 
 export default seatsSlice.reducer;

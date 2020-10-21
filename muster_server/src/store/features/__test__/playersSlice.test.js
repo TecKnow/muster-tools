@@ -1,0 +1,40 @@
+import playersReducer, {
+  addPlayer,
+  removePlayer,
+  playersSlice,
+} from "../playersSlice";
+
+const initial_state = playersSlice.initial_state;
+
+test("add and remove players", () => {
+  const add_alice_state = playersReducer(initial_state, addPlayer("Alice"));
+  expect(add_alice_state).toEqual({
+    ids: ["Alice"],
+    entities: { Alice: { id: "Alice" } },
+  });
+  const add_charlie_state = playersReducer(
+    add_alice_state,
+    addPlayer("Charlie")
+  );
+  expect(add_charlie_state).toEqual({
+    ids: ["Alice", "Charlie"],
+    entities: { Alice: { id: "Alice" }, Charlie: { id: "Charlie" } },
+  });
+  const add_bob_state = playersReducer(add_charlie_state, addPlayer("Bob"));
+  expect(add_bob_state).toEqual({
+    ids: ["Alice", "Bob", "Charlie"],
+    entities: {
+      Alice: { id: "Alice" },
+      Charlie: { id: "Charlie" },
+      Bob: { id: "Bob" },
+    },
+  });
+  const remove_alice_state = playersReducer(
+    add_bob_state,
+    removePlayer("Alice")
+  );
+  expect(remove_alice_state).toEqual({
+    ids: ["Bob", "Charlie"],
+    entities: { Charlie: { id: "Charlie" }, Bob: { id: "Bob" } },
+  });
+});

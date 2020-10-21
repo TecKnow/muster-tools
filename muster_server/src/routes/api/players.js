@@ -6,6 +6,7 @@ import {
   selectPlayerById,
   selectPlayerIds
 } from "../../store/features/playersSlice";
+import { selectPlayerSeat } from "../../store/features/seatsSlice";
 
 const router = Router();
 
@@ -35,6 +36,19 @@ router.post("/", async (req, res) => {
   return res.json(await getPlayers());
 });
 
+router.get("/:name", async (req, res) =>{
+  const {name} = req.params;
+  const store = await storePromise;
+  const state = store.getState();
+  const selectorResult = selectPlayerSeat(state, name);
+  if(selectorResult.length == 0){
+    return res.status(404).json({id: name, error: "Player not found"});
+  } else if(selectorResult.length > 1){
+    return res.status(500).json({id: name, error:"Duplicate records found for player seat", records: selectorResult});
+  }
+  return res.json(...selectorResult);
+});
+
 router.delete("/:name", async (req, res) => {
   const { name } = req.params;
   const store = await storePromise;
@@ -45,7 +59,7 @@ router.delete("/:name", async (req, res) => {
   }
   const action = removePlayer(name);
   store.dispatch(action);
-  res.json(await getPlayers());
+  return res.json(await getPlayers());
 });
 
 export default router;
