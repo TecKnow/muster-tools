@@ -15,7 +15,7 @@ const makeStore = async () => {
     reducer: {
       players: playersReducer,
       tables: tablesReducer,
-      seats: seatsReducer
+      seats: seatsReducer,
     },
     middleware: (getDefaultMiddleware) => {
       let res = getDefaultMiddleware();

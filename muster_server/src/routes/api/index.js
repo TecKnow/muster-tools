@@ -1,7 +1,7 @@
 import { Router } from "express";
 import storePromise from "../../store";
 import playersRouter from "./players";
-import tablesRouter from "./tables"
+import tablesRouter from "./tables";
 const router = Router();
 
 router.use("/players", playersRouter);

@@ -48,7 +48,9 @@ router.get("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   if (id == 0) {
-    return res.status(405).json({ id, error: "Default table cannot be deleted." });
+    return res
+      .status(405)
+      .json({ id, error: "Default table cannot be deleted." });
   }
   const store = await storePromise;
   const state = store.getState();

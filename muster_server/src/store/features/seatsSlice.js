@@ -32,7 +32,9 @@ export const seatsSlice = createSlice({
         const {
           table: source_table,
           position: source_position,
-        } = Object.values(state.entities).filter((item) => item.id == player)[0];
+        } = Object.values(state.entities).filter(
+          (item) => item.id == player
+        )[0];
         // Select all assignments at the source table into a sorted array
         const source_table_list = Object.values(state.entities)
           .filter((item) => item.table == source_table)
@@ -79,11 +81,10 @@ export const seatsSlice = createSlice({
         .sort(seat_sort_comparer);
       // find how many people are already seated at the deck of
       // unassigned players, table 0.
-      const starting_position = Object.values(state.entities)
-        .reducer(
-          (accumulator, currentItem) =>
-            accumulator + (currentItem.table == 0 ? 1 : 0)
-        );
+      const starting_position = Object.values(state.entities).reducer(
+        (accumulator, currentItem) =>
+          accumulator + (currentItem.table == 0 ? 1 : 0)
+      );
       // update the players from the removed table as though
       // they were being appended to table 0.
       const updated_players = table_updater(table_members, starting_position);
