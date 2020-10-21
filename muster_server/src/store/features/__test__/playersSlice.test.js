@@ -1,12 +1,12 @@
-import playersReducer, {
-  addPlayer,
-  removePlayer,
-  playersSlice,
-} from "../playersSlice";
+import playersReducer, { addPlayer, removePlayer } from "../playersSlice";
 
-const initial_state = playersSlice.initial_state;
+const initial_state = playersReducer.initial_state;
 
 test("add and remove players", () => {
+  /**
+   * Demonstrate that players can be added and removed,
+   * and that the Ids array remains sorted throughout.
+   */
   const add_alice_state = playersReducer(initial_state, addPlayer("Alice"));
   expect(add_alice_state).toEqual({
     ids: ["Alice"],

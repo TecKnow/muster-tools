@@ -7,7 +7,7 @@
     "build": "babel src -d lib",
     "start": "nodemon --exec babel-node --require dotenv/config src/index.js",
     "serve": "node lib/index.js",
-    "test": "jest"
+    "test": "jest --watch"
   },
   "jest": {
     "transform": {

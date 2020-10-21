@@ -22,12 +22,12 @@ export const tablesSlice = createSlice({
     },
     removeTable: {
       reducer: (state, action) => {
-        if (action.payload.id != 0) {
+        if (action.payload != 0) {
           tablesAdapter.removeOne(state, action);
         }
       },
       prepare: (tableId) => {
-        const action = { payload: { id: tableId } };
+        const action = { payload: tableId };
         if (tableId == 0) {
           action.error = true;
         }
