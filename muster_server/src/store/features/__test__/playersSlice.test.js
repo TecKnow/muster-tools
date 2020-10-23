@@ -38,3 +38,5 @@ test("add and remove players", () => {
     entities: { Charlie: { id: "Charlie" }, Bob: { id: "Bob" } },
   });
 });
+
+// TODO: #8 Add tests to show that player names must be unique.

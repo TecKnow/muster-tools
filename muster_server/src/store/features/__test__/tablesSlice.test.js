@@ -1,7 +1,4 @@
-import tablesReducer, {
-  createTable,
-  removeTable,
-} from "../tablesSlice";
+import tablesReducer, { createTable, removeTable } from "../tablesSlice";
 
 test("Add and remove tables", () => {
   /**
