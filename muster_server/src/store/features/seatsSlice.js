@@ -30,9 +30,10 @@ const find_table = (seat_entities, tableId) =>
 
 const find_player_seat = (seat_entities, playerId) => seat_entities[playerId];
 
-const seat_sort_comparer = (a, b) => a.position - b.position;
+const seat_sort_comparer = (a, b) =>
+  a.table == b.table ? a.position - b.position : a.table - b.table;
 
-//TODO: #9 Add reset action.
+// TODO: #10 Add shuffle action
 
 export const seatsSlice = createSlice({
   name: "seats",
@@ -85,6 +86,12 @@ export const seatsSlice = createSlice({
         payload: { id: player, table, position },
       }),
     },
+    resetSeats: (state) => {
+      update_table(
+        [...Object.values(state.entities)].sort(seat_sort_comparer),
+        0
+      );
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(addPlayer, (state, action) => {
@@ -125,7 +132,7 @@ export const seatsSlice = createSlice({
   },
 });
 
-export const { assignSeat } = seatsSlice.actions;
+export const { assignSeat, resetSeats } = seatsSlice.actions;
 
 export const {
   selectAll: selectAllSeats,

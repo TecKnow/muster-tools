@@ -2,6 +2,7 @@ import { addPlayer, removePlayer } from "../playersSlice";
 import { removeTable } from "../tablesSlice";
 import seatsSliceReducer, {
   assignSeat,
+  resetSeats,
   selectTableSeats,
   selectPlayerSeat,
   seatsSlice,
@@ -112,6 +113,23 @@ test("remove a table", () => {
     removeTable(1)
   );
   expect(remove_table_state).toEqual({
+    ids: ["Alice", "Bob", "Charlie", "Dan"],
+    entities: {
+      Alice: { id: "Alice", table: 0, position: 0 },
+      Bob: { id: "Bob", table: 0, position: 1 },
+      Charlie: { id: "Charlie", table: 0, position: 3 },
+      Dan: { id: "Dan", table: 0, position: 2 },
+    },
+  });
+});
+
+test("reset all seats", () => {
+  const reset_state = seatsSliceReducer(
+    four_players_one_table_state,
+    resetSeats()
+  );
+  console.log(reset_state);
+  expect(reset_state).toEqual({
     ids: ["Alice", "Bob", "Charlie", "Dan"],
     entities: {
       Alice: { id: "Alice", table: 0, position: 0 },
