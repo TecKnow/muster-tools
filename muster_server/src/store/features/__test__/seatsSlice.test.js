@@ -3,10 +3,19 @@ import { removeTable } from "../tablesSlice";
 import seatsSliceReducer, {
   assignSeat,
   resetSeats,
+  shuffleZeroThunk,
   selectTableSeats,
   selectPlayerSeat,
-  seatsSlice,
+  _set_reducer_path_fetch,
 } from "../seatsSlice";
+
+beforeEach(() => {
+  _set_reducer_path_fetch((state) => state);
+});
+
+afterEach(() => {
+  _set_reducer_path_fetch();
+});
 
 const initial_state = seatsSliceReducer(undefined, "");
 const four_player_starting_state = {
@@ -123,12 +132,54 @@ test("remove a table", () => {
   });
 });
 
+test("remove table 0", () => {
+  const remove_table_zero_state = seatsSliceReducer(
+    four_players_one_table_state,
+    removeTable(0)
+  );
+  expect(remove_table_zero_state).toEqual(four_players_one_table_state);
+});
+
+test("Shuffle action", () => {
+  const mockDispatch = jest.fn().mockName("mockDispatch");
+  const mockGetState = jest
+    .fn()
+    .mockName("mockGetState")
+    .mockReturnValue(four_player_starting_state);
+  shuffleZeroThunk()(mockDispatch, mockGetState);
+  expect(mockGetState).toHaveBeenCalled();
+  expect(mockDispatch).toHaveBeenCalled();
+  const action = mockDispatch.mock.calls[0][0];
+  expect(action).toHaveProperty("type", "seats/shuffleZero");
+  expect(action).toHaveProperty("payload");
+  const payload = action.payload;
+  expect(payload).toHaveLength(4);
+  expect([...payload].sort()).toEqual([...Array(4).keys()]);
+});
+
+test("Shuffle Reducer", () => {
+  const mockDispatch = jest.fn().mockName("mockDispatch");
+  const mockGetState = jest
+    .fn()
+    .mockName("mockGetState")
+    .mockReturnValue(four_player_starting_state);
+  shuffleZeroThunk()(mockDispatch, mockGetState);
+  expect(mockGetState).toHaveBeenCalled();
+  expect(mockDispatch).toHaveBeenCalled();
+  const action = mockDispatch.mock.calls[0][0];
+  const payload = action.payload;
+  const shuffled_state = seatsSliceReducer(four_player_starting_state, action);
+  const shuffled_entities = Object.values(shuffled_state.entities);
+  shuffled_entities.forEach((value, index) => {
+    expect(value.position).toEqual(payload[index]);
+  });
+});
+
 test("reset all seats", () => {
   const reset_state = seatsSliceReducer(
     four_players_one_table_state,
     resetSeats()
   );
-  console.log(reset_state);
   expect(reset_state).toEqual({
     ids: ["Alice", "Bob", "Charlie", "Dan"],
     entities: {
@@ -140,10 +191,27 @@ test("reset all seats", () => {
   });
 });
 
-test("remove table 0", () => {
-  const remove_table_zero_state = seatsSliceReducer(
-    four_players_one_table_state,
-    removeTable(0)
-  );
-  expect(remove_table_zero_state).toEqual(four_players_one_table_state);
+test("selectTableSeats", () => {
+  expect(selectTableSeats(four_player_starting_state, 0)).toEqual([
+    { id: "Alice", position: 0, table: 0 },
+    { id: "Bob", position: 1, table: 0 },
+    { id: "Charlie", position: 2, table: 0 },
+    { id: "Dan", position: 3, table: 0 },
+  ]);
+  expect(selectTableSeats(four_players_one_table_state, 1)).toEqual([
+    { id: "Charlie", position: 1, table: 1 },
+    { id: "Dan", position: 0, table: 1 },
+  ]);
+});
+test("selectPlayerSeat", () => {
+  expect(selectPlayerSeat(four_players_one_table_state, "Charlie")).toEqual({
+    id: "Charlie",
+    table: 1,
+    position: 1,
+  });
+  expect(selectPlayerSeat(four_player_starting_state, "Alice")).toEqual({
+    id: "Alice",
+    table: 0,
+    position: 0,
+  });
 });

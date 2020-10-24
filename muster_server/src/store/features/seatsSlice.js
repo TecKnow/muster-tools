@@ -129,21 +129,57 @@ export const seatsSlice = createSlice({
       // they were being appended to table 0.
       update_table(table_members, 0, starting_position);
     });
+    builder.addCase("seats/shuffleZero", (state, action) => {
+      const new_positions = action.payload;
+      const table_zero_list = find_table(state, 0);
+      table_zero_list.forEach((element, index) => {
+        element.position = new_positions[index];
+      });
+    });
   },
 });
 
+export const shuffleZeroThunk = () => (dispatch, getState) => {
+  const ACTION_TYPE = "seats/shuffleZero";
+  // Why are we creating an array of a range of integers?
+  // To minimize the amount of work done in the action creator.
+  const num_players_to_shuffle = selectTableSeats(getState(), 0).length;
+  const positions_array = [...Array(num_players_to_shuffle).keys()];
+  // Knuth shuffle
+  for (let i = positions_array.lenght - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * i);
+    [positions_array[i], positions_array[j]] = [
+      positions_array[j],
+      positions_array[i],
+    ];
+  }
+  dispatch({ type: ACTION_TYPE, payload: [...positions_array] });
+};
+
 export const { assignSeat, resetSeats } = seatsSlice.actions;
+
+export const _default_reducer_path_fetch = (state) => state.sets;
+
+let _reducer_path_fetch = _default_reducer_path_fetch;
+
+export const _set_reducer_path_fetch = (
+  fetch_function = _default_reducer_path_fetch
+) => {
+  _reducer_path_fetch = fetch_function;
+};
 
 export const {
   selectAll: selectAllSeats,
   selectById: selectSeatById,
   selectIds: selectSeatIds,
-} = seatsAdapter.getSelectors((state) => state.seats);
+} = seatsAdapter.getSelectors(_reducer_path_fetch);
 
 export const selectTableSeats = (state, tableId) =>
-  Object.values(state.seats.entities).filter((seat) => seat.table == tableId);
+  Object.values(_reducer_path_fetch(state).entities).filter(
+    (seat) => seat.table == tableId
+  );
 
 export const selectPlayerSeat = (state, playerName) =>
-  Object.values(state.seats.entities).filter((seat) => seat.id == playerName);
+  _reducer_path_fetch(state).entities[playerName];
 
 export default seatsSlice.reducer;
