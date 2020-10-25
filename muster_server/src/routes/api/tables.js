@@ -1,5 +1,5 @@
 import { Router } from "express";
-import storePromise from "../../store";
+import store from "../../store";
 import { selectTableSeats } from "../../store/features/seatsSlice";
 import {
   createTable,
@@ -10,20 +10,18 @@ import {
 
 const router = Router();
 
-const getTables = async () => {
-  const store = await storePromise;
+const getTables = () => {
   const state = store.getState();
   const tables = selectTableIds(state);
   return tables;
 };
 
-router.get("/", async (req, res) => {
-  return res.json(await getTables());
+router.get("/", (req, res) => {
+  return res.json(getTables());
 });
 
-router.post("/", async (req, res) => {
+router.post("/", (req, res) => {
   const action = createTable();
-  const store = await storePromise;
   const state = store.getState();
   // This does not selelect the table ID
   // Rather it predicts it, since the store
@@ -34,9 +32,8 @@ router.post("/", async (req, res) => {
   return res.status(201).json({ id: table_id });
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", (req, res) => {
   const { id } = req.params;
-  const store = await storePromise;
   const state = store.getState();
   const selector_result = selectTableSeats(state, id);
   if (selector_result.length == 0) {
@@ -45,14 +42,13 @@ router.get("/:id", async (req, res) => {
   return res.json(selector_result);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", (req, res) => {
   const { id } = req.params;
   if (id == 0) {
     return res
       .status(405)
       .json({ id, error: "Default table cannot be deleted." });
   }
-  const store = await storePromise;
   const state = store.getState();
   const selector_result = selectTableById(state, id);
   if (selector_result.length == 0) {
@@ -61,7 +57,7 @@ router.delete("/:id", async (req, res) => {
   //TODO: What if there is more than one result?
   const action = removeTable(id);
   store.dispatch(action);
-  return res.json(await getTables());
+  return res.json(getTables());
 });
 
 export default router;

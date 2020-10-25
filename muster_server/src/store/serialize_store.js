@@ -3,12 +3,12 @@ import path from "path";
 import { throttle } from "lodash";
 import { application_root_path } from "../express-app";
 
-// By default, don't write the store to disk more than once every 10 seconds.
-
 export const default_save_location = path.join(
   application_root_path,
   "/data/store_data.json"
 );
+
+// By default, don't write the store to disk more than once every 10 seconds.
 const default_throttle_time = 10000;
 
 export const store_writer = (
@@ -33,12 +33,10 @@ export const store_writer = (
   return { unsubscribe, cancel, flush };
 };
 
-export const store_reader = async (
-  read_file_location = default_save_location
-) => {
+export const store_reader = (read_file_location = default_save_location) => {
   let data;
   try {
-    data = await fs.promises.readFile(read_file_location, {
+    data = fs.readFileSync(read_file_location, {
       encoding: "utf-8",
     });
     data = JSON.parse(data);
