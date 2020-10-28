@@ -15,10 +15,9 @@ export const store_writer = (
   save_file_location = default_save_location,
   wait = default_throttle_time,
   { leading = true, trailing = true } = {}
-) => async (storePromise) => {
-  const store = await storePromise;
+) => (store) => {
   const store_watcher = async () => {
-    await fs.promises.writeFile(
+    return await fs.promises.writeFile(
       save_file_location,
       JSON.stringify(store.getState())
     );
@@ -28,9 +27,12 @@ export const store_writer = (
     leading,
     trailing,
   });
-  const { cancel, flush } = throttled_store_watcher;
   const unsubscribe = store.subscribe(throttled_store_watcher);
-  return { unsubscribe, cancel, flush };
+  return {
+    unsubscribe,
+    throttled_writer_fn: throttled_store_watcher,
+    writer_fn: store_watcher,
+  };
 };
 
 export const store_reader = (read_file_location = default_save_location) => {

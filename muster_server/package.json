@@ -7,7 +7,8 @@
     "build": "babel src -d lib",
     "start": "nodemon --exec babel-node --require dotenv/config src/index.js",
     "serve": "node lib/index.js",
-    "test": "jest --watch"
+    "test": "jest",
+    "test:watch": "npm test -- --watch"
   },
   "jest": {
     "transform": {
@@ -37,7 +38,8 @@
     "jest": "^26.5.3",
     "nodemon": "^2.0.5",
     "prettier": "2.1.2",
-    "redux-devtools": "^3.7.0"
+    "redux-devtools": "^3.7.0",
+    "tmp-promise": "^3.0.2"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.4.0",

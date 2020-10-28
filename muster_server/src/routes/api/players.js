@@ -17,10 +17,10 @@ const getPlayers = () => {
 };
 
 router.get("/", (req, res) => {
-  return res.json( getPlayers());
+  return res.json(getPlayers());
 });
 
-router.post("/",  (req, res) => {
+router.post("/", (req, res) => {
   const { name } = req.body;
   if (!name) {
     return res.status(400).json({ error: "Name is required." });
@@ -33,7 +33,7 @@ router.post("/",  (req, res) => {
   }
   const action = addPlayer(name);
   store.dispatch(action);
-  return res.json( getPlayers());
+  return res.json(getPlayers());
 });
 
 router.get("/:name", async (req, res) => {
@@ -61,7 +61,7 @@ router.delete("/:name", (req, res) => {
   }
   const action = removePlayer(name);
   store.dispatch(action);
-  return res.json( getPlayers());
+  return res.json(getPlayers());
 });
 
 export default router;

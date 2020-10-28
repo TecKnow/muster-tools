@@ -9,8 +9,8 @@ import seatsReducer from "./features/seatsSlice";
 
 const socketIoMiddleware = createSocketIoMiddleware(io, "");
 
-const makeStore = () => {
-  const preloadedState = store_reader();
+export const _makeStore = (initial_state = store_reader()) => {
+  const preloadedState = initial_state;
   return configureStore({
     reducer: {
       players: playersReducer,
@@ -29,7 +29,7 @@ const makeStore = () => {
   });
 };
 
-export const store = makeStore();
+export const store = _makeStore();
 export const writer = (async (store) => {
   const writer = store_writer()(await store);
   return writer;
