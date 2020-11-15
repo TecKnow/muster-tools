@@ -4,12 +4,7 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: [
-    "eslint:recommended",
-    "plugin:jest/recommended",
-    "plugin:jest/style",
-    "prettier",
-  ],
+  extends: ["react-app", "prettier"],
 
   parserOptions: {
     ecmaVersion: 12,
