@@ -30,8 +30,5 @@ export const _makeStore = (initial_state = store_reader()) => {
 };
 
 export const store = _makeStore();
-export const writer = (async (store) => {
-  const writer = store_writer()(await store);
-  return writer;
-})(store);
+export const writer = store_writer()(store);
 export default store;
