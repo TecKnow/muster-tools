@@ -1,13 +1,12 @@
 import { Router } from "express";
-import storePromise from "../../store";
+import store from "../../store";
 import playersRouter from "./players";
 import tablesRouter from "./tables";
 const router = Router();
 
 router.use("/players", playersRouter);
 router.use("/tables", tablesRouter);
-router.get("/", async (req, res) => {
-  const store = await storePromise;
+router.get("/", (req, res) => {
   res.json(store.getState());
 });
 

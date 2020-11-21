@@ -4,10 +4,14 @@ import express from "express";
 import parser from "body-parser";
 import socket_io from "socket.io";
 
-export const application_root_path = path.join(__dirname, "/../");
+export const application_root_path = path.join(__dirname, "/../../");
 export const application_static_path = path.join(
   application_root_path,
-  "/public"
+  "/muster_client/build"
+);
+export const application_SPA_path = path.join(
+  application_static_path,
+  "index.html"
 );
 
 export const app = new express();

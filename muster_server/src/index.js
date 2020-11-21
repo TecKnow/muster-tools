@@ -1,18 +1,31 @@
 import express from "express";
-import { app, server, io, application_static_path } from "./express-app";
+import {
+  app,
+  server,
+  io,
+  application_static_path,
+  application_SPA_path,
+} from "./express-app";
 import apiRoutes from "./routes/api";
 
-app.use("/api", apiRoutes);
-app.use("/", express.static(application_static_path));
+if (process.env.NODE_ENV === "production") {
+  app.use("/", express.static(application_static_path));
+  app.get("/*", (req, res) => {
+    res.sendFile(application_SPA_path);
+  });
+}
 
-const port = process.env.PORT || 3000;
+// NOTE: Right now the server's own static files, which contain only the chat-style interface, don't get served.
+app.use("/api", apiRoutes);
+
+const port = process.env.PORT || 5000;
 server.listen(port);
 console.log(`listening on port ${port}`);
 
 io.on("connection", (socket) => {
   console.log("a user connected");
-  socket.on("chat message", (msg) => {
-    console.log(`message: ${msg}`);
+  socket.on("action", (msg) => {
+    console.log(`action: ${msg}`);
   });
   socket.on("disconnect", () => {
     console.log("a user has disconnected");
