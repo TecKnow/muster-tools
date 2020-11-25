@@ -2,9 +2,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
 import logger from "redux-logger";
 import createSocketIoMiddleware from "redux-socket.io";
-import io from "socket.io-client";
-let socket = io("http://localhost:3000");
-let socketIoMiddleware = createSocketIoMiddleware(socket, "server/");
+import socket from "../socket.io-config";
+
+const socketIoMiddleware = createSocketIoMiddleware(socket, "server/");
 
 const store = configureStore({
   reducer: {
@@ -21,5 +21,3 @@ const store = configureStore({
 });
 
 export default store;
-
-store.subscribe();

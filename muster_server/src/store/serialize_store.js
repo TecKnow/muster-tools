@@ -5,7 +5,7 @@ import { application_root_path } from "../express-app";
 
 export const default_save_location = path.join(
   application_root_path,
-  "/data/store_data.json"
+  "muster_server/data/store_data.json"
 );
 
 // By default, don't write the store to disk more than once every 10 seconds.

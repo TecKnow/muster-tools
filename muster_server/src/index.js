@@ -1,8 +1,10 @@
+import path from "path";
 import express from "express";
 import {
   app,
   server,
   io,
+  application_root_path,
   application_static_path,
   application_SPA_path,
 } from "./express-app";
@@ -12,6 +14,11 @@ if (process.env.NODE_ENV === "production") {
   app.use("/", express.static(application_static_path));
   app.get("/*", (req, res) => {
     res.sendFile(application_SPA_path);
+  });
+}
+else{
+  app.get("/", (req,res)=>{
+    res.sendFile(path.join(application_root_path, "/muster_server/public/index.html"));
   });
 }
 
