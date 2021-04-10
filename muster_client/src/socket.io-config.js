@@ -15,3 +15,4 @@ console.log("Registering handler for all events");
 socket.onAny((eventName, ...args) => {
   console.log(`Event Name: ${eventName}`);
 });
+
