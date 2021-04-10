@@ -25,13 +25,13 @@ const update_table = (table, tableId = undefined, starting_index = 0) => {
 
 const find_table = (seat_entities, tableId) =>
   Object.values(seat_entities)
-    .filter((item) => item.table == tableId)
+    .filter((item) => item.table === tableId)
     .sort(seat_sort_comparer);
 
 const find_player_seat = (seat_entities, playerId) => seat_entities[playerId];
 
 const seat_sort_comparer = (a, b) =>
-  a.table == b.table ? a.position - b.position : a.table - b.table;
+  a.table === b.table ? a.position - b.position : a.table - b.table;
 
 // TODO: #10 Add shuffle action
 
@@ -113,7 +113,7 @@ export const seatsSlice = createSlice({
     // builder.addCase([createTable], (state, action) => {});
     builder.addCase(removeTable, (state, action) => {
       const table_id = action.payload;
-      if (table_id == 0) {
+      if (table_id === 0) {
         return state;
       }
       //Filter and sort the assignments at the removed table.
@@ -122,7 +122,7 @@ export const seatsSlice = createSlice({
       // unassigned players, table 0.
       const starting_position = Object.values(state.entities).reduce(
         (accumulator, currentItem) =>
-          accumulator + (currentItem.table == 0 ? 1 : 0),
+          accumulator + (currentItem.table === 0 ? 1 : 0),
         0
       );
       // update the players from the removed table as though
@@ -176,7 +176,7 @@ export const {
 
 export const selectTableSeats = (state, tableId) =>
   Object.values(_reducer_path_fetch(state).entities).filter(
-    (seat) => seat.table == tableId
+    (seat) => seat.table === tableId
   );
 
 export const selectPlayerSeat = (state, playerName) =>

@@ -22,13 +22,13 @@ export const tablesSlice = createSlice({
     },
     removeTable: {
       reducer: (state, action) => {
-        if (action.payload != 0) {
+        if (action.payload !== 0) {
           tablesAdapter.removeOne(state, action);
         }
       },
       prepare: (tableId) => {
         const action = { payload: tableId };
-        if (tableId == 0) {
+        if (tableId === 0) {
           action.error = true;
         }
         return action;
