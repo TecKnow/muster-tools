@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -7,6 +7,8 @@ import PersonAddOutlinedIcon from '@material-ui/icons/PersonAddOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import axios from "./axios-config";
+import qs from "qs"
 
 /* Based on the sign-in template available at the following URL:
  * https://github.com/mui-org/material-ui/tree/master/docs/src/pages/getting-started/templates/sign-in
@@ -35,6 +37,24 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
     const classes = useStyles();
 
+    const registerPlayer = async (playerName) => {
+        try {
+            const response = await axios.post("/api/players", qs.stringify({ name: playerName }));
+            console.log(response);
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    const [playerName, setPlayerName] = useState('');
+    const onPlayerNameChange = (event) => setPlayerName(event.target.value);
+    const onPlayerSubmit = (event) => {
+        event.preventDefault();
+        registerPlayer(playerName);
+        setPlayerName('');
+    }
+
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -45,7 +65,7 @@ export default function SignIn() {
                 <Typography component="h1" variant="h5">
                     Sign in
         </Typography>
-                <form className={classes.form}>
+                <form className={classes.form} onSubmit={onPlayerSubmit}>
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -53,7 +73,9 @@ export default function SignIn() {
                         fullWidth
                         id="playername"
                         label="player name"
-                        name="player_name"
+                        name="playerName"
+                        value={playerName}
+                        onChange={onPlayerNameChange}
                         autoFocus
                     />
                     <Button
