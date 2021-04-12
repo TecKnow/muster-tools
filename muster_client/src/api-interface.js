@@ -1,5 +1,5 @@
-import axios from "./axios-config";
 import qs from "qs";
+import axios from "./axios-config";
 
 
 export const getServerState = async () => {
@@ -8,13 +8,8 @@ export const getServerState = async () => {
 }
 
 export const addPlayer = async (playerName) => {
-    try {
-        const response = await axios.post("/api/players", qs.stringify({ name: playerName }));
-        return response;
-    }
-    catch (error) {
-        throw (error)
-    }
+    const response = await axios.post("/api/players", qs.stringify({ name: playerName }));
+    return response;
 }
 
 export default axios
