@@ -158,7 +158,7 @@ export const shuffleZeroThunk = () => (dispatch, getState) => {
 
 export const { assignSeat, resetSeats } = seatsSlice.actions;
 
-export const _default_reducer_path_fetch = (state) => state.sets;
+export const _default_reducer_path_fetch = (state) => state.seats;
 
 let _reducer_path_fetch = _default_reducer_path_fetch;
 

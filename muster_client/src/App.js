@@ -1,7 +1,8 @@
 import React from 'react';
 import { Redirect, Route, Switch } from "react-router-dom";
 import MusterBottomNavigation from "./MusterNavigationFrame"
-import SignIn from "./signin";
+import SignIn from "./Signin";
+import TablesFrame from "./TablesFrame"
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
           <SignIn />
         </Route>
         <Route path ="/tables">
-          <h1>HELLO TABLE WORLD!</h1>
+          <TablesFrame/>
         </Route>
         <Route path="/">
           <Redirect to="/signin" />

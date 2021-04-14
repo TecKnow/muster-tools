@@ -1,5 +1,5 @@
 import { Container, CssBaseline } from '@material-ui/core';
-import RouterBottomNavigation from "./RouterBottomNavigationBar"
+import RouterBottomNavigation from "./RouterBottomNavigation"
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import { makeStyles } from '@material-ui/core/styles';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';

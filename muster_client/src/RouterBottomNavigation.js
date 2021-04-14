@@ -23,11 +23,12 @@ export default function RouterBottomNavigation({ children }) {
         const matchIndex = childrenArray.findIndex(buttonMatcher);
         return matchIndex;
     }
+    const NavValue = NavValueFunc(children);
 
     return (<BottomNavigation
         showLabels
         className={classes.root}
-        value={NavValueFunc(children)}
+        value={NavValue}
     >
         {children}
     </BottomNavigation>
