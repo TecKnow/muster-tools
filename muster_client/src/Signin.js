@@ -5,9 +5,11 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import PersonAddOutlinedIcon from '@material-ui/icons/PersonAddOutlined';
 import Typography from '@material-ui/core/Typography';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {addPlayer} from "./api-interface";
+import { addPlayer } from "./api-interface";
 
 /* Based on the sign-in template available at the following URL:
  * https://github.com/mui-org/material-ui/tree/master/docs/src/pages/getting-started/templates/sign-in
@@ -47,7 +49,15 @@ export default function SignIn() {
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
+            <AppBar position="fixed" className={classes.appBar}>
+                <Toolbar>
+                    <Typography variant="h6" noWrap>
+                        Sign-In
+          </Typography>
+                </Toolbar>
+            </AppBar>
             <div className={classes.paper}>
+            <Toolbar/>
                 <Avatar className={classes.avatar}>
                     <PersonAddOutlinedIcon />
                 </Avatar>
