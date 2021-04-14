@@ -7,10 +7,10 @@ import Table from "./Table";
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
-        flexDirection: "column",
+        flexDirection: "row",
         flexWrap: 'wrap',
         '& > *': {
-
+            
         },
     },
 }));
