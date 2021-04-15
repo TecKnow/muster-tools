@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "flex-start",
         justifyItems: "flex-start",
         '& > *': {
-            margin: theme.spacing(1)
+            margin: theme.spacing(0.5)
         },
     },
 }));

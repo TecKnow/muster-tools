@@ -12,4 +12,9 @@ export const addPlayer = async (playerName) => {
     return response;
 }
 
+export const addTable = async () =>{
+    const response = await axios.post("/api/tables");
+    return response;
+}
+
 export default axios
