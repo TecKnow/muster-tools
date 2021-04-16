@@ -7,8 +7,8 @@ import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
     playerListArea: {
-        minHeight: theme.spacing(1),
-        minWidth: theme.spacing(1),
+        minHeight: theme.spacing(5),
+        minWidth: theme.spacing(15),
         display: 'flex',
         flexDirection: "column",
         flexWrap: 'nowrap',

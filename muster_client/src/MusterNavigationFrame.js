@@ -28,7 +28,7 @@ export default function MusterNavigationFrame({ children }) {
     return (
         <div className={classes.root}>
             <CssBaseline />
-            <Container component="main" className={classes.main} maxWidth="sm">
+            <Container component="main" className={classes.main} maxWidth="lg">
                 {children}
             </Container>
             <footer className={classes.footer}>
