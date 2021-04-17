@@ -10,7 +10,7 @@ const update_table = (table, tableId = undefined, starting_index = 0) => {
    * in the passed in list.
    *
    * TableId must be provided if players may be
-   * moving between tables.  Otherwise, it takes teh value of the first
+   * moving between tables.  Otherwise, it takes the value of the first
    * seat assignment in the list.
    */
   if (typeof tableId == "undefined") {

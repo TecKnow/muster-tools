@@ -8,6 +8,7 @@ import App from './App';
 import getStore from './app/store';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
+import ApplicationDragDropContext from "./ApplicationDragDropContext"
 
 const render = async () => {
   const store = await getStore();
@@ -15,8 +16,10 @@ const render = async () => {
     <React.StrictMode>
       <Provider store={store}>
         <Router>
-          <CssBaseline />
-          <App />
+          <ApplicationDragDropContext>
+            <CssBaseline />
+            <App />
+          </ApplicationDragDropContext>
         </Router>
       </Provider>
     </React.StrictMode>,

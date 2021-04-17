@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TableSpread = (tableIds) => {
-    return tableIds.map(tableId => (<Grid item xs={12} sm={6} lg={3}><Table key={tableId} tableId={tableId} /></Grid>));
+    return tableIds.map(tableId => (<Grid item xs={12} sm={6} lg={3} key={`table grid item key: ${tableId}`}><Table key={`table key: ${tableId}`} tableId={tableId} /></Grid>));
 }
 
 const Tables = () => {
