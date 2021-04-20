@@ -15,10 +15,11 @@ if (process.env.NODE_ENV === "production") {
   app.get("/*", (req, res) => {
     res.sendFile(application_SPA_path);
   });
-}
-else{
-  app.get("/", (req,res)=>{
-    res.sendFile(path.join(application_root_path, "/muster_server/public/index.html"));
+} else {
+  app.get("/", (req, res) => {
+    res.sendFile(
+      path.join(application_root_path, "/muster_server/public/index.html")
+    );
   });
 }
 

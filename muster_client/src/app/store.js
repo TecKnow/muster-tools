@@ -27,10 +27,9 @@ const getStore = async () => {
       }
       return res;
     },
-    preloadedState
+    preloadedState,
   });
   return store;
-}
-
+};
 
 export default getStore;

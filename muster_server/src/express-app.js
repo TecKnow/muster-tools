@@ -17,6 +17,6 @@ export const app = new express();
 export const server = http.createServer(app);
 export const io = socket_io(server);
 
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 export default app;
