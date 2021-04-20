@@ -10,7 +10,7 @@ const update_table = (table, tableId = undefined, starting_index = 0) => {
    * in the passed in list.
    *
    * TableId must be provided if players may be
-   * moving between tables.  Otherwise, it takes teh value of the first
+   * moving between tables.  Otherwise, it takes the value of the first
    * seat assignment in the list.
    */
   if (typeof tableId == "undefined") {
@@ -174,10 +174,13 @@ export const {
   selectIds: selectSeatIds,
 } = seatsAdapter.getSelectors(_reducer_path_fetch);
 
-export const selectTableSeats = (state, tableId) =>
-  Object.values(_reducer_path_fetch(state).entities).filter(
-    (seat) => seat.table === tableId
-  );
+export const selectTableSeats = (state, tableId) => {
+  const seats = Object.values(_reducer_path_fetch(state).entities);
+  if (!Object.prototype.hasOwnProperty.call(seats, tableId)) {
+    return null;
+  }
+  return Object.values(seats).filter((seat) => seat.table === tableId);
+};
 
 export const selectPlayerSeat = (state, playerName) =>
   _reducer_path_fetch(state).entities[playerName];

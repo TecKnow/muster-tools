@@ -174,10 +174,13 @@ export const {
   selectIds: selectSeatIds,
 } = seatsAdapter.getSelectors(_reducer_path_fetch);
 
-export const selectTableSeats = (state, tableId) =>
-  Object.values(_reducer_path_fetch(state).entities).filter(
-    (seat) => seat.table == tableId
-  );
+export const selectTableSeats = (state, tableId) => {
+  const seats = Object.values(_reducer_path_fetch(state).entities);
+  if (!Object.prototype.hasOwnProperty.call(seats, tableId)) {
+    return null;
+  }
+  return Object.values(seats).filter((seat) => seat.table == tableId);
+};
 
 export const selectPlayerSeat = (state, playerName) =>
   _reducer_path_fetch(state).entities[playerName];
