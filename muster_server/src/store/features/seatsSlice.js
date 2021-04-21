@@ -176,9 +176,6 @@ export const {
 
 export const selectTableSeats = (state, tableId) => {
   const seats = Object.values(_reducer_path_fetch(state).entities);
-  if (!Object.prototype.hasOwnProperty.call(seats, tableId)) {
-    return null;
-  }
   return Object.values(seats).filter((seat) => seat.table == tableId);
 };
 

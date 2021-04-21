@@ -19,7 +19,7 @@ const tableSeatsSelectorFunc = (tableId) => (state) => {
 
 const Table = ({ tableId }) => {
   const classes = useStyles();
-  const unsortedTableSeats = useSelector(tableSeatsSelectorFunc(tableId));
+  const unsortedTableSeats = useSelector(tableSeatsSelectorFunc(tableId)) || [];
   const tableSeats = unsortedTableSeats
     .slice()
     .sort((a, b) => a.position - b.position);
