@@ -4,9 +4,11 @@ import {
   selectTableSeats,
   selectPlayerSeat,
   assignSeat,
+  resetSeats,
+  shuffleZeroThunk
 } from "../../store/features/seatsSlice";
 import { selectTableIds } from "../../store/features/tablesSlice";
-import {selectPlayerIds} from "../../store/features/playersSlice";
+import { selectPlayerIds } from "../../store/features/playersSlice";
 import store from "../../store";
 
 const router = Router();
@@ -60,32 +62,35 @@ router.post("/assign", (req, res) => {
   const errors = [];
   if (playerName === undefined) {
     errors.push("playerName is required");
-  }
-  else if(!Array.prototype.includes.call(playerIds, playerName)){
-    errors.push(`player ${playerName} not found`)
+  } else if (!Array.prototype.includes.call(playerIds, playerName)) {
+    errors.push(`player ${playerName} not found`);
   }
   if (table === undefined) {
     errors.push("table is required");
-  }
-  else if (isNaN(intTable) || intTable < 0) {
+  } else if (isNaN(intTable) || intTable < 0) {
     errors.push("table identifiers must be non-negative integers");
-  }
-  else if(!Array.prototype.includes.call(tableIds, intTable)){
+  } else if (!Array.prototype.includes.call(tableIds, intTable)) {
     errors.push(`table ${intTable} not found}`);
   }
   if (position === undefined) {
     errors.push("position is required");
-  }
-  else if ((isNaN(intPosition) || intPosition < 0)) {
+  } else if (isNaN(intPosition) || intPosition < 0) {
     errors.push("position must be a non-negative integer");
   }
   if (errors.length > 0) {
     return res.status(400).json({ playerName, table, position, errors });
   }
-  const result = store.dispatch(
-    assignSeat(playerName, intTable, intPosition)
-  );
+  const result = store.dispatch(assignSeat(playerName, intTable, intPosition));
   return res.json(result);
 });
 
+router.post("/reset", (req, res) => {
+  const result = store.dispatch(resetSeats());
+  return res.json(result);
+});
+
+router.post("/shuffle", (req, res)=>{
+  const result = store.dispatch(shuffleZeroThunk());
+  return res.json(result)
+});
 export default router;

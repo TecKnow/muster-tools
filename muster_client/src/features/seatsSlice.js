@@ -131,7 +131,7 @@ export const seatsSlice = createSlice({
     });
     builder.addCase("seats/shuffleZero", (state, action) => {
       const new_positions = action.payload;
-      const table_zero_list = find_table(state, 0);
+      const table_zero_list = find_table(state.entities, 0);
       table_zero_list.forEach((element, index) => {
         element.position = new_positions[index];
       });
@@ -146,14 +146,14 @@ export const shuffleZeroThunk = () => (dispatch, getState) => {
   const num_players_to_shuffle = selectTableSeats(getState(), 0).length;
   const positions_array = [...Array(num_players_to_shuffle).keys()];
   // Knuth shuffle
-  for (let i = positions_array.lenght - 1; i > 0; i--) {
+  for (let i = positions_array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * i);
     [positions_array[i], positions_array[j]] = [
       positions_array[j],
       positions_array[i],
     ];
   }
-  dispatch({ type: ACTION_TYPE, payload: [...positions_array] });
+  return dispatch({ type: ACTION_TYPE, payload: [...positions_array] });
 };
 
 export const { assignSeat, resetSeats } = seatsSlice.actions;
