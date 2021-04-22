@@ -1,4 +1,5 @@
 import { DragDropContext } from "react-beautiful-dnd";
+import {assignSeat} from "./api-interface";
 
 const dragEnd = (result) => {
   const { destination, source, draggableId } = result;
@@ -13,6 +14,17 @@ const dragEnd = (result) => {
     //The user released the drop in the original location
     return;
   }
+  const destinationDroppableIdString = destination.droppableId
+  const destinationDroppableIdParts = String.prototype.split.call(destinationDroppableIdString, " ");
+  const destinationDroppableIdInt = parseInt(destinationDroppableIdParts[destinationDroppableIdParts.length-1])
+  const destinationDroppableIndex = destination.index
+  const draggableIDParts = String.prototype.split.call(draggableId, ":");
+  const playerName = draggableIDParts[draggableIDParts.length-1];
+  assignSeat(playerName, destinationDroppableIdInt, destinationDroppableIndex);
+
+
+
+  console.log(JSON.stringify({destination, source, draggableId}));
 };
 
 const ApplicationDragDropContext = ({ children }) => {

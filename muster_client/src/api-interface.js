@@ -19,4 +19,22 @@ export const addTable = async () => {
   return response;
 };
 
+export const assignSeat = async (playerName, table, position) => {
+  const response = await axios.post(
+    "/api/seats/assign",
+    qs.stringify({ playerName, table, position })
+  );
+  return response;
+};
+
+export const resetSeats = async () => {
+  const response = await axios.post("/api/seats/reset");
+  return response;
+};
+
+export const shuffleZero = async () => {
+  const response = await axios.post("/api/seats/shuffle");
+  return response;
+};
+
 export default axios;
