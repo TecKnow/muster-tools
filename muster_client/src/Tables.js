@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { selectTableIds } from "./features/tablesSlice";
+import { selectTableIds } from "muster_store";
 import Table from "./Table";
 
 const useStyles = makeStyles((theme) => ({

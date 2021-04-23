@@ -2,9 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import logger from "redux-logger";
 import createSocketIoMiddleware from "redux-socket.io";
 import socket from "../socket.io-config";
-import playersReducer from "../features/playersSlice";
-import tablesReducer from "../features/tablesSlice";
-import seatsReducer from "../features/seatsSlice";
+import {playersSlice, tablesSlice, seatsSlice} from "muster_store";
 import { getServerState } from "../api-interface";
 
 const socketIoMiddleware = createSocketIoMiddleware(socket, "server/");
@@ -13,9 +11,9 @@ const getStore = async () => {
   const preloadedState = await getServerState();
   const store = configureStore({
     reducer: {
-      players: playersReducer,
-      tables: tablesReducer,
-      seats: seatsReducer,
+      players: playersSlice.reducer,
+      tables: tablesSlice.reducer,
+      seats: seatsSlice.reducer,
     },
     middleware: (getDefaultMiddleware) => {
       let res = getDefaultMiddleware();
