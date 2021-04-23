@@ -1,11 +1,6 @@
 import { Router } from "express";
 import store from "../../store";
-import {
-  addPlayer,
-  removePlayer,
-  selectPlayerById,
-  selectPlayerIds,
-} from "../../store/features/playersSlice";
+import {addPlayer, removePlayer, selectPlayerById, selectPlayerIds} from "muster_store";
 
 const router = Router();
 

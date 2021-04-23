@@ -1,3 +1,3 @@
-export * as seatsSlice from "./features/seatsSlice";
-export * as playersSlice from "./features/playersSlice"
-export * as tablesSlice from "./features/tablesSlice"
+export * from "./features/seatsSlice";
+export * from "./features/playersSlice";
+export * from "./features/tablesSlice";
