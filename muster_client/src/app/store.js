@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "../features/counter/counterSlice";
 import logger from "redux-logger";
 import createSocketIoMiddleware from "redux-socket.io";
 import socket from "../socket.io-config";
@@ -14,7 +13,6 @@ const getStore = async () => {
   const preloadedState = await getServerState();
   const store = configureStore({
     reducer: {
-      counter: counterReducer,
       players: playersReducer,
       tables: tablesReducer,
       seats: seatsReducer,
