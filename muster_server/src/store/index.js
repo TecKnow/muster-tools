@@ -3,10 +3,9 @@ import createSocketIoMiddleware from "redux-socket.io";
 import logger from "redux-logger";
 import { io } from "../express-app";
 import { store_writer, store_reader } from "./serialize_store";
-import {playersSlice, tablesSlice, seatsSlice} from "muster_store";
-// import playersReducer from "./features/playersSlice";
-// import tablesReducer from "./features/tablesSlice";
-// import seatsReducer from "./features/seatsSlice";
+import playersReducer from "./features/playersSlice";
+import tablesReducer from "./features/tablesSlice";
+import seatsReducer from "./features/seatsSlice";
 
 const socketIoMiddleware = createSocketIoMiddleware(io, "");
 
@@ -14,9 +13,9 @@ export const _makeStore = (initial_state = store_reader()) => {
   const preloadedState = initial_state;
   return configureStore({
     reducer: {
-      players: playersSlice.reducer,
-      tables: tablesSlice.reducer,
-      seats: seatsSlice.reducer,
+      players: playersReducer,
+      tables: tablesReducer,
+      seats: seatsReducer,
     },
     middleware: (getDefaultMiddleware) => {
       let res = getDefaultMiddleware();

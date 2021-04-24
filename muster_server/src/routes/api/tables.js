@@ -1,12 +1,12 @@
 import { Router } from "express";
 import store from "../../store";
+import { selectTableSeats } from "../../store/features/seatsSlice";
 import {
-  selectTableSeats,
   createTable,
   removeTable,
   selectTableById,
   selectTableIds,
-} from "muster_store";
+} from "../../store/features/tablesSlice";
 
 const router = Router();
 

@@ -5,10 +5,10 @@ import {
   selectPlayerSeat,
   assignSeat,
   resetSeats,
-  shuffleZeroThunk,
-  selectTableIds,
-  selectPlayerIds
-} from "muster_store";
+  shuffleZeroThunk
+} from "../../store/features/seatsSlice";
+import { selectTableIds } from "../../store/features/tablesSlice";
+import { selectPlayerIds } from "../../store/features/playersSlice";
 import store from "../../store";
 
 const router = Router();
