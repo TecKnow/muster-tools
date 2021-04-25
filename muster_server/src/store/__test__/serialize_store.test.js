@@ -3,7 +3,7 @@ import { file } from "tmp-promise";
 import { _makeStore } from "../index";
 import { store_reader, store_writer } from "../serialize_store";
 
-test("Serialize intiial state", async () => {
+test("Serialize intial state", async () => {
   const { fd, path, cleanup } = await file({ keep: true });
   fs.closeSync(fd);
   const test_store = _makeStore(undefined);
@@ -12,6 +12,7 @@ test("Serialize intiial state", async () => {
   await throttled_writer_fn();
   const read_state = store_reader(path);
   expect(read_state).toEqual(initialState);
+  throttled_writer_fn.cancel();
   cleanup();
 });
 
