@@ -3,3 +3,5 @@
 # setting up new .env files since they should not be
 # added to version control.
 NODE_ENV
+DB_URI
+PORT

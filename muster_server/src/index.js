@@ -8,6 +8,7 @@ import {
   application_static_path,
   application_SPA_path,
 } from "./express-app";
+import {test_connection} from "./sequelize";
 import apiRoutes from "./routes/api";
 
 if (process.env.NODE_ENV === "production") {
@@ -29,6 +30,8 @@ app.use("/api", apiRoutes);
 const port = process.env.PORT || 5000;
 server.listen(port);
 console.log(`listening on port ${port}`);
+
+test_connection();
 
 io.on("connection", (socket) => {
   console.log("a user connected");
