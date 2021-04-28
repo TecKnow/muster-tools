@@ -1,5 +1,11 @@
 import { ForeignKeyConstraintError, UniqueConstraintError } from "sequelize";
-import { sequelize, addPlayer } from "..";
+import {
+  sequelize,
+  addPlayer,
+  removePlayer,
+  selectAllPlayers,
+  selectPlayerIds,
+} from "..";
 
 const playerModel = sequelize.models.Player;
 const tableModel = sequelize.models.Table;
@@ -55,12 +61,12 @@ test("Add a seat with an invalid player", async () => {
   );
 });
 
-test("Add a duplicate seat", async ()=>{
+test("Add a duplicate seat", async () => {
   const addDuplicateSeat = async () => {
     charlieSeat.Position = 0;
     return await charlieSeat.save();
-  }
-  
+  };
+
   const charliePlayer = await playerModel.findByPk("Charlie");
   expect(charliePlayer).toEqual(expect.anything());
   expect(charliePlayer.Name).toEqual("Charlie");
@@ -73,17 +79,41 @@ test("Add a duplicate seat", async ()=>{
   await expect(addDuplicateSeat).rejects.toThrow(UniqueConstraintError);
 });
 
-test("Create a second table and move a player there", async () =>{
-  const newTable = await tableModel.create({Identifier: 1});
+test("Create a second table and move a player there", async () => {
+  const newTable = await tableModel.create({ Identifier: 1 });
   expect(newTable).toEqual(expect.any(tableModel));
   const bobSeat = await seatModel.findByPk("Bob");
   expect(bobSeat).toEqual(expect.any(seatModel));
   expect(bobSeat.TableIdentifier).toEqual(0);
   expect(bobSeat.Position).toEqual(1);
-  bobSeat.TableIdentifier= newTable.Identifier;
-  bobSeat.Position = 0
+  bobSeat.TableIdentifier = newTable.Identifier;
+  bobSeat.Position = 0;
   await bobSeat.save();
   await bobSeat.reload();
   expect(bobSeat.TableIdentifier).toEqual(1);
   expect(bobSeat.Position).toEqual(0);
+});
+
+test("Remove a player", async () => {
+  await removePlayer("Bob");
+  const playerRows = await playerModel.findAll({ attributes: ["Name"] });
+  const playerNames = playerRows.map((row) => row.Name);
+  expect(playerNames).toEqual(expect.arrayContaining(["Alice", "Charlie"]));
+  expect(playerNames).toEqual(expect.not.arrayContaining(["Bob"]));
+});
+
+test("Retrieve player rows", async () => {
+  const playerRows = await selectAllPlayers();
+  expect(playerRows).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ Name: "Alice" }),
+      expect.objectContaining({ Name: "Bob" }),
+      expect.objectContaining({ Name: "Charlie" }),
+    ])
+  );
+});
+
+test("Retrieve player Ids", async () => {
+  const playerNames = await selectPlayerIds();
+  expect(playerNames).toEqual(expect.arrayContaining(["Alice", "Bob", "Charlie"]));
 });
