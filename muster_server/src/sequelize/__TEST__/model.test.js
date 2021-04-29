@@ -5,6 +5,7 @@ import {
   removePlayer,
   selectAllPlayers,
   selectPlayerIds,
+  createTable,
 } from "..";
 
 const playerModel = sequelize.models.Player;
@@ -18,6 +19,7 @@ const defaultSetup = async () => {
 };
 
 beforeEach(async () => {
+  sequelize.drop();
   await sequelize.sync({ force: true });
   await defaultSetup();
 });
@@ -117,3 +119,11 @@ test("Retrieve player Ids", async () => {
   const playerNames = await selectPlayerIds();
   expect(playerNames).toEqual(expect.arrayContaining(["Alice", "Bob", "Charlie"]));
 });
+
+test("Create a table", async () => {
+  const newTable = await createTable();
+  expect(newTable.Identifier).toEqual(1);
+});
+test.todo("Delete a table");
+test.todo("Delete table and then create one");
+test.todo("Table zero can't be deleted");

@@ -8,14 +8,14 @@ export const Seat = sequelize.define("Seat", {
   },
 
   TableIdentifier:{
-    type: DataTypes.NUMBER,
-    defaultValue: 0,
+    type: DataTypes.INTEGER,
     allowNull: false,
+    defaultValue: 0,
     unique: "TableSeatUniqueness"
   },
   
   Position: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     allowNull: false,
     unique: "TableSeatUniqueness",
   },
