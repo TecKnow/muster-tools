@@ -10,9 +10,13 @@ export const addPlayer = async (PlayerName) => {
     const Table = sequelize.models.Table;
     const Player = sequelize.models.Player;
     const Seat = sequelize.models.Seat;
-    const [table0] = await Table.findOrCreate({where: {Identifier: sequelize.literal(0)}});
+    const [table0] = await Table.findOrCreate({
+      where: { Identifier: sequelize.literal(0) },
+    });
     const newPlayer = await Player.create({ Name: PlayerName });
-    const playersAtT0 = await Seat.count({where: {TableIdentifier: table0.Identifier}});
+    const playersAtT0 = await Seat.count({
+      where: { TableIdentifier: table0.Identifier },
+    });
     const newSeat = await Seat.create({
       PlayerName: newPlayer.Name,
       Position: playersAtT0,
@@ -56,7 +60,26 @@ export const createTable = async () => {
   };
   return await sequelize.transaction(createTableTransactionBody);
 };
-export const removeTable = async () => {};
+export const removeTable = async (TableIdentifier) => {
+  // Should this delete the newest table by default?
+  //TODO: This needs to move players to T0 when their table is deleted.
+  const tableModel = sequelize.models.Table;
+  const intTableIdentifier = Number(TableIdentifier);
+  if (
+    isNaN(intTableIdentifier) ||
+    !Number.isInteger(intTableIdentifier) ||
+    intTableIdentifier < 0
+  ) {
+    throw new TypeError("Table Identifiers must be non-negative integers");
+  } else if (TableIdentifier === 0) {
+    throw new RangeError("Table 0 is the default and cannot be deleted.");
+  }
+  const targetTable = await tableModel.findByPk(intTableIdentifier);
+  if (!targetTable) {
+    throw new ReferenceError(`Table ${TableIdentifier} does not exist`);
+  }
+  return await targetTable.destroy();
+};
 export const selectAllTables = async () => {};
 export const selectTableIds = async () => {};
 export const assignSeat = async () => {};

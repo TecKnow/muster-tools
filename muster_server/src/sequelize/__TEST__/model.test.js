@@ -6,6 +6,7 @@ import {
   selectAllPlayers,
   selectPlayerIds,
   createTable,
+  removeTable,
 } from "..";
 
 const playerModel = sequelize.models.Player;
@@ -117,13 +118,70 @@ test("Retrieve player rows", async () => {
 
 test("Retrieve player Ids", async () => {
   const playerNames = await selectPlayerIds();
-  expect(playerNames).toEqual(expect.arrayContaining(["Alice", "Bob", "Charlie"]));
+  expect(playerNames).toEqual(
+    expect.arrayContaining(["Alice", "Bob", "Charlie"])
+  );
 });
 
 test("Create a table", async () => {
   const newTable = await createTable();
   expect(newTable.Identifier).toEqual(1);
 });
-test.todo("Delete a table");
-test.todo("Delete table and then create one");
-test.todo("Table zero can't be deleted");
+test("Delete a table", async () => {
+  const newTable = await createTable();
+  expect(newTable.Identifier).toEqual(1);
+  await removeTable(newTable.Identifier);
+  const tableRows = await tableModel.findAll({ attributes: ["Identifier"] });
+  const tableIDList = tableRows.map((row) => row.Identifier);
+  expect(tableIDList).toEqual([0]);
+});
+test("Delete table and then create one", async () => {
+  const firstTable = await createTable();
+  const secondTable = await createTable();
+  expect(firstTable.Identifier).toEqual(1);
+  expect(secondTable.Identifier).toEqual(2);
+  await removeTable(firstTable.Identifier);
+  const tableRows = await tableModel.findAll({ attributes: ["Identifier"] });
+  const tableIDList = tableRows.map((row) => row.Identifier);
+  expect(tableIDList).toEqual(expect.not.arrayContaining([1]));
+  const thirdTable = await createTable();
+  expect(thirdTable.Identifier).toEqual(3);
+});
+test("Delete a table that doesn't exist", async () => {
+  const removeNonexistentTableFunc = async () => {
+    return await removeTable(99);
+  };
+  await expect(removeNonexistentTableFunc).rejects.toThrow(ReferenceError);
+});
+
+describe("Delete a table with an invalid ID", () => {
+  test("Using a non-integer key with the destroy function", async () => {
+    const destroyTableFunc = async () => {
+      return await (await tableModel.findByPk("Noninteger")).destroy();
+    };
+    return await expect(destroyTableFunc).rejects.toThrow(TypeError);
+  });
+  test("Using a non-numeric key with removeTable()", async () => {
+    const removeNonNumericTableFunc = async () => {
+      return await removeTable("Noninteger");
+    };
+    return await expect(removeNonNumericTableFunc).rejects.toThrow(TypeError);
+  });
+  test("Using a negative integer key with removeTable()", async () => {
+    const removeNegativeTableFunc = async () => {
+      return await removeTable("-99");
+    };
+    return await expect(removeNegativeTableFunc).rejects.toThrow(TypeError);
+  });
+});
+
+test("Table zero can't be deleted", async () => {
+  const removeTableZeroFunc = async () => {
+    return await removeTable(0);
+  };
+  await expect(removeTableZeroFunc).rejects.toThrow(RangeError);
+});
+describe("Delete a table with seats", () => {
+  test.todo("Using the destroy function");
+  test.todo("Using removeTable()");
+});
