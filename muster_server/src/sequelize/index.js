@@ -1,16 +1,16 @@
 import { sequelize, test_connection } from "./sequelize";
 import "./player";
-import {getOrCreateTable0} from "./table";
+import "./table";
 import "./seat";
 
 export { sequelize, test_connection };
 
 export const addPlayer = async (PlayerName) => {
   const addPlayerTransactionBody = async () => {
-    const table0 = await getOrCreateTable0();
+    const Table = sequelize.models.Table;
     const Player = sequelize.models.Player;
     const Seat = sequelize.models.Seat;
-
+    const [table0] = await Table.findOrCreate({where: {Identifier: sequelize.literal(0)}});
     const newPlayer = await Player.create({ Name: PlayerName });
     const playersAtT0 = await Seat.count({where: {TableIdentifier: table0.Identifier}});
     const newSeat = await Seat.create({
