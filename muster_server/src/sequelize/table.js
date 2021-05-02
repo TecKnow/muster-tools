@@ -9,6 +9,4 @@ export const Table = sequelize.define("Table", {
   },
 });
 
-console.log("Table model registered: ", Table === sequelize.models.Table);
-
 export default Table;

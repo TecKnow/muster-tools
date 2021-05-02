@@ -7,17 +7,18 @@ export const Seat = sequelize.define("Seat", {
     primaryKey: true,
   },
 
+  /* TODO: Now that there is no compound uniqueness constraint on (TableIdentifier, Position)
+     these columns can probably be defined inline with their associations below.
+  */
   TableIdentifier:{
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
     defaultValue: 0,
-    unique: "TableSeatUniqueness"
   },
   
   Position: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    unique: "TableSeatUniqueness",
+    allowNull: true,
   },
 });
 
@@ -29,7 +30,5 @@ Seat.belongsTo(Player);
 
 Table.hasMany(Seat);
 Seat.belongsTo(Table);
-
-console.log("Seat model registered: ", Seat === sequelize.models.Seat);
 
 export default Seat;

@@ -33,8 +33,6 @@ const find_player_seat = (seat_entities, playerId) => seat_entities[playerId];
 const seat_sort_comparer = (a, b) =>
   a.table == b.table ? a.position - b.position : a.table - b.table;
 
-// TODO: #10 Add shuffle action
-
 export const seatsSlice = createSlice({
   name: "seats",
   initialState: seatsAdapter.getInitialState(),
