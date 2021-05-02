@@ -26,19 +26,27 @@ export const _removePlayerSeat = async (PlayerName) => {
   return results;
 };
 
-export const _insertSeatAtTable = async (PlayerName, TableIdentifier, Position) => {
+export const _insertSeatAtTable = async (
+  PlayerName,
+  TableIdentifier,
+  Position
+) => {
   const seatModel = sequelize.models.Seat;
-  const results = await seatModel.update(
+  const targetSeat = await seatModel.findByPk(PlayerName);
+  if(targetSeat.Position !== null){
+    throw(new RangeError(`The seat already has a position, it must be removed first: ${JSON.stringify(targetSeat)}`));
+  }
+  await seatModel.update(
     { Position: sequelize.literal("Position + 1") },
     {
       where: { TableIdentifier, Position: { [Op.gte]: Position } },
-      order: [["Position", "ASC"]],
     }
   );
-  return results;
+  targetSeat.TableIdentifier = TableIdentifier;
+  targetSeat.Position = Position;
+  await targetSeat.save();
+  return targetSeat;
 };
-
-const seatPositionSortFunction = (a, b) => a.Position - b.Position;
 
 const seatPositionRenumber = (
   seatArray,
