@@ -17,6 +17,7 @@ import {
   selectSeatsAtTable,
   assignSeat,
   resetSeats,
+  shuffleZero,
 } from "..";
 
 const playerModel = sequelize.models.Player;
@@ -530,13 +531,67 @@ test("resetSeats", async () => {
   const updatedSeats = await selectAllSeats();
   expect(updatedSeats).toEqual(
     expect.arrayContaining([
-      expect.objectContaining({ PlayerName: "Frank", Position: 0, TableIdentifier: 0 }),
-      expect.objectContaining({ PlayerName: "Erin", Position: 1, TableIdentifier: 0 }),
-      expect.objectContaining({ PlayerName: "Dan", Position: 2, TableIdentifier: 0 }),
-      expect.objectContaining({ PlayerName: "Charlie", Position: 3, TableIdentifier: 0 }),
-      expect.objectContaining({ PlayerName: "Bob", Position: 4, TableIdentifier: 0 }),
-      expect.objectContaining({ PlayerName: "Alice", Position: 5, TableIdentifier: 0 }),
+      expect.objectContaining({
+        PlayerName: "Frank",
+        Position: 0,
+        TableIdentifier: 0,
+      }),
+      expect.objectContaining({
+        PlayerName: "Erin",
+        Position: 1,
+        TableIdentifier: 0,
+      }),
+      expect.objectContaining({
+        PlayerName: "Dan",
+        Position: 2,
+        TableIdentifier: 0,
+      }),
+      expect.objectContaining({
+        PlayerName: "Charlie",
+        Position: 3,
+        TableIdentifier: 0,
+      }),
+      expect.objectContaining({
+        PlayerName: "Bob",
+        Position: 4,
+        TableIdentifier: 0,
+      }),
+      expect.objectContaining({
+        PlayerName: "Alice",
+        Position: 5,
+        TableIdentifier: 0,
+      }),
     ])
   );
 });
-test.todo("shuffleZero");
+test("shuffleZero", async () => {
+  // Only table 0 is shuffled
+  // The array of new positions is returned
+  // The database is updated to reflec those positions
+
+  await createTable();
+  await addPlayer("Dan");
+  await addPlayer("Erin");
+  await addPlayer("Frank");
+  await assignSeat("Dan", 1);
+  await assignSeat("Erin", 1);
+  await assignSeat("Frank", 1);
+  const new_position_array = await shuffleZero();
+  const seatsAtTable1 = await selectSeatsAtTable(1);
+  expect(seatsAtTable1).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ PlayerName: "Dan", Position: 0, TableIdentifier: 1 }),
+      expect.objectContaining({ PlayerName: "Erin", Position: 1, TableIdentifier: 1 }),
+      expect.objectContaining({ PlayerName: "Frank", Position: 2, TableIdentifier: 1 }),
+    ])
+  );
+  // The shuffled list of keys should have every integer from 0 to length - 1
+  expect(new_position_array).toEqual(expect.arrayContaining([...Array(3).keys()]));
+  const seatsAtTable0 = await selectSeatsAtTable(0);
+  // Check that the new positions have been applied.
+  expect(seatsAtTable0[new_position_array[0]]).toEqual(expect.objectContaining({PlayerName: "Alice"}));
+  expect(seatsAtTable0[new_position_array[1]]).toEqual(expect.objectContaining({PlayerName: "Bob"}));
+  expect(seatsAtTable0[new_position_array[2]]).toEqual(expect.objectContaining({PlayerName: "Charlie"}));
+
+  
+});

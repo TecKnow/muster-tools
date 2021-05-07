@@ -258,7 +258,31 @@ export const resetSeats = async () => {
   );
 };
 
-export const shuffleZero = async () => {};
+export const shuffleZero = async () => {
+  // Why are we creating an array of a range of integers?
+  // Clients must be updated and sending them the new order is efficient
+  const tableZeroSeats = await sequelize.models.Seat.findAll({
+    where: { TableIdentifier: 0 },
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+  });
+  const num_players_to_shuffle = tableZeroSeats.length;
+  const positions_array = [...Array(num_players_to_shuffle).keys()];
+  // Knuth shuffle
+  for (let i = positions_array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * i);
+    [positions_array[i], positions_array[j]] = [
+      positions_array[j],
+      positions_array[i],
+    ];
+  }
+  Promise.all(
+    Array.prototype.map.call(tableZeroSeats, async (seat, idx) => {
+      seat.Position = positions_array[idx];
+      await seat.save();
+    })
+  );
+  return positions_array;
+};
 
 if (process.env.NODE_ENV != "production") {
   sequelize.sync();
