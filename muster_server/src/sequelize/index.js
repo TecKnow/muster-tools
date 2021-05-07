@@ -26,11 +26,7 @@ const _removePlayerSeat = async (PlayerName) => {
   return results;
 };
 
-const _insertSeatAtTable = async (
-  PlayerName,
-  TableIdentifier,
-  Position
-) => {
+const _insertSeatAtTable = async (PlayerName, TableIdentifier, Position) => {
   const seatModel = sequelize.models.Seat;
   const targetSeat = await seatModel.findByPk(PlayerName);
   if (targetSeat.Position !== null) {
@@ -174,7 +170,7 @@ export const removeTable = async (TableIdentifier) => {
     throw new RangeError("Table 0 is the default and cannot be deleted.");
   }
   const targetTable = await sequelize.models.Table.findByPk(TableIdentifier);
-  if(targetTable === null){
+  if (targetTable === null) {
     throw new ReferenceError(`Table ${TableIdentifier} does not exist`);
   }
   await appendToTableZero(TableIdentifier);
@@ -210,7 +206,10 @@ export const selectAllSeats = async () => {
   const seatModel = sequelize.models.Seat;
   const seatRows = await seatModel.findAll({
     attributes: { exclude: ["createdAt", "updatedAt"] },
-    order: [["TableIdentifier", "ASC"], ["Position", "ASC"]]
+    order: [
+      ["TableIdentifier", "ASC"],
+      ["Position", "ASC"],
+    ],
   });
   return seatRows;
 };
@@ -253,7 +252,10 @@ export const assignSeat = async (
 
 export const resetSeats = async () => {
   const affectedSeats = await selectAllSeats();
-  await appendToTableZero(affectedSeats);
+  _seatPositionRenumber(affectedSeats, 0, 0);
+  Promise.all(
+    Array.prototype.map.call(affectedSeats, async (seat) => await seat.save())
+  );
 };
 
 export const shuffleZero = async () => {};

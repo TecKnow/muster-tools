@@ -16,6 +16,7 @@ import {
   selectSeatIds,
   selectSeatsAtTable,
   assignSeat,
+  resetSeats,
 } from "..";
 
 const playerModel = sequelize.models.Player;
@@ -26,6 +27,21 @@ const defaultSetup = async () => {
   await addPlayer("Alice");
   await addPlayer("Bob");
   await addPlayer("Charlie");
+};
+
+const extendedSetup = async () => {
+  await addPlayer("Dan");
+  await addPlayer("Erin");
+  await addPlayer("Frank");
+  await createTable();
+  await createTable();
+  await createTable();
+  await assignSeat("Bob", 3);
+  await assignSeat("Alice", 3);
+  await assignSeat("Dan", 2);
+  await assignSeat("Charlie", 2);
+  await assignSeat("Frank", 1);
+  await assignSeat("Erin", 1);
 };
 
 beforeEach(async () => {
@@ -508,5 +524,19 @@ describe("assignSeat", () => {
     );
   });
 });
-test.todo("resetSeats");
+test("resetSeats", async () => {
+  await extendedSetup();
+  await resetSeats();
+  const updatedSeats = await selectAllSeats();
+  expect(updatedSeats).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ PlayerName: "Frank", Position: 0, TableIdentifier: 0 }),
+      expect.objectContaining({ PlayerName: "Erin", Position: 1, TableIdentifier: 0 }),
+      expect.objectContaining({ PlayerName: "Dan", Position: 2, TableIdentifier: 0 }),
+      expect.objectContaining({ PlayerName: "Charlie", Position: 3, TableIdentifier: 0 }),
+      expect.objectContaining({ PlayerName: "Bob", Position: 4, TableIdentifier: 0 }),
+      expect.objectContaining({ PlayerName: "Alice", Position: 5, TableIdentifier: 0 }),
+    ])
+  );
+});
 test.todo("shuffleZero");
