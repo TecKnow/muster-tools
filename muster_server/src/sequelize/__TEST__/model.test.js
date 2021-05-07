@@ -16,8 +16,6 @@ import {
   selectSeatIds,
   selectSeatsAtTable,
   assignSeat,
-  _removePlayerSeat,
-  _insertSeatAtTable,
 } from "..";
 
 const playerModel = sequelize.models.Player;
@@ -120,112 +118,7 @@ test("Create a second table and move a player there", async () => {
   expect(bobSeat.Position).toEqual(0);
 });
 
-test("_removePlayerSeat", async () => {
-  const initialSeats = await seatModel.findAll({
-    attributes: { exclude: ["createdAt", "updatedAt"] },
-  });
-  expect(initialSeats).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        PlayerName: "Alice",
-        Position: 0,
-        TableIdentifier: 0,
-      }),
-      expect.objectContaining({
-        PlayerName: "Bob",
-        Position: 1,
-        TableIdentifier: 0,
-      }),
-      expect.objectContaining({
-        PlayerName: "Charlie",
-        Position: 2,
-        TableIdentifier: 0,
-      }),
-    ])
-  );
-  await _removePlayerSeat("Bob");
-  const seatsWithoutBob = await seatModel.findAll({
-    attributes: { exclude: ["createdAt", "updatedAt"] },
-  });
-  expect(seatsWithoutBob).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        PlayerName: "Alice",
-        Position: 0,
-        TableIdentifier: 0,
-      }),
-      expect.objectContaining({
-        PlayerName: "Bob",
-        Position: null,
-        TableIdentifier: null,
-      }),
-      expect.objectContaining({
-        PlayerName: "Charlie",
-        Position: 1,
-        TableIdentifier: 0,
-      }),
-    ])
-  );
-});
-
-describe("_insertSeatAtTable", () => {
-  test("Moving an existing seat fails", async () => {
-    /* _insertSeatAtTable() is an internal function meant to be used to build
-       up the functionality to do things like move players between tables.
-       They need to be called in order to protect reasonable assumptions.
-       Seats should be removed with _removePlayerSeat() first.
-    */
-    const _insertExistingSeatBody = async () => {
-      return await _insertSeatAtTable("Bob", 0, 0);
-    };
-    await expect(_insertExistingSeatBody).rejects.toThrow(RangeError);
-  });
-  test("_remove then _insert in the same table", async () => {
-    await _removePlayerSeat("Bob");
-    await _insertSeatAtTable("Bob", 0, 0);
-    const seatData = await seatModel.findAll({
-      attributes: { exclude: ["createdAt", "updatedAt"] },
-    });
-    expect(seatData).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          PlayerName: "Alice",
-          Position: 1,
-          TableIdentifier: 0,
-        }),
-        expect.objectContaining({
-          PlayerName: "Bob",
-          Position: 0,
-          TableIdentifier: 0,
-        }),
-        expect.objectContaining({
-          PlayerName: "Charlie",
-          Position: 2,
-          TableIdentifier: 0,
-        }),
-      ])
-    );
-  });
-  test("_remove then _insert in a different table", async () => {
-    const newTable = await createTable();
-    expect(newTable).toEqual(expect.objectContaining({ Identifier: 1 }));
-    await _removePlayerSeat("Bob");
-    await _insertSeatAtTable("Bob", 1, 0);
-    const updatedSeats = await seatModel.findAll({
-      attributes: { exclude: ["createdAt", "updatedAt"] },
-    });
-    expect(updatedSeats).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ PlayerName: "Alice", Position: 0, TableIdentifier: 0 }),
-        expect.objectContaining({ PlayerName: "Bob", Position: 0, TableIdentifier: 1 }),
-        expect.objectContaining({ PlayerName: "Charlie", Position: 1, TableIdentifier: 0 }),
-      ])
-    );
-  });
-});
-
 test("Remove a player", async () => {
-  //TODO: update this to use database operations instead
   await removePlayer("Bob");
   const playerNames = await selectPlayerIds();
   const seats = await selectAllSeats();
@@ -311,16 +204,22 @@ describe("Delete a table with an invalid ID", () => {
     return await expect(destroyTableFunc).rejects.toThrow(TypeError);
   });
   test("Using a non-numeric key with removeTable()", async () => {
+    // This is just a fancy way of picking a table that doesn't exist.
     const removeNonNumericTableFunc = async () => {
       return await removeTable("Noninteger");
     };
-    return await expect(removeNonNumericTableFunc).rejects.toThrow(TypeError);
+    return await expect(removeNonNumericTableFunc).rejects.toThrow(
+      ReferenceError
+    );
   });
   test("Using a negative integer key with removeTable()", async () => {
+    // This is just a fancy way of picking a table that doesn't exist.
     const removeNegativeTableFunc = async () => {
       return await removeTable("-99");
     };
-    return await expect(removeNegativeTableFunc).rejects.toThrow(TypeError);
+    return await expect(removeNegativeTableFunc).rejects.toThrow(
+      ReferenceError
+    );
   });
 });
 
@@ -368,14 +267,52 @@ describe("Delete a table with seats", () => {
       ])
     );
   });
-  test.skip("Using removeTable()", async () => {
+  test("Using removeTable()", async () => {
     const newTable = await createTable();
     expect(newTable.Identifier).toEqual(1);
     await assignSeat("Bob", 1, 0);
     await assignSeat("Alice", 1, 1);
-    const updatedSeats = await selectAllSeats();
-    expect(updatedSeats).toEqual(expect.arrayContaining(["alice"]));
-    // expect(true).toBeFalsy();
+    const seatsWithSecondTable = await selectAllSeats();
+    expect(seatsWithSecondTable).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          PlayerName: "Alice",
+          Position: 1,
+          TableIdentifier: 1,
+        }),
+        expect.objectContaining({
+          PlayerName: "Bob",
+          Position: 0,
+          TableIdentifier: 1,
+        }),
+        expect.objectContaining({
+          PlayerName: "Charlie",
+          Position: 0,
+          TableIdentifier: 0,
+        }),
+      ])
+    );
+    await removeTable(newTable.Identifier);
+    const seatsWithTableRemoved = await selectAllSeats();
+    expect(seatsWithTableRemoved).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          PlayerName: "Alice",
+          Position: 2,
+          TableIdentifier: 0,
+        }),
+        expect.objectContaining({
+          PlayerName: "Bob",
+          Position: 1,
+          TableIdentifier: 0,
+        }),
+        expect.objectContaining({
+          PlayerName: "Charlie",
+          Position: 0,
+          TableIdentifier: 0,
+        }),
+      ])
+    );
   });
 });
 
@@ -467,6 +404,109 @@ test("selectSeatsAtTable", async () => {
     ])
   );
 });
-test.todo("assignSeat");
+describe("assignSeat", () => {
+  test("Position too high", async () => {
+    await assignSeat("Alice", 0, 9999);
+    const updatedSeats = await selectAllSeats();
+    expect(updatedSeats).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          PlayerName: "Alice",
+          Position: 2,
+          TableIdentifier: 0,
+        }),
+        expect.objectContaining({
+          PlayerName: "Bob",
+          Position: 0,
+          TableIdentifier: 0,
+        }),
+        expect.objectContaining({
+          PlayerName: "Charlie",
+          Position: 1,
+          TableIdentifier: 0,
+        }),
+      ])
+    );
+  });
+  test("Position too low", async () => {
+    await assignSeat("Charlie", 0, -9999);
+    const updatedSeats = await selectAllSeats();
+    expect(updatedSeats).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          PlayerName: "Alice",
+          Position: 1,
+          TableIdentifier: 0,
+        }),
+        expect.objectContaining({
+          PlayerName: "Bob",
+          Position: 2,
+          TableIdentifier: 0,
+        }),
+        expect.objectContaining({
+          PlayerName: "Charlie",
+          Position: 0,
+          TableIdentifier: 0,
+        }),
+      ])
+    );
+  });
+  test("assign to nonexistent table", async () => {
+    const assignToNonexistentTableBody = async () => {
+      return await assignSeat("Alice", 1, 0);
+    };
+    await expect(assignToNonexistentTableBody).rejects.toThrow(
+      ForeignKeyConstraintError
+    );
+  });
+  test("Assign between tables", async () => {
+    await createTable();
+    await assignSeat("Bob", 1);
+    const seatData = await selectAllSeats();
+    expect(seatData).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          PlayerName: "Alice",
+          Position: 0,
+          TableIdentifier: 0,
+        }),
+        expect.objectContaining({
+          PlayerName: "Bob",
+          Position: 0,
+          TableIdentifier: 1,
+        }),
+        expect.objectContaining({
+          PlayerName: "Charlie",
+          Position: 1,
+          TableIdentifier: 0,
+        }),
+      ])
+    );
+  });
+  test("Assign within the same table", async () => {
+    await createTable();
+    await assignSeat("Bob", 0, 0);
+    const seatData = await selectAllSeats();
+    expect(seatData).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          PlayerName: "Alice",
+          Position: 1,
+          TableIdentifier: 0,
+        }),
+        expect.objectContaining({
+          PlayerName: "Bob",
+          Position: 0,
+          TableIdentifier: 0,
+        }),
+        expect.objectContaining({
+          PlayerName: "Charlie",
+          Position: 2,
+          TableIdentifier: 0,
+        }),
+      ])
+    );
+  });
+});
 test.todo("resetSeats");
 test.todo("shuffleZero");

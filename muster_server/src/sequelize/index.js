@@ -6,7 +6,7 @@ import "./seat";
 
 export { sequelize, test_connection };
 
-export const _removePlayerSeat = async (PlayerName) => {
+const _removePlayerSeat = async (PlayerName) => {
   const seatModel = sequelize.models.Seat;
   const targetSeat = await seatModel.findByPk(PlayerName);
   const originalTableId = targetSeat.TableIdentifier;
@@ -26,29 +26,40 @@ export const _removePlayerSeat = async (PlayerName) => {
   return results;
 };
 
-export const _insertSeatAtTable = async (
+const _insertSeatAtTable = async (
   PlayerName,
   TableIdentifier,
   Position
 ) => {
   const seatModel = sequelize.models.Seat;
   const targetSeat = await seatModel.findByPk(PlayerName);
-  if(targetSeat.Position !== null){
-    throw(new RangeError(`The seat already has a position, it must be removed first: ${JSON.stringify(targetSeat)}`));
+  if (targetSeat.Position !== null) {
+    throw new RangeError(
+      `The seat already has a position, it must be removed first: ${JSON.stringify(
+        targetSeat
+      )}`
+    );
   }
+  const seatsAtTargetTable = await countSeatsAtTable(TableIdentifier);
+  const normalizedPosition =
+    Position < 0
+      ? 0
+      : Position > seatsAtTargetTable
+      ? seatsAtTargetTable
+      : Position;
   await seatModel.update(
     { Position: sequelize.literal("Position + 1") },
     {
-      where: { TableIdentifier, Position: { [Op.gte]: Position } },
+      where: { TableIdentifier, Position: { [Op.gte]: normalizedPosition } },
     }
   );
   targetSeat.TableIdentifier = TableIdentifier;
-  targetSeat.Position = Position;
+  targetSeat.Position = normalizedPosition;
   await targetSeat.save();
   return targetSeat;
 };
 
-const seatPositionRenumber = (
+const _seatPositionRenumber = (
   seatArray,
   TableIdentifier = undefined,
   starting_index = 0
@@ -58,8 +69,8 @@ const seatPositionRenumber = (
    * TableIdentifier must be provided if players may be moving between tables.
    * If TableIdentifier isn't provided, it will be taken from the first seat seat in the list.
    *
-   * Providing a starting position allows the list to be functionally appended to an existing table.
-   * This is espected to be used when a table is deleted and the affected players are returned to table 0 for example
+   * Providing a starting position allows the list to be appended to an existing table.
+   * For example, when an existing table is deleted and the seats there are returned to table 0.
    * THIS FUNCTION DOES NOT SAVE TO THE DATABASE
    * THIS FUNCTION IS SYNCRONOUS.
    *
@@ -71,7 +82,7 @@ const seatPositionRenumber = (
       : seatArray[0].TableIdentifier;
 
   const updatedArray = Array.prototype.map.call(seatArray, (seat, index) => {
-    seat.TableIdentifier = TableIdentifier;
+    seat.TableIdentifier = sequelize.literal(TableIdentifier);
     seat.Position = starting_index + index;
     return seat;
   });
@@ -84,14 +95,18 @@ const appendToTableZero = async (TableIdentifier) => {
    * THIS FUNCTION DOES SAVE TO THE DATABASE
    * THIS FUNCTION IS ASYNC
    */
-  const seatsAtTargetTable = selectSeatsAtTable(TableIdentifier);
-  const seatsAtTableZero = countSeatsAtTable(0);
-  seatPositionRenumber(seatsAtTargetTable, 0, seatsAtTableZero);
+
+  const affectedSeats = await sequelize.models.Seat.findAll({
+    where: { TableIdentifier: [0, TableIdentifier] },
+    order: [
+      ["TableIdentifier", "ASC"],
+      ["Position", "ASC"],
+    ],
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+  });
+  _seatPositionRenumber(affectedSeats, 0, 0);
   Promise.all(
-    Array.prototype.map.call(
-      seatsAtTargetTable,
-      async (seat) => await seat.save()
-    )
+    Array.prototype.map.call(affectedSeats, async (seat) => await seat.save())
   );
 };
 
@@ -119,21 +134,8 @@ export const addPlayer = async (PlayerName) => {
 
 export const removePlayer = async (PlayerName) => {
   const playerModel = sequelize.models.Player;
-  const targetPlayer = await playerModel.findByPk(PlayerName);
-  const targetSeat = await targetPlayer.getSeat();
-  const targetTableId = targetSeat.TableIdentifier;
-  const targetPosition = targetSeat.Position;
-  const targetTableSeatsArray = await selectSeatsAtTable(targetTableId);
-  Array.prototype.splice.call(targetTableSeatsArray, targetPosition, 1);
-  await targetSeat.destroy();
-  seatPositionRenumber(targetTableSeatsArray);
-  Promise.all(
-    Array.prototype.map.call(
-      targetTableSeatsArray,
-      async (seat) => await seat.save()
-    )
-  );
-  await targetPlayer.destroy();
+  await _removePlayerSeat(PlayerName);
+  await (await playerModel.findByPk(PlayerName)).destroy();
 };
 
 export const selectAllPlayers = async () => {
@@ -168,25 +170,17 @@ export const createTable = async () => {
 };
 
 export const removeTable = async (TableIdentifier) => {
-  //TODO: This needs to move players to T0 when their table is deleted.
-  const tableModel = sequelize.models.Table;
-  const intTableIdentifier = Number(TableIdentifier);
-  if (
-    isNaN(intTableIdentifier) ||
-    !Number.isInteger(intTableIdentifier) ||
-    intTableIdentifier < 0
-  ) {
-    throw new TypeError("Table Identifiers must be non-negative integers");
-  } else if (TableIdentifier === 0) {
+  if (Number(TableIdentifier) === 0) {
     throw new RangeError("Table 0 is the default and cannot be deleted.");
   }
-  const targetTable = await tableModel.findByPk(intTableIdentifier);
-  if (!targetTable) {
+  const targetTable = await sequelize.models.Table.findByPk(TableIdentifier);
+  if(targetTable === null){
     throw new ReferenceError(`Table ${TableIdentifier} does not exist`);
   }
-  await appendToTableZero(intTableIdentifier);
+  await appendToTableZero(TableIdentifier);
   return await targetTable.destroy();
 };
+
 export const selectAllTables = async () => {
   const tableModel = sequelize.models.Table;
   const tableRows = await tableModel.findAll({
@@ -194,6 +188,7 @@ export const selectAllTables = async () => {
   });
   return tableRows;
 };
+
 export const selectTableIds = async () => {
   const tableModel = await sequelize.models.Table;
   const tableRows = await tableModel.findAll({
@@ -202,6 +197,7 @@ export const selectTableIds = async () => {
   const tableIds = Array.prototype.map.call(tableRows, (row) => row.Identifier);
   return tableIds;
 };
+
 export const selectTableById = async (TableIdentifier) => {
   const tableModel = sequelize.models.Table;
   const result = await tableModel.findByPk(TableIdentifier, {
@@ -209,13 +205,16 @@ export const selectTableById = async (TableIdentifier) => {
   });
   return result;
 };
+
 export const selectAllSeats = async () => {
   const seatModel = sequelize.models.Seat;
   const seatRows = await seatModel.findAll({
     attributes: { exclude: ["createdAt", "updatedAt"] },
+    order: [["TableIdentifier", "ASC"], ["Position", "ASC"]]
   });
   return seatRows;
 };
+
 export const selectSeatById = async (PlayerName) => {
   const seatModel = sequelize.models.Seat;
   const result = await seatModel.findByPk(PlayerName, {
@@ -223,6 +222,7 @@ export const selectSeatById = async (PlayerName) => {
   });
   return result;
 };
+
 export const selectSeatIds = async () => {
   const seatModel = await sequelize.models.Seat;
   const tableRows = await seatModel.findAll({
@@ -247,63 +247,15 @@ export const assignSeat = async (
   TableIdentifier,
   Position = Number.MAX_SAFE_INTEGER
 ) => {
-  const seatModel = sequelize.models.Seat;
-  const playerSeat = await seatModel.findByPk(PlayerName);
-  const originalTableIdentifier = playerSeat.TableIdentifier;
-  const destinationTableIdentifier = TableIdentifier;
-  const originalPostion = playerSeat.Position;
-  const destinationPosition = Position;
-  const originalTableArray = await selectSeatsAtTable(originalTableIdentifier);
-  // If the move is within the same table,
-  // avoid fetching two arrays because the same player
-  // will appear in both.
-  if (Number(originalTableIdentifier) === Number(destinationTableIdentifier)) {
-    Array.prototype.splice.call(originalTableArray, originalPostion, 1);
-    Array.prototype.splice.call(
-      originalTableArray,
-      destinationPosition,
-      0,
-      playerSeat
-    );
-    seatPositionRenumber(originalTableArray);
-    await Promise.all(
-      Array.prototype.map.call(
-        originalTableArray,
-        async (seat) => await seat.save()
-      )
-    );
-    return playerSeat;
-  }
-  const destinationTableArray = await selectSeatsAtTable(
-    destinationTableIdentifier
-  );
-  Array.prototype.splice.call(originalTableArray, originalPostion, 1);
-  Array.prototype.splice.call(
-    destinationTableArray,
-    destinationPosition,
-    0,
-    playerSeat
-  );
-
-  seatPositionRenumber(destinationTableArray);
-  await Promise.all(
-    Array.prototype.map.call(
-      destinationTableArray,
-      async (seat) => await seat.save()
-    )
-  );
-
-  seatPositionRenumber(originalTableArray);
-  await Promise.all(
-    Array.prototype.map.call(
-      originalTableArray,
-      async (seat) => await seat.save()
-    )
-  );
-
-  return playerSeat;
+  await _removePlayerSeat(PlayerName);
+  await _insertSeatAtTable(PlayerName, TableIdentifier, Position);
 };
-export const resetSeats = async () => {};
+
+export const resetSeats = async () => {
+  const affectedSeats = await selectAllSeats();
+  await appendToTableZero(affectedSeats);
+};
+
 export const shuffleZero = async () => {};
 
 if (process.env.NODE_ENV != "production") {
