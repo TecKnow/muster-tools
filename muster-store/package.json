@@ -1,0 +1,37 @@
+{
+  "name": "@grumbleware/muster-store",
+  "version": "0.0.1",
+  "description": "Redux state slices and Axios API for @grumbleware/muster-server and @grumbleware/muster-client",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel src -d lib",
+    "test": "jest",
+    "start": "babel src -- watch --out-dir lib"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TecKnow/muster-tools.git"
+  },
+  "author": "David P. Perkins",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/TecKnow/muster-tools/issues"
+  },
+  "homepage": "https://github.com/TecKnow/muster-tools#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.13.16",
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.1",
+    "babel-jest": "^26.6.3",
+    "jest": "^26.6.3"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.5.1",
+    "axios": "^0.21.1"
+  }
+}
