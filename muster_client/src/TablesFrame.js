@@ -12,7 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import AddIcon from "@material-ui/icons/Add";
 import React from "react";
 import Tables from "./Tables";
-import { addTable } from "./api-interface";
+import { api } from "@grumbleware/event-muster-store";
 
 const drawerWidth = 240;
 
@@ -63,7 +63,7 @@ export default function ClippedDrawer() {
         <div className={classes.drawerContainer}>
           <Divider />
           <List>
-            <ListItem button key="add" onClick={addTable}>
+            <ListItem button key="add" onClick={api.addTable}>
               <ListItemIcon>
                 <AddIcon />
               </ListItemIcon>

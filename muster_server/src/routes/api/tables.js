@@ -1,12 +1,12 @@
 import { Router } from "express";
 import store from "../../store";
-import { selectTableSeats } from "../../store/features/seatsSlice";
 import {
   createTable,
   removeTable,
   selectTableById,
   selectTableIds,
-} from "../../store/features/tablesSlice";
+  selectTableSeats,
+} from "@grumbleware/event-muster-store";
 
 const router = Router();
 

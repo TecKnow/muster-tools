@@ -9,7 +9,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { addPlayer } from "./api-interface";
+import { api } from "@grumbleware/event-muster-store";
 
 /* Based on the sign-in template available at the following URL:
  * https://github.com/mui-org/material-ui/tree/master/docs/src/pages/getting-started/templates/sign-in
@@ -42,7 +42,7 @@ export default function SignIn() {
   const onPlayerNameChange = (event) => setPlayerName(event.target.value);
   const onPlayerSubmit = (event) => {
     event.preventDefault();
-    addPlayer(playerName);
+    api.addPlayer(playerName);
     setPlayerName("");
   };
 

@@ -50,10 +50,8 @@ export const seatsSlice = createSlice({
           position: destination_position,
         } = action.payload;
         // Find where the player is currently assigned
-        const {
-          table: source_table,
-          position: source_position,
-        } = find_player_seat(state.entities, player);
+        const { table: source_table, position: source_position } =
+          find_player_seat(state.entities, player);
         // Select all assignments at the source table into a sorted array
         const source_table_list = find_table(state.entities, source_table);
         // Pop the player who is going to move.

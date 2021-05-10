@@ -8,7 +8,7 @@ import {
   application_static_path,
   application_SPA_path,
 } from "./express-app";
-import {test_connection} from "./sequelize";
+import { test_connection } from "./sequelize";
 import apiRoutes from "./routes/api";
 
 if (process.env.NODE_ENV === "production") {

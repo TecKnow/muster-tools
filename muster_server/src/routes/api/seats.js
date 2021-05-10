@@ -5,10 +5,10 @@ import {
   selectPlayerSeat,
   assignSeat,
   resetSeats,
-  shuffleZeroThunk
-} from "../../store/features/seatsSlice";
-import { selectTableIds } from "../../store/features/tablesSlice";
-import { selectPlayerIds } from "../../store/features/playersSlice";
+  shuffleZeroThunk,
+  selectTableIds,
+  selectPlayerIds,
+} from "@grumbleware/event-muster-store";
 import store from "../../store";
 
 const router = Router();
@@ -89,8 +89,8 @@ router.post("/reset", (req, res) => {
   return res.json(result);
 });
 
-router.post("/shuffle", (req, res)=>{
+router.post("/shuffle", (req, res) => {
   const result = store.dispatch(shuffleZeroThunk());
-  return res.json(result)
+  return res.json(result);
 });
 export default router;

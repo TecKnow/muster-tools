@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Chip, Paper, Typography, Grid } from "@material-ui/core";
 import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
-import { selectTableSeats } from "./features/seatsSlice";
+import { selectTableSeats } from "@grumbleware/event-muster-store";
 import { useSelector } from "react-redux";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 

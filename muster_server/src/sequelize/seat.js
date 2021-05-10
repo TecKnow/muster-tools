@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import sequelize from "./sequelize";
 
 export const Seat = sequelize.define("Seat", {
-  PlayerName:{
+  PlayerName: {
     type: DataTypes.STRING,
     primaryKey: true,
   },
@@ -10,12 +10,12 @@ export const Seat = sequelize.define("Seat", {
   /* TODO: Now that there is no compound uniqueness constraint on (TableIdentifier, Position)
      these columns can probably be defined inline with their associations below.
   */
-  TableIdentifier:{
+  TableIdentifier: {
     type: DataTypes.INTEGER,
     allowNull: true,
     defaultValue: 0,
   },
-  
+
   Position: {
     type: DataTypes.INTEGER,
     allowNull: true,

@@ -5,7 +5,7 @@ import {
   removePlayer,
   selectPlayerById,
   selectPlayerIds,
-} from "../../store/features/playersSlice";
+} from "@grumbleware/event-muster-store";
 
 const router = Router();
 

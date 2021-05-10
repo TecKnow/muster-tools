@@ -580,18 +580,36 @@ test("shuffleZero", async () => {
   const seatsAtTable1 = await selectSeatsAtTable(1);
   expect(seatsAtTable1).toEqual(
     expect.arrayContaining([
-      expect.objectContaining({ PlayerName: "Dan", Position: 0, TableIdentifier: 1 }),
-      expect.objectContaining({ PlayerName: "Erin", Position: 1, TableIdentifier: 1 }),
-      expect.objectContaining({ PlayerName: "Frank", Position: 2, TableIdentifier: 1 }),
+      expect.objectContaining({
+        PlayerName: "Dan",
+        Position: 0,
+        TableIdentifier: 1,
+      }),
+      expect.objectContaining({
+        PlayerName: "Erin",
+        Position: 1,
+        TableIdentifier: 1,
+      }),
+      expect.objectContaining({
+        PlayerName: "Frank",
+        Position: 2,
+        TableIdentifier: 1,
+      }),
     ])
   );
   // The shuffled list of keys should have every integer from 0 to length - 1
-  expect(new_position_array).toEqual(expect.arrayContaining([...Array(3).keys()]));
+  expect(new_position_array).toEqual(
+    expect.arrayContaining([...Array(3).keys()])
+  );
   const seatsAtTable0 = await selectSeatsAtTable(0);
   // Check that the new positions have been applied.
-  expect(seatsAtTable0[new_position_array[0]]).toEqual(expect.objectContaining({PlayerName: "Alice"}));
-  expect(seatsAtTable0[new_position_array[1]]).toEqual(expect.objectContaining({PlayerName: "Bob"}));
-  expect(seatsAtTable0[new_position_array[2]]).toEqual(expect.objectContaining({PlayerName: "Charlie"}));
-
-  
+  expect(seatsAtTable0[new_position_array[0]]).toEqual(
+    expect.objectContaining({ PlayerName: "Alice" })
+  );
+  expect(seatsAtTable0[new_position_array[1]]).toEqual(
+    expect.objectContaining({ PlayerName: "Bob" })
+  );
+  expect(seatsAtTable0[new_position_array[2]]).toEqual(
+    expect.objectContaining({ PlayerName: "Charlie" })
+  );
 });

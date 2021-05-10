@@ -1,5 +1,5 @@
 {
-  "name": "event-muster-server",
+  "name": "@grumbleware/event-muster-server",
   "version": "0.0.1",
   "description": "A node.js server for assigning players to tables in multi-table gaming events.",
   "main": "dist/index.js",
@@ -45,6 +45,7 @@
     "tmp-promise": "^3.0.2"
   },
   "dependencies": {
+    "@grumbleware/event-muster-store": "file:../muster-store",
     "@reduxjs/toolkit": "^1.4.0",
     "cls-hooked": "^4.2.2",
     "express": "^4.17.1",

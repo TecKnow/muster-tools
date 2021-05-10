@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "muster_server"
+		},
+		{
+			"path": "muster_client"
+		},
+		{
+			"path": "muster-store"
+		}
+	],
+	"settings": {}
+}

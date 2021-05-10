@@ -1,23 +1,23 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "../features/counter/counterSlice";
 import logger from "redux-logger";
 import createSocketIoMiddleware from "redux-socket.io";
 import socket from "../socket.io-config";
-import playersReducer from "../features/playersSlice";
-import tablesReducer from "../features/tablesSlice";
-import seatsReducer from "../features/seatsSlice";
-import { getServerState } from "../api-interface";
+import {
+  tablesSlice,
+  seatsSlice,
+  playersSlice,
+} from "@grumbleware/event-muster-store";
+import { api } from "@grumbleware/event-muster-store";
 
 const socketIoMiddleware = createSocketIoMiddleware(socket, "server/");
 
 const getStore = async () => {
-  const preloadedState = await getServerState();
+  const preloadedState = await api.getServerState();
   const store = configureStore({
     reducer: {
-      counter: counterReducer,
-      players: playersReducer,
-      tables: tablesReducer,
-      seats: seatsReducer,
+      players: playersSlice.reducer,
+      tables: tablesSlice.reducer,
+      seats: seatsSlice.reducer,
     },
     middleware: (getDefaultMiddleware) => {
       let res = getDefaultMiddleware();

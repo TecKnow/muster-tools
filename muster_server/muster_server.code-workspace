@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../muster_client"
+		},
+		{
+			"path": "../muster-store"
 		}
 	],
 	"settings": {}
