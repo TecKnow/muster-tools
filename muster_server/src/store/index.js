@@ -26,5 +26,4 @@ export const _makeStore = (initial_state) => {
 };
 
 export const store = _makeStore();
-export const writer = store_writer()(store);
 export default store;
