@@ -88,6 +88,13 @@ export const seatsSlice = createSlice({
         0
       );
     },
+    shuffleZero: (state, action) => {
+      const new_positions = action.payload;
+      const table_zero_list = find_table(state.entities, 0);
+      table_zero_list.forEach((element, index) => {
+        element.position = new_positions[index];
+      });
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(addPlayer, (state, action) => {
@@ -125,34 +132,10 @@ export const seatsSlice = createSlice({
       // they were being appended to table 0.
       update_table(table_members, 0, starting_position);
     });
-    builder.addCase("seats/shuffleZero", (state, action) => {
-      const new_positions = action.payload;
-      const table_zero_list = find_table(state.entities, 0);
-      table_zero_list.forEach((element, index) => {
-        element.position = new_positions[index];
-      });
-    });
   },
 });
 
-export const shuffleZeroThunk = () => (dispatch, getState) => {
-  const ACTION_TYPE = "seats/shuffleZero";
-  // Why are we creating an array of a range of integers?
-  // To minimize the amount of work done in the action creator.
-  const num_players_to_shuffle = selectTableSeats(getState(), 0).length;
-  const positions_array = [...Array(num_players_to_shuffle).keys()];
-  // Knuth shuffle
-  for (let i = positions_array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * i);
-    [positions_array[i], positions_array[j]] = [
-      positions_array[j],
-      positions_array[i],
-    ];
-  }
-  return dispatch({ type: ACTION_TYPE, payload: [...positions_array] });
-};
-
-export const { assignSeat, resetSeats } = seatsSlice.actions;
+export const { assignSeat, resetSeats, shuffleZero } = seatsSlice.actions;
 
 export const _default_reducer_path_fetch = (state) => state.seats;
 

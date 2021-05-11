@@ -1,63 +1,63 @@
 import { Router } from "express";
-import store from "../../store";
 import {
   createTable,
   removeTable,
-  selectTableById,
-  selectTableIds,
-  selectTableSeats,
 } from "@grumbleware/event-muster-store";
+import { io } from "../../express-app";
+import * as db from "../../sequelize";
 
 const router = Router();
 
-const getTables = () => {
-  const state = store.getState();
-  const tables = selectTableIds(state);
-  return tables;
+const getTables = async () => {
+  return await db.selectTableIds();
 };
 
-router.get("/", (req, res) => {
-  return res.json(getTables());
+router.get("/", async (req, res) => {
+  return res.json(
+    await db.sequelize.transaction(async () => await getTables())
+  );
 });
 
-router.post("/", (req, res) => {
-  const action = createTable();
-  const state = store.getState();
-  // This does not selelect the table ID
-  // Rather it predicts it, since the store
-  // state is not reliably updated immediately after
-  // dispatching an action.
-  const table_id = Math.max(...selectTableIds(state)) + 1;
-  store.dispatch(action);
-  return res.status(201).json({ id: table_id });
+router.post("/", async (req, res) => {
+  return db.sequelize.transaction(async () => {
+    const newTable = await db.createTable();
+    const action = createTable(newTable.Identifier);
+    io.emit(action);
+    return res.status(201).json(newTable.Identifier);
+  });
 });
 
-router.get("/:id", (req, res) => {
-  const { id } = req.params;
-  const state = store.getState();
-  const selector_result = selectTableSeats(state, id);
-  if (selector_result.length == 0) {
-    return res.status(404).json({ id, error: "Table not found" });
-  }
-  return res.json(selector_result);
+router.get("/:id", async (req, res) => {
+  return db.sequelize.transaction(async () => {
+    const { id } = req.params;
+    const tableExists = await db.selectTableById(id);
+    if (!tableExists) {
+      return res
+        .status(404)
+        .json({ Identifier: id, error: "Table not found." });
+    }
+    const selector_result = await db.selectSeatsAtTable(id);
+    return res.json(selector_result);
+  });
 });
 
-router.delete("/:id", (req, res) => {
-  const { id } = req.params;
-  if (id == 0) {
-    return res
-      .status(405)
-      .json({ id, error: "Default table cannot be deleted." });
-  }
-  const state = store.getState();
-  const selector_result = selectTableById(state, id);
-  if (selector_result.length == 0) {
-    return res.status(404).json({ id, error: "Table does not exist" });
-  }
-  //TODO: What if there is more than one result?
-  const action = removeTable(id);
-  store.dispatch(action);
-  return res.json(getTables());
+router.delete("/:id", async (req, res) => {
+  db.sequelize.transaction(async () => {
+    const { id } = req.params;
+    if (id == 0) {
+      return res
+        .status(405)
+        .json({ id, error: "Default table cannot be deleted." });
+    }
+    const selector_result = db.selectTableById(id);
+    if (!selector_result) {
+      return res.status(404).json({ Identifier: id, error: "Table does not exist" });
+    }
+    await db.removeTable(id);    
+    const action = removeTable(id);
+    io.emit(action);
+    return res.json();
+  });
 });
 
 export default router;

@@ -3,7 +3,7 @@ import { removeTable } from "../tablesSlice";
 import seatsSliceReducer, {
   assignSeat,
   resetSeats,
-  shuffleZeroThunk,
+  shuffleZero,
   selectTableSeats,
   selectPlayerSeat,
   _set_reducer_path_fetch,
@@ -141,37 +141,18 @@ test("remove table 0", () => {
 });
 
 test("Shuffle action", () => {
-  const mockDispatch = jest.fn().mockName("mockDispatch");
-  const mockGetState = jest
-    .fn()
-    .mockName("mockGetState")
-    .mockReturnValue(four_player_starting_state);
-  shuffleZeroThunk()(mockDispatch, mockGetState);
-  expect(mockGetState).toHaveBeenCalled();
-  expect(mockDispatch).toHaveBeenCalled();
-  const action = mockDispatch.mock.calls[0][0];
-  expect(action).toHaveProperty("type", "seats/shuffleZero");
-  expect(action).toHaveProperty("payload");
-  const payload = action.payload;
-  expect(payload).toHaveLength(4);
-  expect([...payload].sort()).toEqual([...Array(4).keys()]);
-});
-
-test("Shuffle Reducer", () => {
-  const mockDispatch = jest.fn().mockName("mockDispatch");
-  const mockGetState = jest
-    .fn()
-    .mockName("mockGetState")
-    .mockReturnValue(four_player_starting_state);
-  shuffleZeroThunk()(mockDispatch, mockGetState);
-  expect(mockGetState).toHaveBeenCalled();
-  expect(mockDispatch).toHaveBeenCalled();
-  const action = mockDispatch.mock.calls[0][0];
-  const payload = action.payload;
-  const shuffled_state = seatsSliceReducer(four_player_starting_state, action);
-  const shuffled_entities = Object.values(shuffled_state.entities);
-  shuffled_entities.forEach((value, index) => {
-    expect(value.position).toEqual(payload[index]);
+  const shuffled_state = seatsSliceReducer(
+    four_players_one_table_state,
+    shuffleZero([1, 0])
+  );
+  expect(shuffled_state).toEqual({
+    ids: ["Alice", "Bob", "Charlie", "Dan"],
+    entities: {
+      Alice: { id: "Alice", table: 0, position: 1 },
+      Bob: { id: "Bob", table: 0, position: 0 },
+      Charlie: { id: "Charlie", table: 1, position: 1 },
+      Dan: { id: "Dan", table: 1, position: 0 },
+    },
   });
 });
 

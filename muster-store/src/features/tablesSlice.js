@@ -13,7 +13,7 @@ export const tablesSlice = createSlice({
   reducers: {
     createTable: {
       reducer: (state, action) => {
-        const new_table_number = Math.max(...state.ids) + 1;
+        const new_table_number = parseInt(action.payload) || Math.max(...state.ids) + 1
         tablesAdapter.addOne(state, {
           ...action,
           payload: { id: new_table_number },

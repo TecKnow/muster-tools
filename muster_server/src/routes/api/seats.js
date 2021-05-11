@@ -1,96 +1,101 @@
 import { Router } from "express";
 import {
-  selectAllSeats,
-  selectTableSeats,
-  selectPlayerSeat,
   assignSeat,
   resetSeats,
-  shuffleZeroThunk,
-  selectTableIds,
-  selectPlayerIds,
+  shuffleZero,
 } from "@grumbleware/event-muster-store";
-import store from "../../store";
+import { io } from "../../express-app";
+import * as db from "../../sequelize";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  return res.json(selectAllSeats(store.getState()));
+router.get("/", async (req, res) => {
+  return res.json(
+    await db.sequelize.transaction(async () => await db.selectAllSeats())
+  );
 });
 
-router.get("/table/:tableID", (req, res) => {
-  const { tableID } = req.params;
-  const intTableID = parseInt(tableID);
-  const state = store.getState();
-  if (isNaN(intTableID)) {
-    return res
-      .status(400)
-      .json({ id: tableID, error: "Table IDs must be integers." });
-  }
-  const tableIDs = selectTableIds(state);
-  if (!Array.prototype.includes.call(tableIDs, intTableID)) {
-    return res.status(404).json({ id: tableID, error: "Table not found" });
-  }
-  const selectorResult = selectTableSeats(state, intTableID);
-  return res.json(selectorResult);
+router.get("/table/:tableID", async (req, res) => {
+  return db.sequelize.transaction(async () => {
+    const { tableID } = req.params;
+    const intTableID = parseInt(tableID);
+    if (isNaN(intTableID)) {
+      return res
+        .status(400)
+        .json({ id: tableID, error: "Table IDs must be integers." });
+    }
+    const tableExists = await db.selectTableById(intTableID);
+    if (!tableExists) {
+      return res.status(404).json({ id: tableID, error: "Table not found" });
+    }
+    const selectorResult = await db.selectSeatsAtTable(intTableID);
+    return res.json(selectorResult);
+  });
 });
 
-router.get("/player/:PlayerID", (req, res) => {
-  const { PlayerID } = req.params;
-  const state = store.getState();
-  const selectorResult = selectPlayerSeat(state, PlayerID);
-  if (selectorResult.length == 0) {
-    return res
-      .status(404)
-      .json({ playerName: PlayerID, error: "Player not found" });
-  } else if (selectorResult.length > 1) {
-    return res.status(500).json({
-      id: PlayerID,
-      error: "Duplicate records found for player seat",
-      records: selectorResult,
-    });
-  }
-  return res.json(selectorResult);
+router.get("/player/:PlayerID", async (req, res) => {
+  return db.sequelize.transaction(async () => {
+    const { PlayerID } = req.params;
+    const selectorResult = await db.selectSeatById(PlayerID);
+    if (!selectorResult) {
+      return res
+        .status(404)
+        .json({ playerName: PlayerID, error: "Player not found" });
+    }
+    return res.json(selectorResult);
+  });
 });
 
-router.post("/assign", (req, res) => {
-  const { playerName, table, position } = req.body;
-  const intTable = parseInt(table);
-  const intPosition = parseInt(position);
-  const state = store.getState();
-  const playerIds = selectPlayerIds(state);
-  const tableIds = selectTableIds(state);
-  const errors = [];
-  if (playerName === undefined) {
-    errors.push("playerName is required");
-  } else if (!Array.prototype.includes.call(playerIds, playerName)) {
-    errors.push(`player ${playerName} not found`);
-  }
-  if (table === undefined) {
-    errors.push("table is required");
-  } else if (isNaN(intTable) || intTable < 0) {
-    errors.push("table identifiers must be non-negative integers");
-  } else if (!Array.prototype.includes.call(tableIds, intTable)) {
-    errors.push(`table ${intTable} not found}`);
-  }
-  if (position === undefined) {
-    errors.push("position is required");
-  } else if (isNaN(intPosition) || intPosition < 0) {
-    errors.push("position must be a non-negative integer");
-  }
-  if (errors.length > 0) {
-    return res.status(400).json({ playerName, table, position, errors });
-  }
-  const result = store.dispatch(assignSeat(playerName, intTable, intPosition));
-  return res.json(result);
+router.post("/assign", async (req, res) => {
+  return db.sequelice.transaction(async () => {
+    const { playerName, table: tableIdentifier, position } = req.body;
+    const intTableID = parseInt(tableIdentifier);
+    const intPosition = parseInt(position);
+    const player = await db.selectPlayerById(playerName);
+    const table = await db.selectTableById(tableIdentifier);
+    const errors = [];
+    if (playerName === undefined) {
+      errors.push("playerName is required");
+    } else if (!player) {
+      errors.push(`player ${playerName} not found`);
+    }
+    if (tableIdentifier === undefined) {
+      errors.push("table is required");
+    } else if (isNaN(intTableID) || intTableID < 0) {
+      errors.push("table identifiers must be non-negative integers");
+    } else if (!table) {
+      errors.push(`table ${intTableID} not found}`);
+    }
+    if (position === undefined) {
+      errors.push("position is required");
+    } else if (isNaN(intPosition) || intPosition < 0) {
+      errors.push("position must be a non-negative integer");
+    }
+    if (errors.length > 0) {
+      return res
+        .status(400)
+        .json({ playerName, table: tableIdentifier, position, errors });
+    }
+    await db.assignSeat(playerName, intTableID, intPosition);
+    const action = await assignSeat(playerName, intTableID, intPosition);
+    io.emit(action);
+    return res.json();
+  });
 });
 
-router.post("/reset", (req, res) => {
-  const result = store.dispatch(resetSeats());
-  return res.json(result);
+router.post("/reset", async (req, res) => {
+  return db.sequelize.transaction(async () => {
+    await db.resetSeats();
+    io.emit(resetSeats());
+    return res.json();
+  });
 });
 
-router.post("/shuffle", (req, res) => {
-  const result = store.dispatch(shuffleZeroThunk());
-  return res.json(result);
+router.post("/shuffle", async (req, res) => {
+  return db.sequelize.transaction(async () => {
+    const new_positions = await db.shuffleZero();
+    io.emit(shuffleZero(new_positions));
+    return res.json(new_positions);
+  });
 });
 export default router;

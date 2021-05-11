@@ -268,14 +268,14 @@ export const shuffleZero = async () => {
   const num_players_to_shuffle = tableZeroSeats.length;
   const positions_array = [...Array(num_players_to_shuffle).keys()];
   // Knuth shuffle
-  for (let i = positions_array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * i);
+  for (let i = positions_array.length-1; i > 0; --i) {
+    let j = Math.floor(Math.random() * (i+1));
     [positions_array[i], positions_array[j]] = [
       positions_array[j],
       positions_array[i],
     ];
   }
-  Promise.all(
+  await Promise.all(
     Array.prototype.map.call(tableZeroSeats, async (seat, idx) => {
       seat.Position = positions_array[idx];
       await seat.save();

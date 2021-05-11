@@ -20,7 +20,7 @@ const getStore = async () => {
       seats: seatsSlice.reducer,
     },
     middleware: (getDefaultMiddleware) => {
-      let res = getDefaultMiddleware();
+      let res = getDefaultMiddleware({thunk: {extraArgument: api}});
       res = res.concat(socketIoMiddleware);
       if (process.env.NODE_ENV === "development") {
         res = res.concat(logger);
