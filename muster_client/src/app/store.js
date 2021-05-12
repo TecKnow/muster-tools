@@ -11,8 +11,7 @@ import { api } from "@grumbleware/event-muster-store";
 
 const socketIoMiddleware = createSocketIoMiddleware(socket, "server/");
 
-const getStore = async () => {
-  const preloadedState = await api.getServerState();
+const getStore =  () => {
   const store = configureStore({
     reducer: {
       players: playersSlice.reducer,
@@ -26,8 +25,7 @@ const getStore = async () => {
         res = res.concat(logger);
       }
       return res;
-    },
-    preloadedState,
+    }, 
   });
   return store;
 };
