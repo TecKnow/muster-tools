@@ -47,7 +47,7 @@ router.get("/player/:PlayerID", async (req, res) => {
 });
 
 router.post("/assign", async (req, res) => {
-  return db.sequelice.transaction(async () => {
+  return db.sequelize.transaction(async () => {
     const { playerName, table: tableIdentifier, position } = req.body;
     const intTableID = parseInt(tableIdentifier);
     const intPosition = parseInt(position);

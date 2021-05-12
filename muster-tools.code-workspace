@@ -10,5 +10,9 @@
 			"path": "muster-store"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.watcherExclude": {
+			"**/lib": true
+		}
+	}
 }

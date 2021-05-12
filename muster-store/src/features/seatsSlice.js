@@ -1,4 +1,8 @@
-import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createEntityAdapter,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
 import { addPlayer, removePlayer } from "./playersSlice";
 import { removeTable } from "./tablesSlice";
 
@@ -32,6 +36,25 @@ const find_player_seat = (seat_entities, playerId) => seat_entities[playerId];
 
 const seat_sort_comparer = (a, b) =>
   a.table == b.table ? a.position - b.position : a.table - b.table;
+
+export const fetchSeats = createAsyncThunk(
+  "seats/fetchSeats",
+ async (_, thunkApi) => {
+    try {
+      const api = thunkApi.extra;
+      const dataFromServer = await api.selectAllSeats();
+      console.log(dataFromServer)
+      const results = Array.prototype.map.call(dataFromServer, (seatRow) => ({
+        id: seatRow.PlayerName,
+        table: seatRow.TableIdentifier,
+        position: seatRow.Position,
+      }));
+      return results;
+    } catch (err) {
+    thunkApi.rejectWithValue(err);
+    }
+  }
+);
 
 export const seatsSlice = createSlice({
   name: "seats",
@@ -97,6 +120,7 @@ export const seatsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchSeats.fulfilled, seatsAdapter.upsertMany);
     builder.addCase(addPlayer, (state, action) => {
       const id = action.payload.id;
       const table = 0;

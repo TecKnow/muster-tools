@@ -8,7 +8,7 @@ import * as db from "../../sequelize";
 const router = Router();
 
 const getPlayers = async () => {
-  return await db.selectPlayerIds();
+  return await db.selectAllPlayers();
 };
 
 router.get("/", async (req, res) => {

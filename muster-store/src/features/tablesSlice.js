@@ -1,8 +1,30 @@
-import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createEntityAdapter,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
 
 const tablesAdapter = createEntityAdapter({
   sortComparer: (a, b) => (a < b ? -1 : a > b ? 1 : 0),
 });
+
+export const fetchTables = createAsyncThunk(
+  "tables/fetchTables",
+  async (_, thunkApi) => {
+    try {
+      api = thunkApi.extra;
+      const dataFromServer = await api.selectAllTables();
+      console.log("Table data from server");
+      console.log(dataFromServer);
+      const result = Array.prototype.map.call(dataFromServer, (tableRow) => ({
+        id: tableRow.Identifier,
+      }));
+      return result;
+    } catch (err) {
+      thunkApi.rejectWithValue(err);
+    }
+  }
+);
 
 export const tablesSlice = createSlice({
   name: "tables",
@@ -13,7 +35,8 @@ export const tablesSlice = createSlice({
   reducers: {
     createTable: {
       reducer: (state, action) => {
-        const new_table_number = parseInt(action.payload) || Math.max(...state.ids) + 1
+        const new_table_number =
+          parseInt(action.payload) || Math.max(...state.ids) + 1;
         tablesAdapter.addOne(state, {
           ...action,
           payload: { id: new_table_number },
@@ -35,6 +58,9 @@ export const tablesSlice = createSlice({
       },
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchTables.fulfilled, tablesAdapter.upsertMany);
+  }
 });
 
 export const { createTable, removeTable } = tablesSlice.actions;

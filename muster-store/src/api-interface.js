@@ -1,8 +1,11 @@
 import qs from "qs";
-import axios from "./axios-config";
+import axios from "axios";
 
-export const getServerState = async () => {
-  const response = await axios.get("/api");
+axios.defaults.headers.post["Content-Type"] =
+  "application/x-www-form-urlencoded";
+
+export const selectAllPlayers = async () => {
+  const response = await axios.get("/api/players");
   return response.data;
 };
 
@@ -14,9 +17,23 @@ export const addPlayer = async (playerName) => {
   return response;
 };
 
+export const selectAllTables = async () => {
+  const response = await axios.get(
+    "/api/tables",
+  );
+  return response.data;
+};
+
 export const addTable = async () => {
   const response = await axios.post("/api/tables");
   return response;
+};
+
+export const selectAllSeats = async () => {
+  const response = await axios.get(
+    "/api/seats",
+  );
+  return response.data;
 };
 
 export const assignSeat = async (playerName, table, position) => {
@@ -29,12 +46,12 @@ export const assignSeat = async (playerName, table, position) => {
 
 export const resetSeats = async () => {
   const response = await axios.post("/api/seats/reset");
-  return response;
+  return response.data;
 };
 
 export const shuffleZero = async () => {
   const response = await axios.post("/api/seats/shuffle");
-  return response;
+  return response.data;
 };
 
 export default axios;

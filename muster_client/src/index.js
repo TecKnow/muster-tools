@@ -9,9 +9,14 @@ import getStore from "./app/store";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 import ApplicationDragDropContext from "./ApplicationDragDropContext";
+import {fetchPlayers, fetchTables, fetchSeats} from "@grumbleware/event-muster-store"
 
 const render = async () => {
-  const store = await getStore();
+  const store = getStore();
+  store.dispatch(fetchPlayers());
+  store.dispatch(fetchTables());
+  store.dispatch(fetchSeats());
+
   ReactDOM.render(
     <React.StrictMode>
       <Provider store={store}>

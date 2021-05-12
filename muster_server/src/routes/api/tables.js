@@ -8,13 +8,9 @@ import * as db from "../../sequelize";
 
 const router = Router();
 
-const getTables = async () => {
-  return await db.selectTableIds();
-};
-
 router.get("/", async (req, res) => {
   return res.json(
-    await db.sequelize.transaction(async () => await getTables())
+    await db.sequelize.transaction(async () => await db.selectAllTables())
   );
 });
 
