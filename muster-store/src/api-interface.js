@@ -18,9 +18,7 @@ export const addPlayer = async (playerName) => {
 };
 
 export const selectAllTables = async () => {
-  const response = await axios.get(
-    "/api/tables",
-  );
+  const response = await axios.get("/api/tables");
   return response.data;
 };
 
@@ -30,9 +28,7 @@ export const addTable = async () => {
 };
 
 export const selectAllSeats = async () => {
-  const response = await axios.get(
-    "/api/seats",
-  );
+  const response = await axios.get("/api/seats");
   return response.data;
 };
 

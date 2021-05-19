@@ -5,6 +5,8 @@ import {
 } from "@reduxjs/toolkit";
 import { addPlayer, removePlayer } from "./playersSlice";
 import { removeTable } from "./tablesSlice";
+//TODO: factor seat moving logic into its own reducer utility function
+//TODO: create moveSeat action that the server can broadcast
 
 const seatsAdapter = createEntityAdapter();
 
@@ -34,16 +36,61 @@ const find_table = (seat_entities, tableId) =>
 
 const find_player_seat = (seat_entities, playerId) => seat_entities[playerId];
 
+const move_seat = (seat_entities, playerId, tableId, position) => {
+  const destination_table = tableId;
+  const destination_position = position;
+  /** The key to this method is converting from an unordered list of
+   * triples (player, table, position) to ordered sublists and back,
+   * very carefully.
+   * */
+  // The action tells us where the user should end up assigned
+  // Find where the player is currently assigned
+  const { table: source_table, position: source_position } = find_player_seat(
+    seat_entities,
+    playerId
+  );
+  if (
+    source_table === destination_table &&
+    source_position === destination_position
+  ) {
+    // Move already accomplished.
+    // This probably means the move was initiated from this client and
+    // provisionally enacted by the assignSeat thunk.
+    return;
+  }
+  // Select all assignments at the source table into a sorted array
+  const source_table_list = find_table(seat_entities, source_table);
+  // Pop the player who is going to move.
+  // This removes them from the list, but not the entities object.
+  // It is vital to set their table to null here
+  // so the entities objects reflects that they have been poppped
+  const [removed] = source_table_list.splice(source_position, 1);
+  removed.table = null;
+  removed.position = null;
+  // console.log("Removed item", JSON.stringify(removed));
+  update_table(source_table_list, source_table);
+  // console.log("updated source table", JSON.stringify(source_table_list));
+  // Select all assignments at the destination table into a sorted array
+  const destination_table_list = find_table(seat_entities, destination_table);
+  // console.log("Original destination table list", JSON.stringify(destination_table_list));
+  // Manipulate the ordered lists using slice mechanisms as normal
+  destination_table_list.splice(destination_position, 0, removed);
+  // console.log("updated destination table list", JSON.stringify(destination_table_list));
+
+  // Update the seat assignments at each table to match their array index.
+  update_table(destination_table_list, destination_table);
+  // console.log("Normalized destination list", JSON.stringify(destination_table_list));
+};
+
 const seat_sort_comparer = (a, b) =>
   a.table == b.table ? a.position - b.position : a.table - b.table;
 
 export const fetchSeats = createAsyncThunk(
   "seats/fetchSeats",
- async (_, thunkApi) => {
+  async (_, thunkApi) => {
     try {
       const api = thunkApi.extra;
       const dataFromServer = await api.selectAllSeats();
-      console.log(dataFromServer)
       const results = Array.prototype.map.call(dataFromServer, (seatRow) => ({
         id: seatRow.PlayerName,
         table: seatRow.TableIdentifier,
@@ -51,7 +98,19 @@ export const fetchSeats = createAsyncThunk(
       }));
       return results;
     } catch (err) {
-    thunkApi.rejectWithValue(err);
+      thunkApi.rejectWithValue(err);
+    }
+  }
+);
+
+export const assignSeat = createAsyncThunk(
+  "seats/assignSeat",
+  async ({ player, table, position }, thunkApi) => {
+    try {
+      await api.assignSeat(player, table, position);
+      return { player, table, position };
+    } catch (err) {
+      return thunkApi.rejectWithValue(err);
     }
   }
 );
@@ -60,49 +119,13 @@ export const seatsSlice = createSlice({
   name: "seats",
   initialState: seatsAdapter.getInitialState(),
   reducers: {
-    assignSeat: {
+    moveSeat: {
       reducer: (state, action) => {
-        /** The key to this method is converting from an unordered list of
-         * triples (player, table, position) to ordered sublists and back,
-         * very carefully.
-         * */
-        // The action tells us where the user should end up assigned
-        const {
-          id: player,
-          table: destination_table,
-          position: destination_position,
-        } = action.payload;
-        // Find where the player is currently assigned
-        const { table: source_table, position: source_position } =
-          find_player_seat(state.entities, player);
-        // Select all assignments at the source table into a sorted array
-        const source_table_list = find_table(state.entities, source_table);
-        // Pop the player who is going to move.
-        // This removes them from the list, but not the entities object.
-        // It is vital to set their table to null here
-        // so the entities objects reflects that they have been poppped
-        const [removed] = source_table_list.splice(source_position, 1);
-        removed.table = null;
-        removed.position = null;
-        // console.log("Removed item", JSON.stringify(removed));
-        update_table(source_table_list, source_table);
-        // console.log("updated source table", JSON.stringify(source_table_list));
-        // Select all assignments at the destination table into a sorted array
-        const destination_table_list = find_table(
-          state.entities,
-          destination_table
-        );
-        // console.log("Original destination table list", JSON.stringify(destination_table_list));
-        // Manipulate the ordered lists using slice mechanisms as normal
-        destination_table_list.splice(destination_position, 0, removed);
-        // console.log("updated destination table list", JSON.stringify(destination_table_list));
-
-        // Update the seat assignments at each table to match their array index.
-        update_table(destination_table_list, destination_table);
-        // console.log("Normalized destination list", JSON.stringify(destination_table_list));
+        const { player, table, position } = action.payload;
+        move_seat(state.entities, player, table, position);
       },
       prepare: (player, table, position) => ({
-        payload: { id: player, table, position },
+        payload: { player, table, position },
       }),
     },
     resetSeats: (state) => {
@@ -121,6 +144,34 @@ export const seatsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSeats.fulfilled, seatsAdapter.upsertMany);
+    builder.addCase(assignSeat.pending, (state, action) => {
+      const previous_seat = find_player_seat(
+        state.entities,
+        action.meta.arg.player
+      );
+      previous_seat.previous_position = previous_seat.position;
+      previous_seat.previous_table = previous_seat.table;
+      move_seat(
+        state.entities,
+        action.meta.arg.player,
+        action.meta.arg.table,
+        action.meta.arg.position
+      );
+    });
+    builder.addCase(assignSeat.rejected, (state, action) => {
+      move_seat(
+        state.entities,
+        action.meta.arg.player,
+        state.entities[action.meta.arg.player].previous_table,
+        state.entities[action.meta.arg.player].previous_position
+      );
+      delete state.entities[action.meta.arg.player].previous_table;
+      delete state.entities[action.meta.arg.player].previous_position;
+    });
+    builder.addCase(assignSeat.fulfilled, (state, action) => {
+      delete state.entities[action.meta.arg.player].previous_table;
+      delete state.entities[action.meta.arg.player].previous_position;
+    });
     builder.addCase(addPlayer, (state, action) => {
       const id = action.payload.id;
       const table = 0;
@@ -159,7 +210,7 @@ export const seatsSlice = createSlice({
   },
 });
 
-export const { assignSeat, resetSeats, shuffleZero } = seatsSlice.actions;
+export const { moveSeat, resetSeats, shuffleZero } = seatsSlice.actions;
 
 export const _default_reducer_path_fetch = (state) => state.seats;
 

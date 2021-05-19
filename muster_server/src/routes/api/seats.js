@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  assignSeat,
+  moveSeat,
   resetSeats,
   shuffleZero,
 } from "@grumbleware/event-muster-store";
@@ -77,8 +77,8 @@ router.post("/assign", async (req, res) => {
         .json({ playerName, table: tableIdentifier, position, errors });
     }
     await db.assignSeat(playerName, intTableID, intPosition);
-    const action = await assignSeat(playerName, intTableID, intPosition);
-    io.emit(action);
+    const action = moveSeat(playerName, intTableID, intPosition);
+    io.emit("action", action);
     return res.json();
   });
 });
@@ -86,7 +86,7 @@ router.post("/assign", async (req, res) => {
 router.post("/reset", async (req, res) => {
   return db.sequelize.transaction(async () => {
     await db.resetSeats();
-    io.emit(resetSeats());
+    io.emit("action", resetSeats());
     return res.json();
   });
 });
@@ -94,7 +94,7 @@ router.post("/reset", async (req, res) => {
 router.post("/shuffle", async (req, res) => {
   return db.sequelize.transaction(async () => {
     const new_positions = await db.shuffleZero();
-    io.emit(shuffleZero(new_positions));
+    io.emit("action", shuffleZero(new_positions));
     return res.json(new_positions);
   });
 });

@@ -12,6 +12,6 @@ socket.on("connect", () => {
 });
 
 console.log("Registering handler for all events");
-socket.onAny((eventName, ...args) => {
-  console.log(`Event Name: ${eventName}`);
+socket.onAny((event) => {
+  console.log(`Event: ${JSON.stringify(event)}`);
 });

@@ -5,9 +5,10 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src -d lib && cd ../muster_client && npm run build",
+    "start-store": "cd ../muster-store && npm start",
     "start-server": "nodemon --exec babel-node --watch ./ --watch ../muster_store --watch ../muster_server --require dotenv/config src/index.js",
     "start-client": "cd ../muster_client && npm start",
-    "start-dev": "concurrently --kill-others-on-fail \"npm:start-server\" \"npm:start-client\"",
+    "start-dev": "concurrently --kill-others-on-fail \"npm:start-store\" \"npm:start-server\" \"npm:start-client\"",
     "serve": "node lib/index.js",
     "test": "jest",
     "test:watch": "npm test -- --watch"

@@ -14,8 +14,6 @@ export const fetchTables = createAsyncThunk(
     try {
       api = thunkApi.extra;
       const dataFromServer = await api.selectAllTables();
-      console.log("Table data from server");
-      console.log(dataFromServer);
       const result = Array.prototype.map.call(dataFromServer, (tableRow) => ({
         id: tableRow.Identifier,
       }));
@@ -60,7 +58,7 @@ export const tablesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchTables.fulfilled, tablesAdapter.upsertMany);
-  }
+  },
 });
 
 export const { createTable, removeTable } = tablesSlice.actions;

@@ -1,8 +1,5 @@
 import { Router } from "express";
-import {
-  createTable,
-  removeTable,
-} from "@grumbleware/event-muster-store";
+import { createTable, removeTable } from "@grumbleware/event-muster-store";
 import { io } from "../../express-app";
 import * as db from "../../sequelize";
 
@@ -18,7 +15,7 @@ router.post("/", async (req, res) => {
   return db.sequelize.transaction(async () => {
     const newTable = await db.createTable();
     const action = createTable(newTable.Identifier);
-    io.emit(action);
+    io.emit("action", action);
     return res.status(201).json(newTable.Identifier);
   });
 });
@@ -47,11 +44,13 @@ router.delete("/:id", async (req, res) => {
     }
     const selector_result = db.selectTableById(id);
     if (!selector_result) {
-      return res.status(404).json({ Identifier: id, error: "Table does not exist" });
+      return res
+        .status(404)
+        .json({ Identifier: id, error: "Table does not exist" });
     }
-    await db.removeTable(id);    
+    await db.removeTable(id);
     const action = removeTable(id);
-    io.emit(action);
+    io.emit("action", action);
     return res.json();
   });
 });

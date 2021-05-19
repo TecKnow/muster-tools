@@ -42,6 +42,7 @@ export default function SignIn() {
   const onPlayerNameChange = (event) => setPlayerName(event.target.value);
   const onPlayerSubmit = (event) => {
     event.preventDefault();
+    //TODO #16 What happens if there is an exception here?
     api.addPlayer(playerName);
     setPlayerName("");
   };

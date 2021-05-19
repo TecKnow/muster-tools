@@ -1,8 +1,5 @@
 import { Router } from "express";
-import {
-  addPlayer,
-  removePlayer,
-} from "@grumbleware/event-muster-store";
+import { addPlayer, removePlayer } from "@grumbleware/event-muster-store";
 import { io } from "../../express-app";
 import * as db from "../../sequelize";
 const router = Router();
@@ -23,16 +20,17 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: "Name is required." });
   }
   return await db.sequelize.transaction(async () => {
-  const selectorResult = await db.selectPlayerById(name);
-  if (selectorResult) {
-    return res
-      .status(409)
-      .json({ id: name, error: "A player with that name already exists." });
-  }
+    const selectorResult = await db.selectPlayerById(name);
+    if (selectorResult) {
+      return res
+        .status(409)
+        .json({ id: name, error: "A player with that name already exists." });
+    }
 
     await db.addPlayer(name);
     const action = addPlayer(name);
-    io.emit(action);
+    console.log(JSON.stringify(action));
+    io.emit("action", action);
 
     return res.status(201).json();
   });
@@ -47,8 +45,7 @@ router.delete("/:name", async (req, res) => {
     }
     await db.removePlayer(name);
     const action = removePlayer(name);
-    io.emit(action);
-    return res.json();
+    io.emit("action", action);
   });
 });
 
