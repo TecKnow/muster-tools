@@ -11,6 +11,9 @@
 		}
 	],
 	"settings": {
+		"search.exclude": {
+			"**/lib": true
+		},
 		"files.watcherExclude": {
 			"**/lib": true
 		}

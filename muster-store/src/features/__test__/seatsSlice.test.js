@@ -2,6 +2,7 @@ import { addPlayer, removePlayer } from "../playersSlice";
 import { removeTable } from "../tablesSlice";
 import seatsSliceReducer, {
   assignSeat,
+  moveSeat,
   resetSeats,
   shuffleZero,
   selectTableSeats,
@@ -58,7 +59,7 @@ test("Added players get seats at table 0", () => {
 test("Rearrange players in table 0", () => {
   const charlie_first_state = seatsSliceReducer(
     four_player_starting_state,
-    assignSeat("Charlie", 0, 0)
+    moveSeat("Charlie", 0, 0)
   );
   expect(charlie_first_state).toEqual({
     ids: ["Alice", "Bob", "Charlie", "Dan"],
@@ -75,7 +76,7 @@ test("move players from table 0 to another table", () => {
   // Players fall to the lowest open position when moved.
   const move_charlie_state = seatsSliceReducer(
     four_player_starting_state,
-    assignSeat("Charlie", 1, 3)
+    moveSeat("Charlie", 1, 3)
   );
   expect(move_charlie_state).toEqual({
     ids: ["Alice", "Bob", "Charlie", "Dan"],
@@ -88,7 +89,7 @@ test("move players from table 0 to another table", () => {
   });
   const move_dan_state = seatsSliceReducer(
     move_charlie_state,
-    assignSeat("Dan", 1, 0)
+    moveSeat("Dan", 1, 0)
   );
   expect(move_dan_state).toEqual({
     ids: ["Alice", "Bob", "Charlie", "Dan"],
