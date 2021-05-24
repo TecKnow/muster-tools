@@ -1,20 +1,17 @@
 {
 	"folders": [
 		{
-			"path": "muster_server"
+			"path": "muster-client"
 		},
 		{
-			"path": "muster_client"
+			"path": "muster-server"
 		},
 		{
 			"path": "muster-store"
 		}
 	],
 	"settings": {
-		"search.exclude": {
-			"**/lib": true
-		},
-		"files.watcherExclude": {
+		"files.exclude": {
 			"**/lib": true
 		}
 	}
