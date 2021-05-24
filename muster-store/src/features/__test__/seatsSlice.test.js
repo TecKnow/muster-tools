@@ -229,9 +229,11 @@ describe("Thunks", () => {
           payload: undefined,
           type: String(assignSeat.pending),
         },
-        {meta: { arg: { player: "Charlie", position: 0, table: 0 } },
-        payload: expect.any(Object),
-        type: String(assignSeat.fulfilled)},
+        {
+          meta: { arg: { player: "Charlie", position: 0, table: 0 } },
+          payload: expect.any(Object),
+          type: String(assignSeat.fulfilled),
+        },
       ]);
 
       // test-specific teardown
@@ -259,9 +261,11 @@ describe("Thunks", () => {
           payload: undefined,
           type: String(assignSeat.pending),
         },
-        {meta: { arg: { player: "Charlie", position: 0, table: 0 } },
-        payload: expect.any(Object),
-        type: String(assignSeat.rejected)},
+        {
+          meta: { arg: { player: "Charlie", position: 0, table: 0 } },
+          payload: expect.any(Object),
+          type: String(assignSeat.rejected),
+        },
       ]);
 
       // test-specific teardown

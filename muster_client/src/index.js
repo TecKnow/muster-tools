@@ -9,7 +9,11 @@ import getStore from "./app/store";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 import ApplicationDragDropContext from "./ApplicationDragDropContext";
-import {fetchPlayers, fetchTables, fetchSeats} from "@grumbleware/event-muster-store"
+import {
+  fetchPlayers,
+  fetchTables,
+  fetchSeats,
+} from "@grumbleware/event-muster-store";
 
 const render = async () => {
   const store = getStore();

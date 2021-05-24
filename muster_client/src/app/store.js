@@ -11,7 +11,7 @@ import { api } from "@grumbleware/event-muster-store";
 
 const socketIoMiddleware = createSocketIoMiddleware(socket, "server/");
 
-const getStore =  () => {
+const getStore = () => {
   const store = configureStore({
     reducer: {
       players: playersSlice.reducer,
@@ -19,13 +19,13 @@ const getStore =  () => {
       seats: seatsSlice.reducer,
     },
     middleware: (getDefaultMiddleware) => {
-      let res = getDefaultMiddleware({thunk: {extraArgument: api}});
+      let res = getDefaultMiddleware({ thunk: { extraArgument: api } });
       res = res.concat(socketIoMiddleware);
       if (process.env.NODE_ENV === "development") {
         res = res.concat(logger);
       }
       return res;
-    }, 
+    },
   });
   return store;
 };

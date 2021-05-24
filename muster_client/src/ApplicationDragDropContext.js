@@ -1,11 +1,9 @@
 import { DragDropContext } from "react-beautiful-dnd";
 import { assignSeat } from "@grumbleware/event-muster-store";
-import {useDispatch} from "react-redux"
-
-
+import { useDispatch } from "react-redux";
 
 const ApplicationDragDropContext = ({ children }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const dragEnd = (result) => {
     const { destination, source, draggableId } = result;
     if (!destination) {
@@ -37,7 +35,7 @@ const ApplicationDragDropContext = ({ children }) => {
         position: destinationDroppableIndex,
       })
     );
-  
+
     console.log(JSON.stringify({ destination, source, draggableId }));
   };
   return (
