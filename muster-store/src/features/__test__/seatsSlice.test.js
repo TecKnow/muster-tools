@@ -1,3 +1,5 @@
+import configureMockStore from "redux-mock-store";
+import { getDefaultMiddleware } from "@reduxjs/toolkit";
 import { addPlayer, removePlayer } from "../playersSlice";
 import { removeTable } from "../tablesSlice";
 import seatsSliceReducer, {
@@ -18,7 +20,7 @@ afterEach(() => {
   _set_reducer_path_fetch();
 });
 
-const initial_state = seatsSliceReducer(undefined, "");
+const initial_state = seatsSliceReducer(undefined, {});
 const four_player_starting_state = {
   ids: ["Alice", "Bob", "Charlie", "Dan"],
   entities: {
@@ -195,5 +197,75 @@ test("selectPlayerSeat", () => {
     id: "Alice",
     table: 0,
     position: 0,
+  });
+});
+
+describe("Thunks", () => {
+  const mock_api = {};
+  const mock_store = configureMockStore(
+    getDefaultMiddleware({ thunk: { extraArgument: mock_api } })
+  );
+
+  describe("assignSeat", () => {
+    test("success", async () => {
+      // test-specific mock setup
+      const mock_assign_seat = jest.fn();
+      mock_assign_seat.mockReturnValueOnce(Promise.resolve({}));
+      mock_api.assignSeat = mock_assign_seat;
+      const store = mock_store(four_players_one_table_state);
+      expect(store.getState()).toEqual(four_players_one_table_state);
+
+      // Test actions emitted by the assignSeat thunk on the happy path
+      await store.dispatch(
+        assignSeat({ player: "Charlie", table: 0, position: 0 })
+      );
+      expect(mock_assign_seat).toHaveBeenCalledTimes(1);
+      const results = store.getActions();
+      // It is important to note that the payload for pending actions is undefined.
+      // The argument to the thunk is in meta.arg instead.
+      expect(results).toMatchObject([
+        {
+          meta: { arg: { player: "Charlie", position: 0, table: 0 } },
+          payload: undefined,
+          type: String(assignSeat.pending),
+        },
+        {meta: { arg: { player: "Charlie", position: 0, table: 0 } },
+        payload: expect.any(Object),
+        type: String(assignSeat.fulfilled)},
+      ]);
+
+      // test-specific teardown
+      delete mock_api.mock_assign_seat;
+    });
+    test("failure", async () => {
+      // test-specific mock setup
+      const mock_assign_seat = jest.fn();
+      mock_assign_seat.mockReturnValueOnce(Promise.reject({}));
+      mock_api.assignSeat = mock_assign_seat;
+      const store = mock_store(four_players_one_table_state);
+      expect(store.getState()).toEqual(four_players_one_table_state);
+
+      // Test actions emitted by the assignSeat thunk on failure.
+      await store.dispatch(
+        assignSeat({ player: "Charlie", table: 0, position: 0 })
+      );
+      expect(mock_assign_seat).toHaveBeenCalledTimes(1);
+      const results = store.getActions();
+      // It is important to note that the payload for pending actions is undefined.
+      // The argument to the thunk is in meta.arg instead.
+      expect(results).toMatchObject([
+        {
+          meta: { arg: { player: "Charlie", position: 0, table: 0 } },
+          payload: undefined,
+          type: String(assignSeat.pending),
+        },
+        {meta: { arg: { player: "Charlie", position: 0, table: 0 } },
+        payload: expect.any(Object),
+        type: String(assignSeat.rejected)},
+      ]);
+
+      // test-specific teardown
+      delete mock_api.mock_assign_seat;
+    });
   });
 });

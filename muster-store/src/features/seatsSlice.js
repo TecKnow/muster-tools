@@ -107,6 +107,7 @@ export const assignSeat = createAsyncThunk(
   "seats/assignSeat",
   async ({ player, table, position }, thunkApi) => {
     try {
+      const api = thunkApi.extra;
       await api.assignSeat(player, table, position);
       return { player, table, position };
     } catch (err) {
