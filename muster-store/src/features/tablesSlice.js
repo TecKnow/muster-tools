@@ -11,16 +11,21 @@ const tablesAdapter = createEntityAdapter({
 export const fetchTables = createAsyncThunk(
   "tables/fetchTables",
   async (_, thunkApi) => {
-    try {
-      api = thunkApi.extra;
-      const dataFromServer = await api.selectAllTables();
-      const result = Array.prototype.map.call(dataFromServer, (tableRow) => ({
-        id: tableRow.Identifier,
-      }));
-      return result;
-    } catch (err) {
-      thunkApi.rejectWithValue(err);
-    }
+    api = thunkApi.extra;
+    const dataFromServer = await api.selectAllTables();
+    const result = Array.prototype.map.call(dataFromServer, (tableRow) => ({
+      id: tableRow.Identifier,
+    }));
+    return result;
+  }
+);
+
+export const createTable = createAsyncThunk(
+  "tables/createTable",
+  async (_, thunkApi) => {
+    api = thunkApi.extra;
+    const dataFromServer = await api.addTable();
+    return dataFromServer.data;
   }
 );
 
@@ -31,7 +36,8 @@ export const tablesSlice = createSlice({
     entities: { 0: { id: 0 } },
   }),
   reducers: {
-    createTable: {
+    addTable: {
+      // TODO: Make sure this calculation for the new table number can't get out of sync with the server's
       reducer: (state, action) => {
         const new_table_number =
           parseInt(action.payload) || Math.max(...state.ids) + 1;
@@ -61,7 +67,7 @@ export const tablesSlice = createSlice({
   },
 });
 
-export const { createTable, removeTable } = tablesSlice.actions;
+export const { addTable, removeTable } = tablesSlice.actions;
 
 export const {
   selectAll: selectAllTables,

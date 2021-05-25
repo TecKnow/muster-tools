@@ -1,8 +1,7 @@
 import { Router } from "express";
-import { createTable, removeTable } from "@grumbleware/event-muster-store";
+import { addTable, removeTable } from "@grumbleware/event-muster-store";
 import { io } from "../../express-app";
 import * as db from "../../sequelize";
-
 const router = Router();
 
 router.get("/", async (req, res) => {
@@ -14,7 +13,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   return db.sequelize.transaction(async () => {
     const newTable = await db.createTable();
-    const action = createTable(newTable.Identifier);
+    const action = addTable(newTable.Identifier);
     io.emit("action", action);
     return res.status(201).json(newTable.Identifier);
   });

@@ -1,3 +1,4 @@
+import { useDispatch } from "react-redux";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
@@ -10,9 +11,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AddIcon from "@material-ui/icons/Add";
+import ShuffleIcon from "@material-ui/icons/Shuffle";
+import ClearAllIcon from "@material-ui/icons/ClearAll";
 import React from "react";
 import Tables from "./Tables";
-import { api } from "@grumbleware/event-muster-store";
+import {
+  createTable,
+  shuffleZero,
+  requestResetSeats,
+} from "@grumbleware/event-muster-store";
 
 const drawerWidth = 240;
 
@@ -41,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ClippedDrawer() {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   return (
     <div className={classes.root}>
@@ -63,11 +71,41 @@ export default function ClippedDrawer() {
         <div className={classes.drawerContainer}>
           <Divider />
           <List>
-            <ListItem button key="add" onClick={api.addTable}>
+            <ListItem
+              button
+              key="add"
+              onClick={() => {
+                dispatch(createTable());
+              }}
+            >
               <ListItemIcon>
                 <AddIcon />
               </ListItemIcon>
               <ListItemText primary="Add Table" />
+            </ListItem>
+            <ListItem
+              button
+              key="shuffle"
+              onClick={() => {
+                dispatch(shuffleZero());
+              }}
+            >
+              <ListItemIcon>
+                <ShuffleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Shuffle Bench" />
+            </ListItem>
+            <ListItem
+              button
+              key="clearTables"
+              onClick={() => {
+                dispatch(requestResetSeats());
+              }}
+            >
+              <ListItemIcon>
+                <ClearAllIcon />
+              </ListItemIcon>
+              <ListItemText primary="Clear Tables" />
             </ListItem>
           </List>
         </div>

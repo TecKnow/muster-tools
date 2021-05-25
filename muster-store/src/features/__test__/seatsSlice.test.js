@@ -6,7 +6,7 @@ import seatsSliceReducer, {
   assignSeat,
   moveSeat,
   resetSeats,
-  shuffleZero,
+  reorderZero,
   selectTableSeats,
   selectPlayerSeat,
   _set_reducer_path_fetch,
@@ -146,7 +146,7 @@ test("remove table 0", () => {
 test("Shuffle action", () => {
   const shuffled_state = seatsSliceReducer(
     four_players_one_table_state,
-    shuffleZero([1, 0])
+    reorderZero([1, 0])
   );
   expect(shuffled_state).toEqual({
     ids: ["Alice", "Bob", "Charlie", "Dan"],
@@ -210,7 +210,7 @@ describe("Thunks", () => {
     test("success", async () => {
       // test-specific mock setup
       const mock_assign_seat = jest.fn();
-      mock_assign_seat.mockReturnValueOnce(Promise.resolve({}));
+      mock_assign_seat.mockResolvedValue({});
       mock_api.assignSeat = mock_assign_seat;
       const store = mock_store(four_players_one_table_state);
       expect(store.getState()).toEqual(four_players_one_table_state);
@@ -242,7 +242,7 @@ describe("Thunks", () => {
     test("failure", async () => {
       // test-specific mock setup
       const mock_assign_seat = jest.fn();
-      mock_assign_seat.mockReturnValueOnce(Promise.reject({}));
+      mock_assign_seat.mockRejectedValue(new Error("Async error"));
       mock_api.assignSeat = mock_assign_seat;
       const store = mock_store(four_players_one_table_state);
       expect(store.getState()).toEqual(four_players_one_table_state);
@@ -263,7 +263,7 @@ describe("Thunks", () => {
         },
         {
           meta: { arg: { player: "Charlie", position: 0, table: 0 } },
-          payload: expect.any(Object),
+          payload: undefined,
           type: String(assignSeat.rejected),
         },
       ]);

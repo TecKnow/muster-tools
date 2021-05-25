@@ -1,4 +1,4 @@
-import tablesReducer, { createTable, removeTable } from "../tablesSlice";
+import tablesReducer, { addTable, removeTable } from "../tablesSlice";
 
 test("Add and remove tables", () => {
   /**
@@ -7,9 +7,9 @@ test("Add and remove tables", () => {
    *
    * Show that holes from deleted tables don't get filled in.
    */
-  const one_table_state = tablesReducer(undefined, createTable());
-  const two_table_state = tablesReducer(one_table_state, createTable());
-  const three_table_state = tablesReducer(two_table_state, createTable());
+  const one_table_state = tablesReducer(undefined, addTable());
+  const two_table_state = tablesReducer(one_table_state, addTable());
+  const three_table_state = tablesReducer(two_table_state, addTable());
   expect(three_table_state).toEqual({
     entities: { 0: { id: 0 }, 1: { id: 1 }, 2: { id: 2 }, 3: { id: 3 } },
     ids: [0, 1, 2, 3],
@@ -24,7 +24,7 @@ test("Add and remove tables", () => {
   });
   const add_table_four_state = tablesReducer(
     remove_table_two_state,
-    createTable()
+    addTable()
   );
   // Adding tables does not fill gaps from removed tables.
   expect(add_table_four_state).toEqual({

@@ -88,31 +88,38 @@ const seat_sort_comparer = (a, b) =>
 export const fetchSeats = createAsyncThunk(
   "seats/fetchSeats",
   async (_, thunkApi) => {
-    try {
-      const api = thunkApi.extra;
-      const dataFromServer = await api.selectAllSeats();
-      const results = Array.prototype.map.call(dataFromServer, (seatRow) => ({
-        id: seatRow.PlayerName,
-        table: seatRow.TableIdentifier,
-        position: seatRow.Position,
-      }));
-      return results;
-    } catch (err) {
-      thunkApi.rejectWithValue(err);
-    }
+    const api = thunkApi.extra;
+    const dataFromServer = await api.selectAllSeats();
+    const results = Array.prototype.map.call(dataFromServer, (seatRow) => ({
+      id: seatRow.PlayerName,
+      table: seatRow.TableIdentifier,
+      position: seatRow.Position,
+    }));
+    return results;
   }
 );
 
 export const assignSeat = createAsyncThunk(
   "seats/assignSeat",
-  async ({ player, table, position }, thunkApi) => {
-    try {
-      const api = thunkApi.extra;
-      await api.assignSeat(player, table, position);
-      return { player, table, position };
-    } catch (err) {
-      return thunkApi.rejectWithValue(err);
-    }
+  async ({ player, table, position }, { extra: api }) => {
+    await api.assignSeat(player, table, position);
+    return { player, table, position };
+  }
+);
+
+export const requestResetSeats = createAsyncThunk(
+  "seats/requestResetSeats",
+  async (_, { api: extra }) => {
+    const responseFromServer = await api.resetSeats();
+    return responseFromServer;
+  }
+);
+
+export const shuffleZero = createAsyncThunk(
+  "seats/shuffleZero",
+  async (_, { api: extra }) => {
+    const responseFromServer = api.shuffleZero();
+    return responseFromServer.data;
   }
 );
 
@@ -135,7 +142,7 @@ export const seatsSlice = createSlice({
         0
       );
     },
-    shuffleZero: (state, action) => {
+    reorderZero: (state, action) => {
       const new_positions = action.payload;
       const table_zero_list = find_table(state.entities, 0);
       table_zero_list.forEach((element, index) => {
@@ -211,7 +218,7 @@ export const seatsSlice = createSlice({
   },
 });
 
-export const { moveSeat, resetSeats, shuffleZero } = seatsSlice.actions;
+export const { moveSeat, resetSeats, reorderZero } = seatsSlice.actions;
 
 export const _default_reducer_path_fetch = (state) => state.seats;
 

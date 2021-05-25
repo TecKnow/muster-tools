@@ -24,6 +24,17 @@ export const fetchPlayers = createAsyncThunk(
   }
 );
 
+export const enrollPlayer = createAsyncThunk(
+  "players/enrollPlayer",
+  async ({ name }, thunkApi) => {
+    const api = thunkApi.extra;
+    const dataFromServer = await api.addPlayer(name);
+    console.log("Data from server");
+    console.log(dataFromServer);
+    return;
+  }
+);
+
 export const playersSlice = createSlice({
   name: "players",
   initialState: playersAdapter.getInitialState(),

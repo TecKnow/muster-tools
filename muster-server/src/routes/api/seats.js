@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   moveSeat,
   resetSeats,
-  shuffleZero,
+  reorderZero,
 } from "@grumbleware/event-muster-store";
 import { io } from "../../express-app";
 import * as db from "../../sequelize";
@@ -94,7 +94,7 @@ router.post("/reset", async (req, res) => {
 router.post("/shuffle", async (req, res) => {
   return db.sequelize.transaction(async () => {
     const new_positions = await db.shuffleZero();
-    io.emit("action", shuffleZero(new_positions));
+    io.emit("action", reorderZero(new_positions));
     return res.json(new_positions);
   });
 });

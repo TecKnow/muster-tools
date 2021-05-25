@@ -253,7 +253,7 @@ export const assignSeat = async (
 export const resetSeats = async () => {
   const affectedSeats = await selectAllSeats();
   _seatPositionRenumber(affectedSeats, 0, 0);
-  Promise.all(
+  await Promise.all(
     Array.prototype.map.call(affectedSeats, async (seat) => await seat.save())
   );
 };

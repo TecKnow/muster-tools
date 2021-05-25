@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -9,7 +10,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { api } from "@grumbleware/event-muster-store";
+import { enrollPlayer } from "@grumbleware/event-muster-store";
 
 /* Based on the sign-in template available at the following URL:
  * https://github.com/mui-org/material-ui/tree/master/docs/src/pages/getting-started/templates/sign-in
@@ -37,13 +38,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const [playerName, setPlayerName] = useState("");
   const onPlayerNameChange = (event) => setPlayerName(event.target.value);
   const onPlayerSubmit = (event) => {
     event.preventDefault();
-    //TODO #16 What happens if there is an exception here?
-    api.addPlayer(playerName);
+    dispatch(enrollPlayer({ name: playerName }));
     setPlayerName("");
   };
 
