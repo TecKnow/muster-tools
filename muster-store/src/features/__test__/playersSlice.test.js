@@ -29,6 +29,8 @@ test("add and remove players", () => {
       Bob: { id: "Bob" },
     },
   });
+  const add_duplicate_alice_state = playersReducer(add_bob_state, addPlayer("Alice"));
+  expect(add_duplicate_alice_state).toEqual(add_bob_state);
   const remove_alice_state = playersReducer(
     add_bob_state,
     removePlayer("Alice")
