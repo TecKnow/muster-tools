@@ -27,6 +27,11 @@ export const addTable = async () => {
   return response;
 };
 
+export const deleteTable = async (tableIdentifier) => {
+  const response = await axios.delete(`api/tables/${tableIdentifier}`);
+  return response;
+};
+
 export const selectAllSeats = async () => {
   const response = await axios.get("/api/seats");
   return response.data;

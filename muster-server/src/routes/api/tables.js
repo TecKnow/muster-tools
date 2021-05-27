@@ -34,8 +34,10 @@ router.get("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+  console.log("Server found parameters:");
+  console.log(JSON.stringify(req.params));
   db.sequelize.transaction(async () => {
-    const { id } = req.params;
+    const id = parseInt(req.params.id);
     if (id == 0) {
       return res
         .status(405)

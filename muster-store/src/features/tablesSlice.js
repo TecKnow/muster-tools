@@ -20,6 +20,14 @@ export const fetchTables = createAsyncThunk(
   }
 );
 
+export const deleteTable = createAsyncThunk(
+  "tables/deleteTable",
+  async ({ TableIdentifier }, { thunkApi: extra }) => {
+    const dataFromServer = await api.deleteTable(TableIdentifier);
+    return;
+  }
+);
+
 export const createTable = createAsyncThunk(
   "tables/createTable",
   async (_, thunkApi) => {

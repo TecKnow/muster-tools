@@ -1,8 +1,18 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Chip, Paper, Typography, Grid } from "@material-ui/core";
+import {
+  Chip,
+  Paper,
+  Grid,
+  Card,
+  CardHeader,
+  CardActions,
+  IconButton,
+} from "@material-ui/core";
 import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
-import { selectTableSeats } from "@grumbleware/event-muster-store";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { selectTableSeats, deleteTable } from "@grumbleware/event-muster-store";
 import { useSelector } from "react-redux";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
@@ -18,6 +28,7 @@ const tableSeatsSelectorFunc = (tableId) => (state) => {
 };
 
 const Table = ({ tableId }) => {
+  const dispatch = useDispatch();
   const classes = useStyles();
   const unsortedTableSeats = useSelector(tableSeatsSelectorFunc(tableId)) || [];
   const tableSeats = unsortedTableSeats
@@ -51,7 +62,21 @@ const Table = ({ tableId }) => {
 
   return (
     <Paper className={classes.paper}>
-      <Typography>{`Table: ${tableId}`}</Typography>
+      <Card variant="outlined" className={classes.card}>
+        <CardHeader title={`Table: ${tableId}`} />
+        <CardActions>
+          <IconButton
+            aria-label="delete"
+            onClick={() => {
+              dispatch(deleteTable({ TableIdentifier: tableId }));
+            }}
+            size="small"
+            disabled={tableId === 0 ? true : false}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </CardActions>
+      </Card>
       <Droppable
         droppableId={`table droppable id: ${tableId}`}
         key={`table droppable key: ${tableId}`}
