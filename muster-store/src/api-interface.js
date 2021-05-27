@@ -17,6 +17,11 @@ export const addPlayer = async (playerName) => {
   return response;
 };
 
+export const deletePlayer = async (playerName) => {
+  const response = await axios.delete(`/api/players/${playerName}`);
+  return response;
+};
+
 export const selectAllTables = async () => {
   const response = await axios.get("/api/tables");
   return response.data;

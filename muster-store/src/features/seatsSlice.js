@@ -19,6 +19,9 @@ const update_table = (table, tableId = undefined, starting_index = 0) => {
    * moving between tables.  Otherwise, it takes the value of the first
    * seat assignment in the list.
    */
+  if (!table || table.length === 0) {
+    return table;
+  }
   if (typeof tableId == "undefined") {
     tableId = table[0].table;
   }

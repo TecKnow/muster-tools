@@ -11,16 +11,12 @@ const playersAdapter = createEntityAdapter({
 export const fetchPlayers = createAsyncThunk(
   "players/fetchPlayers",
   async (_, thunkApi) => {
-    try {
-      const api = thunkApi.extra;
-      const dataFromServer = await api.selectAllPlayers();
-      const result = Array.prototype.map.call(dataFromServer, (playerRow) => ({
-        id: playerRow.Name,
-      }));
-      return result;
-    } catch (err) {
-      thunkApi.rejectWithValue(err);
-    }
+    const api = thunkApi.extra;
+    const dataFromServer = await api.selectAllPlayers();
+    const result = Array.prototype.map.call(dataFromServer, (playerRow) => ({
+      id: playerRow.Name,
+    }));
+    return result;
   }
 );
 
@@ -29,8 +25,14 @@ export const enrollPlayer = createAsyncThunk(
   async ({ name }, thunkApi) => {
     const api = thunkApi.extra;
     const dataFromServer = await api.addPlayer(name);
-    console.log("Data from server");
-    console.log(dataFromServer);
+    return;
+  }
+);
+
+export const deletePlayer = createAsyncThunk(
+  "players/deletePlayer",
+  async ({ playerName }, { extra: api }) => {
+    const responseFromServer = await api.deletePlayer(playerName);
     return;
   }
 );

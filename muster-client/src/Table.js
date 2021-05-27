@@ -12,7 +12,11 @@ import {
 } from "@material-ui/core";
 import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { selectTableSeats, deleteTable } from "@grumbleware/event-muster-store";
+import {
+  selectTableSeats,
+  deleteTable,
+  deletePlayer,
+} from "@grumbleware/event-muster-store";
 import { useSelector } from "react-redux";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
@@ -54,6 +58,9 @@ const Table = ({ tableId }) => {
             label={seat.id}
             icon={<DragIndicatorIcon />}
             className={classes.chip}
+            onDelete={() => {
+              dispatch(deletePlayer({ playerName: seat.id }));
+            }}
           />
         </Grid>
       )}
