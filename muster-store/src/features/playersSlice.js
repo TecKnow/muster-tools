@@ -3,6 +3,7 @@ import {
   createEntityAdapter,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
+import { systemReset } from "./systemActions";
 
 const playersAdapter = createEntityAdapter({
   sortComparer: (a, b) => a.id.localeCompare(b.id),
@@ -37,9 +38,11 @@ export const deletePlayer = createAsyncThunk(
   }
 );
 
+const initialState = playersAdapter.getInitialState();
+
 export const playersSlice = createSlice({
   name: "players",
-  initialState: playersAdapter.getInitialState(),
+  initialState,
   reducers: {
     addPlayer: {
       reducer: playersAdapter.addOne,
@@ -51,6 +54,9 @@ export const playersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPlayers.fulfilled, playersAdapter.upsertMany);
+    builder.addCase(systemReset, (state, action) => {
+      return initialState;
+    });
   },
 });
 

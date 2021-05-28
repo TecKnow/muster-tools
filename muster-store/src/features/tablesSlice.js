@@ -3,6 +3,7 @@ import {
   createEntityAdapter,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
+import { systemReset } from "./systemActions";
 
 const tablesAdapter = createEntityAdapter({
   sortComparer: (a, b) => (a < b ? -1 : a > b ? 1 : 0),
@@ -37,12 +38,14 @@ export const createTable = createAsyncThunk(
   }
 );
 
+const initialState = tablesAdapter.getInitialState({
+  ids: [0],
+  entities: { 0: { id: 0 } },
+});
+
 export const tablesSlice = createSlice({
   name: "tables",
-  initialState: tablesAdapter.getInitialState({
-    ids: [0],
-    entities: { 0: { id: 0 } },
-  }),
+  initialState,
   reducers: {
     addTable: {
       // TODO: Make sure this calculation for the new table number can't get out of sync with the server's
@@ -72,6 +75,9 @@ export const tablesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchTables.fulfilled, tablesAdapter.upsertMany);
+    builder.addCase(systemReset, (state, action) => {
+      return initialState;
+    });
   },
 });
 

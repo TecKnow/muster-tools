@@ -5,6 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { addPlayer, removePlayer } from "./playersSlice";
 import { removeTable } from "./tablesSlice";
+import { systemReset } from "./systemActions";
 //TODO: factor seat moving logic into its own reducer utility function
 //TODO: create moveSeat action that the server can broadcast
 
@@ -126,9 +127,11 @@ export const shuffleZero = createAsyncThunk(
   }
 );
 
+const initialState = seatsAdapter.getInitialState();
+
 export const seatsSlice = createSlice({
   name: "seats",
-  initialState: seatsAdapter.getInitialState(),
+  initialState,
   reducers: {
     moveSeat: {
       reducer: (state, action) => {
@@ -217,6 +220,9 @@ export const seatsSlice = createSlice({
       // update the players from the removed table as though
       // they were being appended to table 0.
       update_table(table_members, 0, starting_position);
+    });
+    builder.addCase(systemReset, (state, action) => {
+      return initialState;
     });
   },
 });

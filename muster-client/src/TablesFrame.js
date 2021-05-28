@@ -13,12 +13,14 @@ import Typography from "@material-ui/core/Typography";
 import AddIcon from "@material-ui/icons/Add";
 import ShuffleIcon from "@material-ui/icons/Shuffle";
 import ClearAllIcon from "@material-ui/icons/ClearAll";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import React from "react";
 import Tables from "./Tables";
 import {
   createTable,
   shuffleZero,
   requestResetSeats,
+  systemReset,
 } from "@grumbleware/event-muster-store";
 
 const drawerWidth = 240;
@@ -106,6 +108,18 @@ export default function ClippedDrawer() {
                 <ClearAllIcon />
               </ListItemIcon>
               <ListItemText primary="Clear Tables" />
+            </ListItem>
+            <ListItem
+              button
+              key="systemReset"
+              onClick={() => {
+                dispatch(systemReset());
+              }}
+            >
+              <ListItemIcon>
+                <DeleteForeverIcon />
+              </ListItemIcon>
+              <ListItemText primary="System Reset" />
             </ListItem>
           </List>
         </div>

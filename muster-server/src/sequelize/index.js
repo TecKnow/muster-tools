@@ -284,6 +284,10 @@ export const shuffleZero = async () => {
   return positions_array;
 };
 
+export const systemReset = async () => {
+  return await sequelize.drop();
+};
+
 if (process.env.NODE_ENV != "production") {
   sequelize.sync();
 }
