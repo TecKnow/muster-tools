@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "muster-client"
+		},
+		{
+			"path": "muster-server"
+		},
+		{
+			"path": "muster-store"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/lib": true
+		}
+	}
+}
