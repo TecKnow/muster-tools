@@ -285,7 +285,8 @@ export const shuffleZero = async () => {
 };
 
 export const systemReset = async () => {
-  return await sequelize.drop();
+  await sequelize.drop();
+  return await sequelize.sync();
 };
 
 if (process.env.NODE_ENV != "production") {
