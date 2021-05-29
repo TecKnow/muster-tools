@@ -1,0 +1,33 @@
+{
+  "name": "@grumbleware/event-muster",
+  "version": "0.1.0",
+  "description": "A combined web server and client for assigning players to tables in multi-table gaming events.",
+  "main": "muster-server/lib/index.js",
+  "scripts": {
+    "test": "jest",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TecKnow/muster-tools.git"
+  },
+  "author": "David P. Perkins",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/TecKnow/muster-tools/issues"
+  },
+  "homepage": "https://github.com/TecKnow/muster-tools#readme",
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.3",
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.4",
+    "babel-jest": "^27.0.1",
+    "husky": "^6.0.0",
+    "jest": "^27.0.1",
+    "lint-staged": "^11.0.0",
+    "prettier": "2.3.0"
+  }
+}
