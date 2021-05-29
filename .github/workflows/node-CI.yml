@@ -1,12 +1,10 @@
 name: Node.js CI
 
-on: [push]
-# Test if caching improves test runtime
-# on:
-#   push:
-#     branches: [ main, develop ]
-#   pull_request:
-#     branches: [ main, develop ]
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
 
 jobs:
   build:
