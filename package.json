@@ -17,6 +17,11 @@
     "url": "https://github.com/TecKnow/muster-tools/issues"
   },
   "homepage": "https://github.com/TecKnow/muster-tools#readme",
+  "workspaces": [
+    "muster-store",
+    "muster-server",
+    "muster-client"
+  ],
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },
