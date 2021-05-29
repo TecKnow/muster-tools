@@ -60,4 +60,9 @@ export const shuffleZero = async () => {
   return response.data;
 };
 
+export const resetSystem = async () => {
+  const response = await axios.post("api/systemReset");
+  return response;
+};
+
 export default axios;

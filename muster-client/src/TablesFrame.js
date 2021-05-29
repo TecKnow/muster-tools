@@ -20,7 +20,7 @@ import {
   createTable,
   shuffleZero,
   requestResetSeats,
-  systemReset,
+  systemResetServer,
 } from "@grumbleware/event-muster-store";
 
 const drawerWidth = 240;
@@ -113,7 +113,7 @@ export default function ClippedDrawer() {
               button
               key="systemReset"
               onClick={() => {
-                dispatch(systemReset());
+                dispatch(systemResetServer());
               }}
             >
               <ListItemIcon>

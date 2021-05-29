@@ -4,7 +4,7 @@ import { io } from "../../express-app";
 import playersRouter from "./players";
 import tablesRouter from "./tables";
 import seatsRouter from "./seats";
-import systemReset from "@grumbleware/event-muster-store";
+import { systemReset } from "@grumbleware/event-muster-store";
 const router = Router();
 
 router.use("/players", playersRouter);
