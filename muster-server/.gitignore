@@ -92,3 +92,6 @@ Thumbs.db
 
 # saved local database state
 /data
+
+#Ignore directory for compiled code
+/lib
