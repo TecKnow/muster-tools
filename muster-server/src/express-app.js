@@ -6,7 +6,7 @@ import socket_io from "socket.io";
 export const application_root_path = path.join(__dirname, "/../../");
 export const application_static_path = path.join(
   application_root_path,
-  "/muster_client/build"
+  "/muster-client/build"
 );
 export const application_SPA_path = path.join(
   application_static_path,

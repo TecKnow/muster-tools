@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === "production") {
 } else {
   app.get("/", (req, res) => {
     res.sendFile(
-      path.join(application_root_path, "/muster_server/public/index.html")
+      path.join(application_root_path, "/muster-server/public/index.html")
     );
   });
 }
@@ -30,7 +30,6 @@ app.use("/api", apiRoutes);
 const port = process.env.PORT || 5000;
 server.listen(port);
 console.log(`listening on port ${port}`);
-
 test_connection();
 
 io.on("connection", (socket) => {

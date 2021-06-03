@@ -6,7 +6,7 @@ import {
 import { systemReset } from "./systemActions";
 
 const playersAdapter = createEntityAdapter({
-  sortComparer: (a, b) => a.id.localeCompare(b.id),
+  sortComparer: (a, b) => String.prototype.localeCompare.call(a.id, b.id),
 });
 
 export const fetchPlayers = createAsyncThunk(
