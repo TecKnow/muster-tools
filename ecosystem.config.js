@@ -9,7 +9,7 @@ module.exports = {
       },
       env_production: {
         NODE_ENV: "production",
-        DB_URI: "sqlite:data_store.sqlite3",
+        DB_URI: "sqlite:muster-server/data/data_store.sqlite3",
         PORT: 3000,
       },
     },
