@@ -1,6 +1,6 @@
 {
   "name": "@grumbleware/event-muster-store",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Redux state slices and Axios API for @grumbleware/event-muster-server and @grumbleware/event-muster-client",
   "main": "lib/index.js",
   "scripts": {

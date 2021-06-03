@@ -1,6 +1,6 @@
 {
   "name": "@grumbleware/event-muster-server",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A node.js server for assigning players to tables in multi-table gaming events.",
   "main": "lib/index.js",
   "scripts": {
