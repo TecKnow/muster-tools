@@ -289,8 +289,6 @@ export const systemReset = async () => {
   return await sequelize.sync();
 };
 
-if (process.env.NODE_ENV != "production") {
-  sequelize.sync();
-}
+sequelize.sync();
 
 export default sequelize;

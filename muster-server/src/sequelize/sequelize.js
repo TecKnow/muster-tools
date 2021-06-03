@@ -4,7 +4,7 @@ import { Sequelize } from "sequelize";
 const NODE_ENV = process.env.NODE_ENV;
 const DB_URI_ENV = process.env.DB_URI;
 const DB_URI =
-  NODE_ENV === "test" || !DB_URI_ENV ? "sqlite::memory" : DB_URI_ENV;
+  NODE_ENV === "test" || !DB_URI_ENV ? "sqlite::memory:" : DB_URI_ENV;
 // eslint-disable-next-line no-unused-vars
 const default_logger = console.log;
 // eslint-disable-next-line no-unused-vars
