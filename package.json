@@ -4,7 +4,7 @@
   "description": "A combined web server and client for assigning players to tables in multi-table gaming events.",
   "main": "muster-server/lib/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "CI=true npm run test --workspaces --  --passWithNoTests",
     "prepare": "husky install"
   },
   "repository": {
@@ -29,9 +29,7 @@
     "@babel/cli": "^7.14.3",
     "@babel/core": "^7.14.3",
     "@babel/preset-env": "^7.14.4",
-    "babel-jest": "^26.6.3",
     "husky": "^6.0.0",
-    "jest": "^26.6.0",
     "lint-staged": "^11.0.0",
     "prettier": "2.3.0"
   }

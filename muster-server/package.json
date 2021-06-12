@@ -11,7 +11,8 @@
     "start-dev": "concurrently --kill-others-on-fail \"npm:start-store\" \"npm:start-server\" \"npm:start-client\"",
     "serve": "node lib/index.js",
     "test": "jest",
-    "test:watch": "npm test -- --watch"
+    "test:watch": "npm test -- --watch",
+    "start-prod": "NODE_ENV='production' LOGGING='verbose' DB_URI='sqlite:data/prod_data_store.sqlite' node lib/index.js"
   },
   "jest": {
     "transform": {

@@ -12,8 +12,7 @@ const playersAdapter = createEntityAdapter({
 
 export const fetchPlayers = createAsyncThunk(
   "players/fetchPlayers",
-  async (_, thunkApi) => {
-    const api = thunkApi.extra;
+  async (_, { extra: api }) => {
     const dataFromServer = await api.selectAllPlayers();
     const result = Array.prototype.map.call(dataFromServer, (playerRow) => ({
       id: playerRow.Name,
@@ -24,8 +23,7 @@ export const fetchPlayers = createAsyncThunk(
 
 export const enrollPlayer = createAsyncThunk(
   "players/enrollPlayer",
-  async ({ name }, thunkApi) => {
-    const api = thunkApi.extra;
+  async ({ name }, { extra: api }) => {
     const dataFromServer = await api.addPlayer(name);
     return;
   }

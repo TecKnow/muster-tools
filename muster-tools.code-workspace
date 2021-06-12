@@ -1,13 +1,7 @@
 {
 	"folders": [
 		{
-			"path": "muster-client"
-		},
-		{
-			"path": "muster-server"
-		},
-		{
-			"path": "muster-store"
+			"path": "."
 		}
 	],
 	"settings": {

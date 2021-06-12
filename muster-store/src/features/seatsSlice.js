@@ -91,8 +91,7 @@ const seat_sort_comparer = (a, b) =>
 
 export const fetchSeats = createAsyncThunk(
   "seats/fetchSeats",
-  async (_, thunkApi) => {
-    const api = thunkApi.extra;
+  async (_, { extra: api }) => {
     const dataFromServer = await api.selectAllSeats();
     const results = Array.prototype.map.call(dataFromServer, (seatRow) => ({
       id: seatRow.PlayerName,
@@ -113,7 +112,7 @@ export const assignSeat = createAsyncThunk(
 
 export const requestResetSeats = createAsyncThunk(
   "seats/requestResetSeats",
-  async (_, { api: extra }) => {
+  async (_, { extra: api }) => {
     const responseFromServer = await api.resetSeats();
     return responseFromServer;
   }
@@ -121,7 +120,7 @@ export const requestResetSeats = createAsyncThunk(
 
 export const shuffleZero = createAsyncThunk(
   "seats/shuffleZero",
-  async (_, { api: extra }) => {
+  async (_, { extra: api }) => {
     const responseFromServer = api.shuffleZero();
     return responseFromServer.data;
   }

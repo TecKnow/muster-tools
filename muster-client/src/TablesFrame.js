@@ -77,7 +77,7 @@ export default function ClippedDrawer() {
               button
               key="add"
               onClick={() => {
-                dispatch(createTable());
+                return dispatch(createTable());
               }}
             >
               <ListItemIcon>

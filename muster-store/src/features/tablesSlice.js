@@ -11,8 +11,7 @@ const tablesAdapter = createEntityAdapter({
 
 export const fetchTables = createAsyncThunk(
   "tables/fetchTables",
-  async (_, thunkApi) => {
-    api = thunkApi.extra;
+  async (_, { extra: api }) => {
     const dataFromServer = await api.selectAllTables();
     const result = Array.prototype.map.call(dataFromServer, (tableRow) => ({
       id: tableRow.Identifier,
@@ -23,7 +22,7 @@ export const fetchTables = createAsyncThunk(
 
 export const deleteTable = createAsyncThunk(
   "tables/deleteTable",
-  async ({ TableIdentifier }, { thunkApi: extra }) => {
+  async ({ TableIdentifier }, { extra: api }) => {
     const dataFromServer = await api.deleteTable(TableIdentifier);
     return;
   }
@@ -31,8 +30,7 @@ export const deleteTable = createAsyncThunk(
 
 export const createTable = createAsyncThunk(
   "tables/createTable",
-  async (_, thunkApi) => {
-    api = thunkApi.extra;
+  async (_, { extra: api }) => {
     const dataFromServer = await api.addTable();
     return dataFromServer.data;
   }
